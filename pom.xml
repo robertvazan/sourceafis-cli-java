@@ -6,4 +6,47 @@
 	<artifactId>sourceafis-cli</artifactId>
 	<version>3.11.0</version>
 	<packaging>jar</packaging>
+
+	<name>SourceAFIS for Java CLI</name>
+	<url>https://sourceafis.machinezoo.com/java</url>
+	<description>Accuracy evaluation, consistency checks, and benchmarks of SourceAFIS for Java.</description>
+	<inceptionYear>2021</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>Apache License 2.0</name>
+			<url>https://github.com/robertvazan/sourceafis-java-cli/blob/master/LICENSE</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>Robert Važan</name>
+		<url>https://robert.machinezoo.com/</url>
+	</organization>
+	<developers>
+		<developer>
+			<name>Robert Važan</name>
+			<email>robert.vazan@tutanota.com</email>
+			<url>https://robert.machinezoo.com/</url>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:https://github.com/robertvazan/sourceafis-java-cli.git</connection>
+		<developerConnection>scm:git:https://github.com/robertvazan/sourceafis-java-cli.git</developerConnection>
+		<url>https://github.com/robertvazan/sourceafis-java-cli</url>
+	</scm>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.release>11</maven.compiler.release>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.machinezoo.sourceafis</groupId>
+			<artifactId>sourceafis</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
 </project>
