@@ -1,0 +1,14 @@
+# Disable tag builds. Only regular commits are built. If a commit is tagged, the commit itself is built but not the tag.
+# This avoids the spammy emails Travis sends every time some tag is built.
+if: tag IS blank
+language: java
+jdk:
+  - openjdk11
+# Travis by default tries to install maven dependencies in this phase. It's simpler to run everything in one phase.
+install: skip
+# Printing maven version (-V) helps diagnose Travis-specific build behavior.
+script: mvn install -B -V
+cache:
+  directories:
+  - $HOME/.m2
+
