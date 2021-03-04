@@ -1,4 +1,4 @@
-//Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
+// Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
 package com.machinezoo.sourceafis.cli;
 
 import java.nio.file.*;
