@@ -1,8 +1,11 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
 package com.machinezoo.sourceafis.cli;
 
+import java.io.*;
 import java.nio.file.*;
 import java.util.function.*;
+import java.util.zip.*;
+import org.apache.commons.io.*;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.*;
 import com.fasterxml.jackson.databind.*;
@@ -47,16 +50,32 @@ abstract class PersistentCache<T> implements Supplier<T> {
 		}
 		this.path = path.getParent().resolve(path.getFileName().toString() + ".cbor");
 	}
+	private static byte[] gzip(byte[] data) {
+		return Exceptions.sneak().get(() -> {
+			var buffer = new ByteArrayOutputStream();
+			try (var gzip = new GZIPOutputStream(buffer)) {
+				gzip.write(data);
+			}
+			return buffer.toByteArray();
+		});
+	}
+	private static byte[] gunzip(byte[] compressed) {
+		return Exceptions.sneak().get(() -> {
+			try (var gzip = new GZIPInputStream(new ByteArrayInputStream(compressed))) {
+				return IOUtils.toByteArray(gzip);
+			}
+		});
+	}
 	private static final ObjectMapper mapper = new ObjectMapper(new CBORFactory())
 		.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 	@Override
 	public T get() {
 		return Exceptions.sneak().get(() -> {
 			if (Files.exists(path))
-				return mapper.readValue(Files.readAllBytes(path), clazz);
+				return mapper.readValue(gunzip(Files.readAllBytes(path)), clazz);
 			T value = compute();
 			Files.createDirectories(path.getParent());
-			Files.write(path, mapper.writeValueAsBytes(value));
+			Files.write(path, gzip(mapper.writeValueAsBytes(value)));
 			return value;
 		});
 	}
