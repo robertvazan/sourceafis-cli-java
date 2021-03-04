@@ -48,6 +48,11 @@
 			<artifactId>sourceafis</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>one.util</groupId>
+			<artifactId>streamex</artifactId>
+			<version>0.7.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
