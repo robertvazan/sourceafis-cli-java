@@ -83,7 +83,7 @@ class TransparencyStats {
 		}
 	}
 	static Table extractorTable(SampleFingerprint fp) {
-		return new PersistentCache<>(Table.class, "transparency", "stats", "extractor", fp) {
+		return new PersistentCache<>(Table.class, "extractor-transparency-stats", fp) {
 			@Override
 			Table compute() {
 				var image = fp.load();
