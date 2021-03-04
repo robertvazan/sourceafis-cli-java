@@ -17,39 +17,69 @@ class TransparencyStats {
 	static class Table {
 		List<Row> rows;
 	}
-	private static class RowCollector {
+	private static class Accumulator {
 		int count;
 		long size;
 		final MessageDigest hasher = Exceptions.sneak().get(() -> MessageDigest.getInstance("SHA-256"));
-	}
-	private static class TableCollector extends FingerprintTransparency {
-		final Map<String, RowCollector> rows = new HashMap<>();
-		final List<String> order = new ArrayList<>();
-		@Override
-		public void take(String key, String mime, byte[] data) {
-			var row = rows.get(key);
-			if (row == null) {
-				order.add(key);
-				rows.put(key, row = new RowCollector());
-			}
-			++row.count;
-			row.size += data.length;
-			row.hasher.update(data);
+		void add(byte[] data) {
+			++count;
+			size += data.length;
+			hasher.update(data);
 		}
-		Table toTable() {
+		void add(TransparencyStats stats) {
+			count += stats.count;
+			size += stats.size;
+			hasher.update(stats.hash);
+		}
+	}
+	private static class AccumulatorTable {
+		final Map<String, Accumulator> accumulators = new HashMap<>();
+		final List<String> order = new ArrayList<>();
+		Accumulator accumulator(String key) {
+			var accumulator = accumulators.get(key);
+			if (accumulator == null) {
+				order.add(key);
+				accumulators.put(key, accumulator = new Accumulator());
+			}
+			return accumulator;
+		}
+		void add(String key, byte[] data) {
+			accumulator(key).add(data);
+		}
+		void add(Row row) {
+			accumulator(row.key).add(row);
+		}
+		void add(Table table) {
+			for (var row : table.rows)
+				add(row);
+		}
+		Table summarize() {
 			var table = new Table();
 			table.rows = StreamEx.of(order)
 				.map(k -> {
-					var collector = rows.get(k);
+					var accumulator = accumulators.get(k);
 					var row = new Row();
 					row.key = k;
-					row.count = collector.count;
-					row.size = collector.size;
-					row.hash = collector.hasher.digest();
+					row.count = accumulator.count;
+					row.size = accumulator.size;
+					row.hash = accumulator.hasher.digest();
 					return row;
 				})
 				.toList();
 			return table;
+		}
+	}
+	private static Table sumTables(List<Table> tables) {
+		var accumulator = new AccumulatorTable();
+		for (var table : tables)
+			accumulator.add(table);
+		return accumulator.summarize();
+	}
+	private static class TableCollector extends FingerprintTransparency {
+		final AccumulatorTable accumulator = new AccumulatorTable();
+		@Override
+		public void take(String key, String mime, byte[] data) {
+			accumulator.add(key, data);
 		}
 	}
 	static Table extractorTable(SampleFingerprint fp) {
@@ -61,9 +91,15 @@ class TransparencyStats {
 					new FingerprintTemplate(new FingerprintImage()
 						.dpi(fp.dataset.dpi)
 						.decode(image));
-					return collector.toTable();
+					return collector.accumulator.summarize();
 				}
 			}
 		}.get();
+	}
+	static Table extractorTable(SampleDataset dataset) {
+		return sumTables(StreamEx.of(dataset.fingerprints()).map(fp -> extractorTable(fp)).toList());
+	}
+	static Table extractorTable() {
+		return sumTables(StreamEx.of(SampleDataset.all()).map(ds -> extractorTable(ds)).toList());
 	}
 }
