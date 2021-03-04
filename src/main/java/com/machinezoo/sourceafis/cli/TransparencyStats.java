@@ -3,6 +3,7 @@ package com.machinezoo.sourceafis.cli;
 
 import java.security.*;
 import java.util.*;
+import org.slf4j.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.*;
 import one.util.streamex.*;
@@ -101,5 +102,10 @@ class TransparencyStats {
 	}
 	static Table extractorTable() {
 		return sumTables(StreamEx.of(SampleDataset.all()).map(ds -> extractorTable(ds)).toList());
+	}
+	private static final Logger logger = LoggerFactory.getLogger(TransparencyStats.class);
+	static void report(Table table) {
+		for (var row : table.rows)
+			logger.info("{}: {}x, {} B, hash {}", row.key, row.count, row.size, Base64.getUrlEncoder().encodeToString(row.hash));
 	}
 }

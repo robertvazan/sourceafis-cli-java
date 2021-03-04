@@ -7,7 +7,7 @@ public class Main {
 			return;
 		switch (args[0]) {
 		case "extractor-transparency-stats":
-			TransparencyStats.extractorTable();
+			TransparencyStats.report(TransparencyStats.extractorTable());
 			break;
 		}
 	}
