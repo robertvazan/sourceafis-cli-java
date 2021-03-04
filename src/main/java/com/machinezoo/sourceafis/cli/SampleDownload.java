@@ -4,8 +4,10 @@ package com.machinezoo.sourceafis.cli;
 import java.io.*;
 import java.net.*;
 import java.nio.file.*;
+import java.util.concurrent.atomic.*;
 import java.util.zip.*;
 import org.apache.commons.io.*;
+import org.slf4j.*;
 import com.machinezoo.noexception.*;
 
 class SampleDownload {
@@ -56,6 +58,8 @@ class SampleDownload {
 	static Path directory(String dataset) {
 		return PersistentCache.home.resolve("samples").resolve(dataset);
 	}
+	private static final Logger logger = LoggerFactory.getLogger(SampleDownload.class);
+	private static final AtomicBoolean reported = new AtomicBoolean();
 	static Path unpack(String dataset) {
 		var url = url(dataset);
 		var directory = directory(dataset);
@@ -65,6 +69,8 @@ class SampleDownload {
 				if (Files.exists(temporary))
 					FileUtils.deleteDirectory(temporary.toFile());
 				Files.createDirectories(temporary);
+				if (!reported.getAndSet(true))
+					logger.info("Downloading sample fingerprints...");
 				try (	InputStream stream = new URL(url).openStream();
 						ZipInputStream zip = new ZipInputStream(stream)) {
 					while (true) {
