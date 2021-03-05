@@ -2,10 +2,8 @@
 package com.machinezoo.sourceafis.cli;
 
 import java.nio.file.*;
-import java.security.*;
 import java.util.*;
 import org.slf4j.*;
-import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.*;
 import one.util.streamex.*;
 
@@ -13,97 +11,79 @@ class TransparencyStats {
 	int count;
 	long size;
 	byte[] hash;
-	static class Row extends TransparencyStats {
+	static TransparencyStats of(byte[] data) {
+		var stats = new TransparencyStats();
+		stats.count = 1;
+		stats.size = data.length;
+		stats.hash = DataHash.of(data);
+		return stats;
+	}
+	static TransparencyStats sum(List<TransparencyStats> list) {
+		var sum = new TransparencyStats();
+		var hash = new DataHash();
+		for (var stats : list) {
+			sum.count += stats.count;
+			sum.size += stats.size;
+			hash.add(stats.hash);
+		}
+		sum.hash = hash.compute();
+		return sum;
+	}
+	static class Row {
 		String key;
+		TransparencyStats stats;
 	}
 	static class Table {
-		List<Row> rows;
-	}
-	private static class Accumulator {
-		int count;
-		long size;
-		final MessageDigest hasher = Exceptions.sneak().get(() -> MessageDigest.getInstance("SHA-256"));
-		void add(byte[] data) {
-			++count;
-			size += data.length;
-			hasher.update(data);
-		}
-		void add(TransparencyStats stats) {
-			count += stats.count;
-			size += stats.size;
-			hasher.update(stats.hash);
-		}
-	}
-	private static class AccumulatorTable {
-		final Map<String, Accumulator> accumulators = new HashMap<>();
-		final List<String> order = new ArrayList<>();
-		Accumulator accumulator(String key) {
-			var accumulator = accumulators.get(key);
-			if (accumulator == null) {
-				order.add(key);
-				accumulators.put(key, accumulator = new Accumulator());
-			}
-			return accumulator;
-		}
-		void add(String key, byte[] data) {
-			accumulator(key).add(data);
-		}
-		void add(Row row) {
-			accumulator(row.key).add(row);
-		}
-		void add(Table table) {
-			for (var row : table.rows)
-				add(row);
-		}
-		Table summarize() {
+		List<Row> rows = new ArrayList<>();;
+		static Table of(String key, byte[] data) {
+			var row = new Row();
+			row.key = key;
+			row.stats = TransparencyStats.of(data);
 			var table = new Table();
-			table.rows = StreamEx.of(order)
-				.map(k -> {
-					var accumulator = accumulators.get(k);
-					var row = new Row();
-					row.key = k;
-					row.count = accumulator.count;
-					row.size = accumulator.size;
-					row.hash = accumulator.hasher.digest();
-					return row;
-				})
-				.toList();
+			table.rows.add(row);
 			return table;
 		}
-	}
-	private static Table sumTables(List<Table> tables) {
-		var accumulator = new AccumulatorTable();
-		for (var table : tables)
-			accumulator.add(table);
-		return accumulator.summarize();
+		static Table sum(List<Table> list) {
+			var groups = new HashMap<String, List<TransparencyStats>>();
+			var sum = new Table();
+			for (var table : list) {
+				for (var row : table.rows) {
+					var group = groups.get(row.key);
+					if (group == null) {
+						var srow = new Row();
+						srow.key = row.key;
+						sum.rows.add(srow);
+						groups.put(row.key, group = new ArrayList<>());
+					}
+					group.add(row.stats);
+				}
+			}
+			for (var row : sum.rows)
+				row.stats = TransparencyStats.sum(groups.get(row.key));
+			return sum;
+		}
 	}
 	private static class TableCollector extends FingerprintTransparency {
-		final AccumulatorTable accumulator = new AccumulatorTable();
+		final List<Table> records = new ArrayList<>();
 		@Override
 		public void take(String key, String mime, byte[] data) {
-			accumulator.add(key, data);
+			records.add(Table.of(key, data));
 		}
 	}
 	static Table extractorTable(SampleFingerprint fp) {
 		return PersistentCache.get(Table.class, Paths.get("extractor-transparency-stats"), fp.path(), () -> {
-			var image = fp.load();
 			try (var collector = new TableCollector()) {
-				new FingerprintTemplate(new FingerprintImage()
-					.dpi(fp.dataset.dpi)
-					.decode(image));
-				return collector.accumulator.summarize();
+				new FingerprintTemplate(fp.decode());
+				return Table.sum(collector.records);
 			}
 		});
 	}
-	static Table extractorTable(SampleDataset dataset) {
-		return sumTables(StreamEx.of(dataset.fingerprints()).map(fp -> extractorTable(fp)).toList());
-	}
 	static Table extractorTable() {
-		return sumTables(StreamEx.of(SampleDataset.all()).map(ds -> extractorTable(ds)).toList());
+		return Table.sum(StreamEx.of(SampleFingerprint.all()).map(fp -> extractorTable(fp)).toList());
 	}
 	private static final Logger logger = LoggerFactory.getLogger(TransparencyStats.class);
 	static void report(Table table) {
 		for (var row : table.rows)
-			logger.info("{}: {}x, {} B, hash {}", row.key, row.count, row.size, Base64.getUrlEncoder().encodeToString(row.hash));
+			logger.info("Transparency/{}: {}x, {} B, hash {}", row.key, row.stats.count, row.stats.size / row.stats.count, DataHash.format(row.stats.hash));
 	}
 }

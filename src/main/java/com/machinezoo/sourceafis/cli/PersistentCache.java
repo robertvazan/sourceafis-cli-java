@@ -127,7 +127,7 @@ abstract class PersistentCache<T> implements Supplier<T> {
 		}
 	}
 	private static Compression compression(Path path) {
-		if (path.getFileName().endsWith(".cbor"))
+		if (path.getFileName().toString().endsWith(".cbor"))
 			return new GzipCompression();
 		return new TrivialCompression();
 	}

@@ -9,6 +9,9 @@ public class Main {
 		case "png":
 			PngImage.generate();
 			break;
+		case "footprint":
+			TemplateFootprint.report();
+			break;
 		case "extractor-transparency-stats":
 			TransparencyStats.report(TransparencyStats.extractorTable());
 			break;

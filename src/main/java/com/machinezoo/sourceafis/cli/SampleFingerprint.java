@@ -4,6 +4,7 @@ package com.machinezoo.sourceafis.cli;
 import java.nio.file.*;
 import java.util.*;
 import com.machinezoo.noexception.*;
+import com.machinezoo.sourceafis.*;
 import one.util.streamex.*;
 
 class SampleFingerprint {
@@ -24,5 +25,10 @@ class SampleFingerprint {
 	}
 	byte[] load() {
 		return Exceptions.sneak().get(() -> Files.readAllBytes(SampleDownload.directory(dataset.name).resolve(dataset.layout.filename(id))));
+	}
+	FingerprintImage decode() {
+		return new FingerprintImage()
+			.dpi(dataset.dpi)
+			.decode(load());
 	}
 }
