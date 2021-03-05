@@ -1,6 +1,7 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
 package com.machinezoo.sourceafis.cli;
 
+import java.nio.file.*;
 import java.security.*;
 import java.util.*;
 import org.slf4j.*;
@@ -84,18 +85,15 @@ class TransparencyStats {
 		}
 	}
 	static Table extractorTable(SampleFingerprint fp) {
-		return new PersistentCache<>(Table.class, "extractor-transparency-stats", fp) {
-			@Override
-			Table compute() {
-				var image = fp.load();
-				try (var collector = new TableCollector()) {
-					new FingerprintTemplate(new FingerprintImage()
-						.dpi(fp.dataset.dpi)
-						.decode(image));
-					return collector.accumulator.summarize();
-				}
+		return PersistentCache.get(Table.class, Paths.get("extractor-transparency-stats"), fp.path(), () -> {
+			var image = fp.load();
+			try (var collector = new TableCollector()) {
+				new FingerprintTemplate(new FingerprintImage()
+					.dpi(fp.dataset.dpi)
+					.decode(image));
+				return collector.accumulator.summarize();
 			}
-		}.get();
+		});
 	}
 	static Table extractorTable(SampleDataset dataset) {
 		return sumTables(StreamEx.of(dataset.fingerprints()).map(fp -> extractorTable(fp)).toList());

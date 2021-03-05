@@ -6,6 +6,9 @@ public class Main {
 		if (args.length != 1)
 			return;
 		switch (args[0]) {
+		case "png":
+			PngImage.generate();
+			break;
 		case "extractor-transparency-stats":
 			TransparencyStats.report(TransparencyStats.extractorTable());
 			break;

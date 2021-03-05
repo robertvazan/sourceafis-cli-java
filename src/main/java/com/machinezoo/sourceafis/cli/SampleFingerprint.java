@@ -2,7 +2,9 @@
 package com.machinezoo.sourceafis.cli;
 
 import java.nio.file.*;
+import java.util.*;
 import com.machinezoo.noexception.*;
+import one.util.streamex.*;
 
 class SampleFingerprint {
 	final SampleDataset dataset;
@@ -13,6 +15,12 @@ class SampleFingerprint {
 	}
 	String name() {
 		return dataset.layout.name(id);
+	}
+	Path path() {
+		return Paths.get(dataset.name, name());
+	}
+	static List<SampleFingerprint> all() {
+		return StreamEx.of(SampleDataset.all()).flatCollection(ds -> ds.fingerprints()).toList();
 	}
 	byte[] load() {
 		return Exceptions.sneak().get(() -> Files.readAllBytes(SampleDownload.directory(dataset.name).resolve(dataset.layout.filename(id))));
