@@ -3,10 +3,12 @@ package com.machinezoo.sourceafis.cli;
 
 import java.util.*;
 import java.util.concurrent.*;
+import org.apache.commons.lang3.tuple.*;
 import one.util.streamex.*;
 
 class SampleDataset {
 	final String name;
+	final SampleDownload.Format format;
 	final double dpi;
 	final SampleLayout layout;
 	private static double dpi(String dataset) {
@@ -19,17 +21,21 @@ class SampleDataset {
 			return 500;
 		}
 	}
-	private SampleDataset(String name) {
+	private SampleDataset(String name, SampleDownload.Format format) {
 		this.name = name;
+		this.format = format;
 		dpi = dpi(name);
-		layout = SampleLayout.scan(name);
+		layout = new SampleLayout(SampleDownload.unpack(name, format));
 	}
-	private static final ConcurrentMap<String, SampleDataset> all = new ConcurrentHashMap<>();
-	static SampleDataset get(String name) {
-		return all.computeIfAbsent(name, SampleDataset::new);
+	private static final ConcurrentMap<Pair<String, SampleDownload.Format>, SampleDataset> all = new ConcurrentHashMap<>();
+	static SampleDataset get(String name, SampleDownload.Format format) {
+		return all.computeIfAbsent(Pair.of(name, format), p -> new SampleDataset(p.getLeft(), p.getRight()));
+	}
+	static List<SampleDataset> all(SampleDownload.Format format) {
+		return StreamEx.of(SampleDownload.AVAILABLE).map(n -> get(n, format)).toList();
 	}
 	static List<SampleDataset> all() {
-		return StreamEx.of(SampleDownload.AVAILABLE).map(n -> get(n)).toList();
+		return all(SampleDownload.DEFAULT_FORMAT);
 	}
 	List<SampleFingerprint> fingerprints() {
 		return IntStreamEx.range(layout.fingerprints()).mapToObj(n -> new SampleFingerprint(this, n)).toList();

@@ -7,7 +7,10 @@ public class Main {
 			return;
 		switch (args[0]) {
 		case "png":
-			PngImage.generate();
+			ImageConversion.png();
+			break;
+		case "gray":
+			ImageConversion.gray();
 			break;
 		case "footprint":
 			TemplateFootprint.report();

@@ -10,6 +10,7 @@ import com.machinezoo.noexception.*;
 import one.util.streamex.*;
 
 class SampleLayout {
+	final Path directory;
 	private final int[] offsets;
 	private final int[] fingers;
 	private final String[] names;
@@ -44,9 +45,10 @@ class SampleLayout {
 	String prefix(int finger) {
 		return prefixes[finger];
 	}
-	private static final Pattern PATTERN = Pattern.compile("(.+)_[0-9]+\\.(?:tif|tiff|png|bmp|jpg|jpeg|wsq)");
+	private static final Pattern PATTERN = Pattern.compile("(.+)_[0-9]+\\.(?:tif|tiff|png|bmp|jpg|jpeg|wsq|gray)");
 	@SuppressWarnings("resource")
-	private SampleLayout(Path directory) {
+	SampleLayout(Path directory) {
+		this.directory = directory;
 		var groups = new HashMap<String, List<String>>();
 		for (var path : Exceptions.sneak().get(() -> Files.list(directory).collect(toList()))) {
 			var filename = path.getFileName().toString();
@@ -78,8 +80,5 @@ class SampleLayout {
 			}
 			++finger;
 		}
-	}
-	static SampleLayout scan(String dataset) {
-		return new SampleLayout(SampleDownload.unpack(dataset));
 	}
 }
