@@ -20,6 +20,11 @@ public class Main {
 				return;
 			TransparencyFile.extractor(args[1]);
 			break;
+		case "normalized-extractor-transparency-files":
+			if (args.length < 2)
+				return;
+			TransparencyFile.extractorNormalized(args[1]);
+			break;
 		}
 	}
 }

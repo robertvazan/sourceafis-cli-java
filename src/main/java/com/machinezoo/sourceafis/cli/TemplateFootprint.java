@@ -16,7 +16,7 @@ class TemplateFootprint {
 			var serialized = NativeTemplate.serialized(fp);
 			footprint.count = 1;
 			footprint.serialized = serialized.length;
-			footprint.hash = DataHash.of(serialized);
+			footprint.hash = DataHash.of(SerializationUtils.normalize(serialized));
 			return footprint;
 		});
 	}

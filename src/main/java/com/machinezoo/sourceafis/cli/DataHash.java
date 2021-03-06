@@ -18,6 +18,9 @@ class DataHash {
 		hash.add(data);
 		return hash.compute();
 	}
+	static byte[] of(String mime, byte[] data) {
+		return of(SerializationUtils.normalize(mime, data));
+	}
 	static String format(byte[] hash) {
 		return Base64.getUrlEncoder().encodeToString(hash).replace("=", "");
 	}

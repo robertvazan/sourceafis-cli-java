@@ -9,10 +9,6 @@ import java.util.function.*;
 import java.util.zip.*;
 import org.apache.commons.io.*;
 import org.slf4j.*;
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.*;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.dataformat.cbor.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.*;
 
@@ -63,19 +59,17 @@ abstract class PersistentCache<T> implements Supplier<T> {
 		}
 	}
 	private static class CborSerialization implements Serialization {
-		private static final ObjectMapper mapper = new ObjectMapper(new CBORFactory())
-			.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 		@Override
 		public Path rename(Path path) {
 			return withExtension(path, ".cbor");
 		}
 		@Override
 		public byte[] serialize(Object value) {
-			return Exceptions.sneak().get(() -> mapper.writeValueAsBytes(value));
+			return SerializationUtils.serialize(value);
 		}
 		@Override
 		public <T> T deserialize(byte[] serialized, Class<T> clazz) {
-			return Exceptions.sneak().get(() -> mapper.readValue(serialized, clazz));
+			return SerializationUtils.deserialize(serialized, clazz);
 		}
 	}
 	private static Serialization serialization(Class<?> clazz) {

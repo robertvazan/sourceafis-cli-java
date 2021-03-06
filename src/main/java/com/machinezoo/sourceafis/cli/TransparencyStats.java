@@ -17,7 +17,7 @@ class TransparencyStats {
 		stats.mime = mime;
 		stats.count = 1;
 		stats.size = data.length;
-		stats.hash = DataHash.of(data);
+		stats.hash = DataHash.of(mime, data);
 		return stats;
 	}
 	static TransparencyStats sum(List<TransparencyStats> list) {

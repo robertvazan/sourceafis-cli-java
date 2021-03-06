@@ -31,9 +31,11 @@ class TransparencyFile {
 			files.add(data);
 		}
 	}
+	private static Path extractorPath(String key, SampleFingerprint fp) {
+		return PersistentCache.withExtension(fp.path(), extension(TransparencyStats.extractorRow(fp, key).mime));
+	}
 	static byte[] extractor(String key, SampleFingerprint fp) {
-		var path = PersistentCache.withExtension(fp.path(), extension(TransparencyStats.extractorRow(fp, key).mime));
-		return PersistentCache.get(byte[].class, Paths.get("extractor-transparency-files", key), path, () -> {
+		return PersistentCache.get(byte[].class, Paths.get("extractor-transparency-files", key), extractorPath(key, fp), () -> {
 			try (var collector = new FileCollector(key)) {
 				new FingerprintTemplate(fp.decode());
 				return collector.files.get(0);
@@ -43,5 +45,14 @@ class TransparencyFile {
 	static void extractor(String key) {
 		for (var fp : SampleFingerprint.all())
 			extractor(key, fp);
+	}
+	static byte[] extractorNormalized(String key, SampleFingerprint fp) {
+		return PersistentCache.get(byte[].class, Paths.get("normalized-extractor-transparency-files", key), extractorPath(key, fp), () -> {
+			return SerializationUtils.normalize(TransparencyStats.extractorRow(fp, key).mime, extractor(key, fp));
+		});
+	}
+	static void extractorNormalized(String key) {
+		for (var fp : SampleFingerprint.all())
+			extractorNormalized(key, fp);
 	}
 }
