@@ -11,13 +11,16 @@ class TransparencyStats {
 	String mime;
 	int count;
 	long size;
+	long sizeNormalized;
 	byte[] hash;
 	static TransparencyStats of(String mime, byte[] data) {
 		var stats = new TransparencyStats();
 		stats.mime = mime;
 		stats.count = 1;
 		stats.size = data.length;
-		stats.hash = DataHash.of(mime, data);
+		var normalized = SerializationUtils.normalize(mime, data);
+		stats.sizeNormalized = normalized.length;
+		stats.hash = DataHash.of(normalized);
 		return stats;
 	}
 	static TransparencyStats sum(List<TransparencyStats> list) {
@@ -27,6 +30,7 @@ class TransparencyStats {
 		for (var stats : list) {
 			sum.count += stats.count;
 			sum.size += stats.size;
+			sum.sizeNormalized = stats.sizeNormalized;
 			hash.add(stats.hash);
 		}
 		sum.hash = hash.compute();
@@ -91,7 +95,8 @@ class TransparencyStats {
 	static void report(Table table) {
 		for (var row : table.rows) {
 			var stats = row.stats;
-			logger.info("Transparency/{}: {}, {}x, {} B, hash {}", row.key, stats.mime, stats.count, stats.size / stats.count, DataHash.format(stats.hash));
+			logger.info("Transparency/{}: {}, {}x, {} B (normalized {} B), hash {}",
+				row.key, stats.mime, stats.count, stats.size / stats.count, stats.sizeNormalized / stats.count, DataHash.format(stats.hash));
 		}
 	}
 }
