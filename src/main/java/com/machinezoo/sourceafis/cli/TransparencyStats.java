@@ -8,11 +8,13 @@ import com.machinezoo.sourceafis.*;
 import one.util.streamex.*;
 
 class TransparencyStats {
+	String mime;
 	int count;
 	long size;
 	byte[] hash;
-	static TransparencyStats of(byte[] data) {
+	static TransparencyStats of(String mime, byte[] data) {
 		var stats = new TransparencyStats();
+		stats.mime = mime;
 		stats.count = 1;
 		stats.size = data.length;
 		stats.hash = DataHash.of(data);
@@ -20,6 +22,7 @@ class TransparencyStats {
 	}
 	static TransparencyStats sum(List<TransparencyStats> list) {
 		var sum = new TransparencyStats();
+		sum.mime = list.get(0).mime;
 		var hash = new DataHash();
 		for (var stats : list) {
 			sum.count += stats.count;
@@ -35,10 +38,10 @@ class TransparencyStats {
 	}
 	static class Table {
 		List<Row> rows = new ArrayList<>();;
-		static Table of(String key, byte[] data) {
+		static Table of(String key, String mime, byte[] data) {
 			var row = new Row();
 			row.key = key;
-			row.stats = TransparencyStats.of(data);
+			row.stats = TransparencyStats.of(mime, data);
 			var table = new Table();
 			table.rows.add(row);
 			return table;
@@ -67,7 +70,7 @@ class TransparencyStats {
 		final List<Table> records = new ArrayList<>();
 		@Override
 		public void take(String key, String mime, byte[] data) {
-			records.add(Table.of(key, data));
+			records.add(Table.of(key, mime, data));
 		}
 	}
 	static Table extractorTable(SampleFingerprint fp) {
@@ -78,12 +81,17 @@ class TransparencyStats {
 			}
 		});
 	}
+	static TransparencyStats extractorRow(SampleFingerprint fp, String key) {
+		return extractorTable(fp).rows.stream().filter(r -> r.key.equals(key)).findFirst().orElseThrow().stats;
+	}
 	static Table extractorTable() {
 		return Table.sum(StreamEx.of(SampleFingerprint.all()).map(fp -> extractorTable(fp)).toList());
 	}
 	private static final Logger logger = LoggerFactory.getLogger(TransparencyStats.class);
 	static void report(Table table) {
-		for (var row : table.rows)
-			logger.info("Transparency/{}: {}x, {} B, hash {}", row.key, row.stats.count, row.stats.size / row.stats.count, DataHash.format(row.stats.hash));
+		for (var row : table.rows) {
+			var stats = row.stats;
+			logger.info("Transparency/{}: {}, {}x, {} B, hash {}", row.key, stats.mime, stats.count, stats.size / stats.count, DataHash.format(stats.hash));
+		}
 	}
 }

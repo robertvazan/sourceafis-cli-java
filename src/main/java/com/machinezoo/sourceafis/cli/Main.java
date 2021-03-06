@@ -3,7 +3,7 @@ package com.machinezoo.sourceafis.cli;
 
 public class Main {
 	public static void main(String args[]) {
-		if (args.length != 1)
+		if (args.length < 1)
 			return;
 		switch (args[0]) {
 		case "png":
@@ -14,6 +14,11 @@ public class Main {
 			break;
 		case "extractor-transparency-stats":
 			TransparencyStats.report(TransparencyStats.extractorTable());
+			break;
+		case "extractor-transparency-files":
+			if (args.length < 2)
+				return;
+			TransparencyFile.extractor(args[1]);
 			break;
 		}
 	}
