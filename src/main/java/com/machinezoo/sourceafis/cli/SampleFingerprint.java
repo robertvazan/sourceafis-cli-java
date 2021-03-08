@@ -27,17 +27,13 @@ class SampleFingerprint {
 		return Exceptions.sneak().get(() -> Files.readAllBytes(dataset.layout.directory.resolve(dataset.layout.filename(id))));
 	}
 	FingerprintImage decode() {
+		var options = new FingerprintImageOptions().dpi(dataset.dpi);
 		if (dataset.format == SampleDownload.Format.GRAY) {
 			var gray = load();
 			int width = (Byte.toUnsignedInt(gray[0]) << 8) | Byte.toUnsignedInt(gray[1]);
 			int height = (Byte.toUnsignedInt(gray[2]) << 8) | Byte.toUnsignedInt(gray[3]);
-			return new FingerprintImage()
-				.dpi(dataset.dpi)
-				.grayscale(width, height, Arrays.copyOfRange(gray, 4, gray.length));
-		} else {
-			return new FingerprintImage()
-				.dpi(dataset.dpi)
-				.decode(load());
-		}
+			return new FingerprintImage(width, height, Arrays.copyOfRange(gray, 4, gray.length), options);
+		} else
+			return new FingerprintImage(load(), options);
 	}
 }
