@@ -1,6 +1,7 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
 package com.machinezoo.sourceafis.cli;
 
+import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
 import org.apache.commons.lang3.tuple.*;
@@ -39,5 +40,8 @@ class SampleDataset {
 	}
 	List<SampleFingerprint> fingerprints() {
 		return IntStreamEx.range(layout.fingerprints()).mapToObj(n -> new SampleFingerprint(this, n)).toList();
+	}
+	Path path() {
+		return Paths.get(name);
 	}
 }

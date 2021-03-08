@@ -18,7 +18,10 @@ class SampleFingerprint {
 		return dataset.layout.name(id);
 	}
 	Path path() {
-		return Paths.get(dataset.name, name());
+		return dataset.path().resolve(name());
+	}
+	SampleFinger finger() {
+		return new SampleFinger(dataset, dataset.layout.finger(id));
 	}
 	static List<SampleFingerprint> all() {
 		return StreamEx.of(SampleDataset.all()).flatCollection(ds -> ds.fingerprints()).toList();

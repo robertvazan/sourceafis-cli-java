@@ -15,6 +15,9 @@ public class Main {
 		case "footprint":
 			TemplateFootprint.report();
 			break;
+		case "accuracy":
+			ScalarAccuracy.report();
+			break;
 		case "extractor-transparency-stats":
 			TransparencyStats.report(TransparencyStats.extractorTable());
 			break;
