@@ -7,7 +7,7 @@
 	<version>3.12.0</version>
 	<packaging>jar</packaging>
 
-	<name>SourceAFIS for Java CLI</name>
+	<name>SourceAFIS CLI for Java</name>
 	<url>https://sourceafis.machinezoo.com/java</url>
 	<description>Accuracy evaluation, consistency checks, and benchmarks of SourceAFIS for Java.</description>
 	<inceptionYear>2021</inceptionYear>
@@ -15,7 +15,7 @@
 	<licenses>
 		<license>
 			<name>Apache License 2.0</name>
-			<url>https://github.com/robertvazan/sourceafis-java-cli/blob/master/LICENSE</url>
+			<url>https://github.com/robertvazan/sourceafis-cli-java/blob/master/LICENSE</url>
 		</license>
 	</licenses>
 
@@ -32,9 +32,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:https://github.com/robertvazan/sourceafis-java-cli.git</connection>
-		<developerConnection>scm:git:https://github.com/robertvazan/sourceafis-java-cli.git</developerConnection>
-		<url>https://github.com/robertvazan/sourceafis-java-cli</url>
+		<connection>scm:git:https://github.com/robertvazan/sourceafis-cli-java.git</connection>
+		<developerConnection>scm:git:https://github.com/robertvazan/sourceafis-cli-java.git</developerConnection>
+		<url>https://github.com/robertvazan/sourceafis-cli-java</url>
 	</scm>
 
 	<properties>
