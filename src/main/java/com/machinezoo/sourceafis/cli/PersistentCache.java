@@ -13,26 +13,11 @@ import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.*;
 
 abstract class PersistentCache<T> implements Supplier<T> {
-	static final Path home;
 	static final Path output;
 	private static final Logger logger = LoggerFactory.getLogger(PersistentCache.class);
 	static {
-		/*
-		 * First try XDG_* variables. Data directories may be in strange locations, for example inside flatpak.
-		 */
-		var configured = System.getenv("XDG_CACHE_HOME");
-		Path root;
-		if (configured != null)
-			root = Paths.get(configured);
-		else {
-			/*
-			 * Fall back to XDG_* default. This will perform poorly on Windows, but it will work.
-			 */
-			root = Paths.get(System.getProperty("user.home"), ".cache");
-		}
-		home = root.resolve("sourceafis");
-		output = home.resolve("java").resolve(FingerprintCompatibility.version());
-		logger.info("Cache directory: {}", home);
+		output = HomeDirectory.home.resolve("java").resolve(FingerprintCompatibility.version());
+		logger.info("Cache directory: {}", HomeDirectory.home);
 		logger.info("Library version: {}", FingerprintCompatibility.version());
 	}
 	static Path withExtension(Path path, String extension) {

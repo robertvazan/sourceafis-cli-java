@@ -139,7 +139,7 @@ class SampleDownload {
 		default:
 			throw new IllegalArgumentException();
 		}
-		return PersistentCache.home.resolve(name).resolve(dataset);
+		return HomeDirectory.home.resolve(name).resolve(dataset);
 	}
 	private static final Logger logger = LoggerFactory.getLogger(SampleDownload.class);
 	private static final AtomicBoolean reported = new AtomicBoolean();
