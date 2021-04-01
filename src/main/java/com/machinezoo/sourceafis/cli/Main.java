@@ -3,6 +3,7 @@ package com.machinezoo.sourceafis.cli;
 
 import java.util.*;
 import java.util.function.*;
+import org.apache.commons.lang3.exception.*;
 import org.slf4j.*;
 import it.unimi.dsi.fastutil.ints.*;
 import one.util.streamex.*;
@@ -85,10 +86,10 @@ public class Main {
 		}
 	}
 	private static void registerOptions() {
-		new Option("directory")
+		new Option("home")
 			.action("path", HomeDirectory::overrideHome)
 			.fallback(HomeDirectory.home.toString())
-			.register("Change cache directory where all data is written.");
+			.register("Location of cache and output directory.");
 	}
 	private static void registerCommands() {
 		// version - Show SourceAFIS version.
@@ -132,48 +133,53 @@ public class Main {
 		// purge - remove cached data except downloads
 	}
 	public static void main(String args[]) {
-		registerOptions();
-		registerCommands();
-		if (args.length == 0) {
-			logger.info("Available subcommands:");
-			for (var command : commands)
-				command.help();
-			logger.info("Available options:");
-			for (var option : options)
-				option.help();
-			return;
-		}
-		int consumed = 0;
-		var group = commandRoot;
-		var commandArgs = new ArrayList<String>();
-		while (consumed < args.length) {
-			var arg = args[consumed];
-			++consumed;
-			if (arg.startsWith("--")) {
-				var name = arg.substring(2);
-				var option = optionMap.get(name);
-				if (option == null)
-					throw new IllegalArgumentException("Unknown option: " + arg);
-				var optionArgs = new ArrayList<String>();
-				for (int i = 0; i < option.parameters.size(); ++i) {
-					if (consumed >= args.length)
-						throw new IllegalArgumentException("Missing argument <" + option.parameters.get(i) + "> for option '" + arg + "'.");
-					optionArgs.add(args[consumed]);
-					++consumed;
-				}
-				option.action.accept(optionArgs);
-			} else {
-				if (commandArgs.isEmpty() && group.subcommands.containsKey(arg))
-					group = group.subcommands.get(arg);
-				else
-					commandArgs.add(arg);
+		try {
+			registerOptions();
+			registerCommands();
+			if (args.length == 0) {
+				logger.info("Available subcommands:");
+				for (var command : commands)
+					command.help();
+				logger.info("Available options:");
+				for (var option : options)
+					option.help();
+				return;
 			}
+			int consumed = 0;
+			var group = commandRoot;
+			var commandArgs = new ArrayList<String>();
+			while (consumed < args.length) {
+				var arg = args[consumed];
+				++consumed;
+				if (arg.startsWith("--")) {
+					var name = arg.substring(2);
+					var option = optionMap.get(name);
+					if (option == null)
+						throw new IllegalArgumentException("Unknown option: " + arg);
+					var optionArgs = new ArrayList<String>();
+					for (int i = 0; i < option.parameters.size(); ++i) {
+						if (consumed >= args.length)
+							throw new IllegalArgumentException("Missing argument <" + option.parameters.get(i) + "> for option '" + arg + "'.");
+						optionArgs.add(args[consumed]);
+						++consumed;
+					}
+					option.action.accept(optionArgs);
+				} else {
+					if (commandArgs.isEmpty() && group.subcommands.containsKey(arg))
+						group = group.subcommands.get(arg);
+					else
+						commandArgs.add(arg);
+				}
+			}
+			if (group == commandRoot && commandArgs.isEmpty())
+				throw new IllegalArgumentException("Specify subcommand.");
+			var command = group.overloads.get(commandArgs.size());
+			if (command == null)
+				throw new IllegalArgumentException("Unrecognized subcommand.");
+			command.action.accept(commandArgs);
+		} catch (Throwable ex) {
+			logger.error("{}", StreamEx.of(ExceptionUtils.getThrowableList(ex)).map(x -> ExceptionUtils.getMessage(x)).joining(" -> "));
+			System.exit(1);
 		}
-		if (group == commandRoot && commandArgs.isEmpty())
-			throw new IllegalArgumentException("Specify subcommand.");
-		var command = group.overloads.get(commandArgs.size());
-		if (command == null)
-			throw new IllegalArgumentException("Unrecognized subcommand.");
-		command.action.accept(commandArgs);
 	}
 }

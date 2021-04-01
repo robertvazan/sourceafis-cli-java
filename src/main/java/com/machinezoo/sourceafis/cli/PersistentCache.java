@@ -17,8 +17,6 @@ abstract class PersistentCache<T> implements Supplier<T> {
 	private static final Logger logger = LoggerFactory.getLogger(PersistentCache.class);
 	static {
 		output = HomeDirectory.home.resolve("java").resolve(FingerprintCompatibility.version());
-		logger.info("Cache directory: {}", HomeDirectory.home);
-		logger.info("Library version: {}", FingerprintCompatibility.version());
 	}
 	static Path withExtension(Path path, String extension) {
 		return path.resolveSibling(path.getFileName() + extension);
