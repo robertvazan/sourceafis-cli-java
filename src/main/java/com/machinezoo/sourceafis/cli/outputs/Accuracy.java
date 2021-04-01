@@ -23,10 +23,10 @@ public class Accuracy {
 			return stats;
 		});
 	}
-	private static Stats measure() {
+	private static Stats measure(Profile profile) {
 		var average = new Stats();
-		int count = Dataset.all().size();
-		for (var dataset : Dataset.all()) {
+		int count = profile.datasets.size();
+		for (var dataset : profile.datasets) {
 			var accuracy = measure(dataset);
 			average.eer += accuracy.eer / count;
 			average.fmr100 += accuracy.fmr100 / count;
@@ -35,18 +35,16 @@ public class Accuracy {
 		}
 		return average;
 	}
-	private static void report(Pretty.Table table, String dataset, Stats stats) {
-		table.add(dataset,
-			Pretty.percents(stats.eer),
-			Pretty.percents(stats.fmr100),
-			Pretty.percents(stats.fmr1K),
-			Pretty.percents(stats.fmr10K));
-	}
 	public static void report() {
 		var table = new Pretty.Table("Dataset", "EER", "FMR100", "FMR1K", "FMR10K");
-		for (var dataset : Dataset.all())
-			report(table, dataset.name, measure(dataset));
-		report(table, "All", measure());
+		for (var profile : Profile.all()) {
+			var stats = measure(profile);
+			table.add(profile.name,
+				Pretty.percents(stats.eer),
+				Pretty.percents(stats.fmr100),
+				Pretty.percents(stats.fmr1K),
+				Pretty.percents(stats.fmr10K));
+		}
 		Pretty.print(table.format());
 	}
 }

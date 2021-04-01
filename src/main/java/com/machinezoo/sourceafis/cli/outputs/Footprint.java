@@ -2,10 +2,8 @@
 package com.machinezoo.sourceafis.cli.outputs;
 
 import java.nio.file.*;
-import java.util.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
-import one.util.streamex.*;
 
 public class Footprint {
 	private static class Stats {
@@ -21,28 +19,21 @@ public class Footprint {
 			return footprint;
 		});
 	}
-	private static Stats measure(List<Stats> list) {
+	private static Stats measure(Profile profile) {
 		var sum = new Stats();
-		for (var footprint : list) {
-			sum.count += footprint.count;
-			sum.serialized += footprint.serialized;
+		for (var fp : profile.fingerprints()) {
+			var stats = measure(fp);
+			sum.count += stats.count;
+			sum.serialized += stats.serialized;
 		}
 		return sum;
 	}
-	private static Stats measure(Dataset dataset) {
-		return measure(StreamEx.of(dataset.fingerprints()).map(fp -> measure(fp)).toList());
-	}
-	private static Stats measure() {
-		return measure(StreamEx.of(Fingerprint.all()).map(fp -> measure(fp)).toList());
-	}
-	private static void report(Pretty.Table table, String title, Stats stats) {
-		table.add(title, Pretty.bytes(stats.serialized / stats.count));
-	}
 	public static void report() {
 		var table = new Pretty.Table("Dataset", "Serialized");
-		for (var dataset : Dataset.all())
-			report(table, dataset.name, measure(dataset));
-		report(table, "All", measure());
+		for (var profile : Profile.all()) {
+			var stats = measure(profile);
+			table.add(profile.name, Pretty.bytes(stats.serialized / stats.count));
+		}
 		Pretty.print(table.format());
 	}
 }
