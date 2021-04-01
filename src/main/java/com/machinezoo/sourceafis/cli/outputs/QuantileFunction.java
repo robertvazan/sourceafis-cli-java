@@ -1,17 +1,18 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
-package com.machinezoo.sourceafis.cli;
+package com.machinezoo.sourceafis.cli.outputs;
 
+import com.machinezoo.sourceafis.cli.samples.*;
 import it.unimi.dsi.fastutil.doubles.*;
 
-class QuantileFunction {
-	static class Trio {
-		double[] matching;
-		double[] nonmatching;
-		double[] selfmatching;
+public class QuantileFunction {
+	public static class Trio {
+		public double[] matching;
+		public double[] nonmatching;
+		public double[] selfmatching;
 	}
-	static Trio of(SampleDataset dataset) {
+	public static Trio of(Dataset dataset) {
 		var fingerprints = dataset.fingerprints();
-		var scores = ScoreTable.of(dataset);
+		var scores = Scores.of(dataset);
 		var matching = new DoubleArrayList();
 		var nonmatching = new DoubleArrayList();
 		var selfmatching = new DoubleArrayList();
@@ -35,7 +36,7 @@ class QuantileFunction {
 		trio.selfmatching = selfmatching.toDoubleArray();
 		return trio;
 	}
-	static double read(double[] function, double probability) {
+	public static double read(double[] function, double probability) {
 		double index = probability * (function.length - 1);
 		int indexLow = (int)index;
 		int indexHigh = indexLow + 1;
@@ -45,7 +46,7 @@ class QuantileFunction {
 		double shareLow = 1 - shareHigh;
 		return function[indexLow] * shareLow + function[indexHigh] * shareHigh;
 	}
-	static double cdf(double[] function, double threshold) {
+	public static double cdf(double[] function, double threshold) {
 		double min = 0, max = 1;
 		for (int i = 0; i < 30; ++i) {
 			double probability = (min + max) / 2;
@@ -62,11 +63,11 @@ class QuantileFunction {
 		}
 		return (min + max) / 2;
 	}
-	static double fnmrAtFmr(double[] matching, double[] nonmatching, double fmr) {
+	public static double fnmrAtFmr(double[] matching, double[] nonmatching, double fmr) {
 		double threshold = read(nonmatching, 1 - fmr);
 		return cdf(matching, threshold);
 	}
-	static double eer(double[] matching, double[] nonmatching) {
+	public static double eer(double[] matching, double[] nonmatching) {
 		double min = read(nonmatching, 0), max = read(nonmatching, 1);
 		for (int i = 0; i < 30; ++i) {
 			double threshold = (min + max) / 2;

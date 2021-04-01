@@ -1,5 +1,5 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
-package com.machinezoo.sourceafis.cli;
+package com.machinezoo.sourceafis.cli.utils;
 
 import java.io.*;
 import java.nio.*;
@@ -11,13 +11,13 @@ import com.fasterxml.jackson.dataformat.cbor.*;
 import com.machinezoo.noexception.*;
 import one.util.streamex.*;
 
-class SerializationUtils {
+public class Serializer {
 	private static final ObjectMapper mapper = new ObjectMapper(new CBORFactory())
 		.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-	static byte[] serialize(Object value) {
+	public static byte[] serialize(Object value) {
 		return Exceptions.sneak().get(() -> mapper.writeValueAsBytes(value));
 	}
-	static <T> T deserialize(byte[] serialized, Class<T> clazz) {
+	public static <T> T deserialize(byte[] serialized, Class<T> clazz) {
 		return Exceptions.sneak().get(() -> mapper.readValue(serialized, clazz));
 	}
 	private static void normalize(OutputStream stream, JsonNode node) throws IOException {
@@ -86,7 +86,7 @@ class SerializationUtils {
 			throw new IllegalArgumentException();
 		}
 	}
-	static byte[] normalize(byte[] denormalized) {
+	public static byte[] normalize(byte[] denormalized) {
 		return Exceptions.sneak().get(() -> {
 			var root = mapper.readTree(denormalized);
 			var buffer = new ByteArrayOutputStream();
@@ -94,7 +94,7 @@ class SerializationUtils {
 			return buffer.toByteArray();
 		});
 	}
-	static byte[] normalize(String mime, byte[] data) {
+	public static byte[] normalize(String mime, byte[] data) {
 		if (mime.equals("application/cbor"))
 			return normalize(data);
 		return data;

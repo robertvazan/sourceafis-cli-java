@@ -1,32 +1,18 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
-package com.machinezoo.sourceafis.cli;
+package com.machinezoo.sourceafis.cli.outputs;
 
 import java.io.*;
 import java.nio.file.*;
 import javax.imageio.*;
 import com.machinezoo.noexception.*;
+import com.machinezoo.sourceafis.cli.samples.*;
+import com.machinezoo.sourceafis.cli.utils.*;
 
-class ImageConversion {
-	static void png() {
-		for (var dataset : SampleDataset.all(SampleDownload.Format.ORIGINAL)) {
+public class ExportGrayscale {
+	public static void export() {
+		for (var dataset : Dataset.all(Download.Format.ORIGINAL)) {
 			for (var fp : dataset.fingerprints()) {
-				PersistentCache.get(byte[].class, Paths.get("png"), PersistentCache.withExtension(fp.path(), ".png"), () -> {
-					var buffered = Exceptions.sneak().get(() -> ImageIO.read(new ByteArrayInputStream(fp.load())));
-					if (buffered == null)
-						throw new IllegalArgumentException("Unsupported image format.");
-					var output = new ByteArrayOutputStream();
-					boolean success = Exceptions.sneak().getAsBoolean(() -> ImageIO.write(buffered, "PNG", output));
-					if (!success)
-						throw new IllegalStateException("PNG image writing is not supported.");
-					return output.toByteArray();
-				});
-			}
-		}
-	}
-	static void gray() {
-		for (var dataset : SampleDataset.all(SampleDownload.Format.ORIGINAL)) {
-			for (var fp : dataset.fingerprints()) {
-				PersistentCache.get(byte[].class, Paths.get("gray"), PersistentCache.withExtension(fp.path(), ".gray"), () -> {
+				Cache.get(byte[].class, Paths.get("exports", "grayscale"), Cache.withExtension(fp.path(), ".gray"), () -> {
 					var buffered = Exceptions.sneak().get(() -> ImageIO.read(new ByteArrayInputStream(fp.load())));
 					if (buffered == null)
 						throw new IllegalArgumentException("Unsupported image format.");

@@ -1,5 +1,5 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
-package com.machinezoo.sourceafis.cli;
+package com.machinezoo.sourceafis.cli.samples;
 
 import static java.util.stream.Collectors.*;
 import java.nio.file.*;
@@ -9,45 +9,45 @@ import org.apache.commons.io.*;
 import com.machinezoo.noexception.*;
 import one.util.streamex.*;
 
-class SampleLayout {
-	final Path directory;
+public class DatasetLayout {
+	public final Path directory;
 	private final int[] offsets;
 	private final int[] fingers;
 	private final String[] names;
 	private final String[] filenames;
 	private final String[] prefixes;
-	int fingers() {
+	public int fingers() {
 		return offsets.length - 1;
 	}
-	int impressions(int finger) {
+	public int impressions(int finger) {
 		return offsets[finger + 1] - offsets[finger];
 	}
-	int fingerprints() {
+	public int fingerprints() {
 		return fingers.length;
 	}
-	int fingerprint(int finger, int impression) {
+	public int fingerprint(int finger, int impression) {
 		if (impression < 0 || impression >= impressions(finger))
 			throw new IndexOutOfBoundsException();
 		return offsets[finger] + impression;
 	}
-	int finger(int fp) {
+	public int finger(int fp) {
 		return fingers[fp];
 	}
-	int impression(int fp) {
+	public int impression(int fp) {
 		return fp - offsets[finger(fp)];
 	}
-	String name(int fp) {
+	public String name(int fp) {
 		return names[fp];
 	}
-	String filename(int fp) {
+	public String filename(int fp) {
 		return filenames[fp];
 	}
-	String prefix(int finger) {
+	public String prefix(int finger) {
 		return prefixes[finger];
 	}
 	private static final Pattern PATTERN = Pattern.compile("(.+)_[0-9]+\\.(?:tif|tiff|png|bmp|jpg|jpeg|wsq|gray)");
 	@SuppressWarnings("resource")
-	SampleLayout(Path directory) {
+	public DatasetLayout(Path directory) {
 		this.directory = directory;
 		var groups = new HashMap<String, List<String>>();
 		for (var path : Exceptions.sneak().get(() -> Files.list(directory).collect(toList()))) {

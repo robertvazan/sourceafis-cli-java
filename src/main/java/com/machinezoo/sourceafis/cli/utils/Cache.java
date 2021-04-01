@@ -1,5 +1,5 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
-package com.machinezoo.sourceafis.cli;
+package com.machinezoo.sourceafis.cli.utils;
 
 import java.io.*;
 import java.nio.file.*;
@@ -10,15 +10,11 @@ import java.util.zip.*;
 import org.apache.commons.io.*;
 import org.slf4j.*;
 import com.machinezoo.noexception.*;
-import com.machinezoo.sourceafis.*;
+import com.machinezoo.sourceafis.cli.*;
 
-abstract class PersistentCache<T> implements Supplier<T> {
-	static final Path output;
-	private static final Logger logger = LoggerFactory.getLogger(PersistentCache.class);
-	static {
-		output = HomeDirectory.home.resolve("java").resolve(FingerprintCompatibility.version());
-	}
-	static Path withExtension(Path path, String extension) {
+public abstract class Cache<T> implements Supplier<T> {
+	private static final Logger logger = LoggerFactory.getLogger(Cache.class);
+	public static Path withExtension(Path path, String extension) {
 		return path.resolveSibling(path.getFileName() + extension);
 	}
 	private static interface Serialization {
@@ -48,11 +44,11 @@ abstract class PersistentCache<T> implements Supplier<T> {
 		}
 		@Override
 		public byte[] serialize(Object value) {
-			return SerializationUtils.serialize(value);
+			return Serializer.serialize(value);
 		}
 		@Override
 		public <T> T deserialize(byte[] serialized, Class<T> clazz) {
-			return SerializationUtils.deserialize(serialized, clazz);
+			return Serializer.deserialize(serialized, clazz);
 		}
 	}
 	private static Serialization serialization(Class<?> clazz) {
@@ -109,11 +105,11 @@ abstract class PersistentCache<T> implements Supplier<T> {
 		return new TrivialCompression();
 	}
 	private static final ConcurrentMap<Path, AtomicBoolean> reported = new ConcurrentHashMap<>();
-	static <T> T get(Class<T> clazz, Path category, Path identity, Supplier<T> supplier) {
+	public static <T> T get(Class<T> clazz, Path category, Path identity, Supplier<T> supplier) {
 		return Exceptions.sneak().get(() -> {
 			var serialization = serialization(clazz);
 			var compression = compression(serialization.rename(identity));
-			var path = compression.rename(serialization.rename(output.resolve(category).resolve(identity)));
+			var path = compression.rename(serialization.rename(Configuration.output().resolve(category).resolve(identity)));
 			if (Files.exists(path))
 				return serialization.deserialize(compression.decompress(Files.readAllBytes(path)), clazz);
 			if (!reported.computeIfAbsent(category, c -> new AtomicBoolean()).getAndSet(true))

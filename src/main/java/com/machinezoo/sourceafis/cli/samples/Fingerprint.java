@@ -1,5 +1,5 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
-package com.machinezoo.sourceafis.cli;
+package com.machinezoo.sourceafis.cli.samples;
 
 import java.nio.file.*;
 import java.util.*;
@@ -7,31 +7,31 @@ import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.*;
 import one.util.streamex.*;
 
-class SampleFingerprint {
-	final SampleDataset dataset;
-	final int id;
-	SampleFingerprint(SampleDataset dataset, int id) {
+public class Fingerprint {
+	public final Dataset dataset;
+	public final int id;
+	public Fingerprint(Dataset dataset, int id) {
 		this.dataset = dataset;
 		this.id = id;
 	}
-	String name() {
+	public String name() {
 		return dataset.layout.name(id);
 	}
-	Path path() {
+	public Path path() {
 		return dataset.path().resolve(name());
 	}
-	SampleFinger finger() {
-		return new SampleFinger(dataset, dataset.layout.finger(id));
+	public Finger finger() {
+		return new Finger(dataset, dataset.layout.finger(id));
 	}
-	static List<SampleFingerprint> all() {
-		return StreamEx.of(SampleDataset.all()).flatCollection(ds -> ds.fingerprints()).toList();
+	public static List<Fingerprint> all() {
+		return StreamEx.of(Dataset.all()).flatCollection(ds -> ds.fingerprints()).toList();
 	}
-	byte[] load() {
+	public byte[] load() {
 		return Exceptions.sneak().get(() -> Files.readAllBytes(dataset.layout.directory.resolve(dataset.layout.filename(id))));
 	}
-	FingerprintImage decode() {
+	public FingerprintImage decode() {
 		var options = new FingerprintImageOptions().dpi(dataset.dpi);
-		if (dataset.format == SampleDownload.Format.GRAY) {
+		if (dataset.format == Download.Format.GRAY) {
 			var gray = load();
 			int width = (Byte.toUnsignedInt(gray[0]) << 8) | Byte.toUnsignedInt(gray[1]);
 			int height = (Byte.toUnsignedInt(gray[2]) << 8) | Byte.toUnsignedInt(gray[3]);

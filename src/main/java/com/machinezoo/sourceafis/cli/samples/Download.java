@@ -1,5 +1,5 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
-package com.machinezoo.sourceafis.cli;
+package com.machinezoo.sourceafis.cli.samples;
 
 import java.io.*;
 import java.net.*;
@@ -9,9 +9,10 @@ import java.util.zip.*;
 import org.apache.commons.io.*;
 import org.slf4j.*;
 import com.machinezoo.noexception.*;
+import com.machinezoo.sourceafis.cli.*;
 
-class SampleDownload {
-	static final String[] AVAILABLE = new String[] {
+public class Download {
+	public static final String[] DATASETS = new String[] {
 		"fvc2000-1b",
 		"fvc2000-2b",
 		"fvc2000-3b",
@@ -25,12 +26,12 @@ class SampleDownload {
 		"fvc2004-3b",
 		"fvc2004-4b"
 	};
-	static enum Format {
+	public static enum Format {
 		ORIGINAL,
 		PNG,
 		GRAY
 	}
-	static final Format DEFAULT_FORMAT = Format.GRAY;
+	public static final Format DEFAULT_FORMAT = Format.GRAY;
 	private static String url(String dataset, Format format) {
 		switch (format) {
 		case ORIGINAL:
@@ -124,26 +125,26 @@ class SampleDownload {
 			throw new IllegalArgumentException();
 		}
 	}
-	static Path directory(String dataset, Format format) {
+	public static Path directory(String dataset, Format format) {
 		String name;
 		switch (format) {
 		case ORIGINAL:
-			name = "samples";
+			name = "original";
 			break;
 		case PNG:
-			name = "png-samples";
+			name = "png";
 			break;
 		case GRAY:
-			name = "gray-samples";
+			name = "grayscale";
 			break;
 		default:
 			throw new IllegalArgumentException();
 		}
-		return HomeDirectory.home.resolve(name).resolve(dataset);
+		return Configuration.home().resolve("samples").resolve(name).resolve(dataset);
 	}
-	private static final Logger logger = LoggerFactory.getLogger(SampleDownload.class);
+	private static final Logger logger = LoggerFactory.getLogger(Download.class);
 	private static final AtomicBoolean reported = new AtomicBoolean();
-	static Path unpack(String dataset, Format format) {
+	public static Path unpack(String dataset, Format format) {
 		var directory = directory(dataset, format);
 		if (!Files.isDirectory(directory)) {
 			var url = url(dataset, format);

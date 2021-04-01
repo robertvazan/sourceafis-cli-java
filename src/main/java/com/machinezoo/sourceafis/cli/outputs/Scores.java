@@ -1,15 +1,17 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
-package com.machinezoo.sourceafis.cli;
+package com.machinezoo.sourceafis.cli.outputs;
 
 import java.nio.file.*;
 import com.machinezoo.sourceafis.*;
+import com.machinezoo.sourceafis.cli.samples.*;
+import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-class ScoreTable {
-	static double[][] of(SampleDataset dataset) {
-		return PersistentCache.get(double[][].class, Paths.get("scores"), dataset.path(), () -> {
+public class Scores {
+	public static double[][] of(Dataset dataset) {
+		return Cache.get(double[][].class, Paths.get("scores"), dataset.path(), () -> {
 			var fingerprints = dataset.fingerprints();
-			var templates = StreamEx.of(fingerprints).map(fp -> NativeTemplate.of(fp)).toList();
+			var templates = StreamEx.of(fingerprints).map(fp -> Template.of(fp)).toList();
 			var scores = new double[fingerprints.size()][];
 			for (var probe : fingerprints) {
 				var matcher = new FingerprintMatcher(templates.get(probe.id));

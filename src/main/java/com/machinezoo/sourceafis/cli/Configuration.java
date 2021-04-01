@@ -2,9 +2,10 @@
 package com.machinezoo.sourceafis.cli;
 
 import java.nio.file.*;
+import com.machinezoo.sourceafis.*;
 
-class HomeDirectory {
-	static Path home;
+public class Configuration {
+	private static Path home;
 	static {
 		/*
 		 * First try XDG_* variables. Data directories may be in strange locations, for example inside flatpak.
@@ -21,7 +22,13 @@ class HomeDirectory {
 		}
 		home = root.resolve("sourceafis");
 	}
-	static void overrideHome(String path) {
+	public static Path home() {
+		return home;
+	}
+	public static void configureHome(String path) {
 		home = Paths.get(path).toAbsolutePath();
+	}
+	public static Path output() {
+		return home().resolve("java").resolve(FingerprintCompatibility.version());
 	}
 }
