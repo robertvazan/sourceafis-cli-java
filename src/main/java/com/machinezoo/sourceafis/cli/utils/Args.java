@@ -61,6 +61,11 @@ public class Args {
 		public Option(String name) {
 			this.name = name;
 		}
+		public Option action(Runnable action) {
+			this.action = p -> action.run();
+			parameters = Collections.emptyList();
+			return this;
+		}
 		public Option action(String parameter, Consumer<String> action) {
 			this.action = p -> action.accept(p.get(0));
 			parameters = List.of(parameter);
@@ -79,7 +84,7 @@ public class Args {
 			options.add(this);
 		}
 		void help() {
-			logger.info("\t--{}{}", name, StreamEx.of(parameters).map(p -> " <" + p + ">").toList());
+			logger.info("\t--{}{}", name, StreamEx.of(parameters).map(p -> " <" + p + ">").joining());
 			logger.info("\t\t{}", description);
 			if (fallback != null)
 				logger.info("\t\tDefault: {}", fallback.get());

@@ -15,6 +15,9 @@ public class Main {
 			.action("path", Configuration::configureHome)
 			.fallback(Configuration.home().toString())
 			.register("Location of cache directory.");
+		new Args.Option("normalize")
+			.action(() -> Configuration.normalized = true)
+			.register("Log normalized transparency data instead of raw data obtained from the library.");
 	}
 	private static void registerCommands() {
 		new Args.Command("version")
@@ -26,7 +29,7 @@ public class Main {
 		// log extractor <image-path> <zip-path>
 		// log matcher <probe-path> <candidate-path> <zip-path>
 		// benchmark - accuracy + speed + footprint
-		new Args.Command("benchmark","accuracy")
+		new Args.Command("benchmark", "accuracy")
 			.action(BenchmarkAccuracy::report)
 			.register("Measure algorithm accuracy.");
 		// benchmark speed
@@ -36,11 +39,7 @@ public class Main {
 		new Args.Command("log", "extractor")
 			.action("key", LogExtractor::collect)
 			.register("Log extractor transparency data for given key.");
-		new Args.Command("log", "extractor", "normalized")
-			.action("key", LogExtractorNormalized::collect)
-			.register("Log normalized extractor transparency data for given key.");
 		// log matcher <key>
-		// log matcher normalized <key>
 		// checksum
 		new Args.Command("checksum", "templates")
 			.action(ChecksumTemplates::report)

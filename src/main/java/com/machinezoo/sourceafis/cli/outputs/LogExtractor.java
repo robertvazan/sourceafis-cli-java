@@ -3,6 +3,7 @@ package com.machinezoo.sourceafis.cli.outputs;
 
 import java.nio.file.*;
 import com.machinezoo.sourceafis.*;
+import com.machinezoo.sourceafis.cli.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
@@ -11,11 +12,15 @@ public class LogExtractor {
 		return Cache.withExtension(fp.path(), Pretty.extension(ChecksumTransparencyExtractor.row(fp, key).mime));
 	}
 	private static Path category(String key) {
-		return Paths.get("logs", "extractor", "raw", key);
+		if (Configuration.normalized)
+			return Paths.get("logs", "extractor", "normalized", key);
+		else
+			return Paths.get("logs", "extractor", key);
 	}
 	public static byte[] collect(String key, Fingerprint fp) {
 		return Cache.get(byte[].class, category(key), identity(key, fp), () -> {
-			return Log.key(key, () -> new FingerprintTemplate(fp.decode())).get(0);
+			var raw = Log.key(key, () -> new FingerprintTemplate(fp.decode())).get(0);
+			return Configuration.normalized ? Serializer.normalize(ChecksumTransparencyExtractor.row(fp, key).mime, raw) : raw;
 		});
 	}
 	public static void collect(String key) {

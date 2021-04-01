@@ -31,4 +31,5 @@ public class Configuration {
 	public static Path output() {
 		return home().resolve("java").resolve(FingerprintCompatibility.version());
 	}
+	public static boolean normalized;
 }

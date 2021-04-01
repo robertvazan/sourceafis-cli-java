@@ -14,12 +14,16 @@ public class ChecksumTransparencyExtractor {
 		});
 	}
 	public static ChecksumTransparency.Stats row(Fingerprint fp, String key) {
-		return checksum(fp).rows.stream().filter(r -> r.key.equals(key)).findFirst().orElseThrow().stats;
+		return checksum(fp).rows.stream()
+			.filter(r -> r.key.equals(key))
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("Transparency key not found: " + key))
+			.stats;
 	}
-	public static ChecksumTransparency.Table sum() {
+	public static ChecksumTransparency.Table checksum() {
 		return ChecksumTransparency.Table.merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
 	}
 	public static void report() {
-		ChecksumTransparency.report(sum());
+		ChecksumTransparency.report(checksum());
 	}
 }
