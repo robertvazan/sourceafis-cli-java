@@ -5,7 +5,7 @@ import java.nio.file.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class Accuracy {
+public class BenchmarkAccuracy {
 	private static class Stats {
 		double eer;
 		double fmr100;
@@ -13,7 +13,7 @@ public class Accuracy {
 		double fmr10K;
 	}
 	private static Stats measure(Dataset dataset) {
-		return Cache.get(Stats.class, Paths.get("accuracy"), dataset.path(), () -> {
+		return Cache.get(Stats.class, Paths.get("benchmarks", "accuracy"), dataset.path(), () -> {
 			var trio = QuantileFunction.of(dataset);
 			var stats = new Stats();
 			stats.fmr100 = QuantileFunction.fnmrAtFmr(trio.matching, trio.nonmatching, 1.0 / 100);

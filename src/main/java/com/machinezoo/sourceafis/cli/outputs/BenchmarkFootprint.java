@@ -5,13 +5,13 @@ import java.nio.file.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class Footprint {
+public class BenchmarkFootprint {
 	private static class Stats {
 		int count;
 		double serialized;
 	}
 	private static Stats measure(Fingerprint fp) {
-		return Cache.get(Stats.class, Paths.get("footprints"), fp.path(), () -> {
+		return Cache.get(Stats.class, Paths.get("benchmarks", "footprint"), fp.path(), () -> {
 			var footprint = new Stats();
 			var serialized = Template.serialized(fp);
 			footprint.count = 1;

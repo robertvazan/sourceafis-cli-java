@@ -9,6 +9,7 @@ public class ChecksumTemplates {
 	private static class Stats {
 		int count;
 		long length;
+		long normalized;
 		byte[] hash;
 	};
 	private static Stats checksum(Fingerprint fp) {
@@ -17,7 +18,9 @@ public class ChecksumTemplates {
 			var serialized = Template.serialized(fp);
 			checksum.count = 1;
 			checksum.length = serialized.length;
-			checksum.hash = Hash.of(Serializer.normalize(serialized));
+			var normalized = Serializer.normalize(serialized);
+			checksum.normalized = normalized.length;
+			checksum.hash = Hash.of(normalized);
 			return checksum;
 		});
 	}
@@ -28,16 +31,23 @@ public class ChecksumTemplates {
 			var stats = checksum(fp);
 			sum.count += stats.count;
 			sum.length += stats.length;
+			sum.normalized += stats.normalized;
 			hash.add(stats.hash);
 		}
 		sum.hash = hash.compute();
 		return sum;
 	}
 	public static void report() {
-		var table = new Pretty.Table("Dataset", "Length", "Total", "Hash");
+		var table = new Pretty.Table("Dataset", "Count", "Length", "Normalized", "Total", "Hash");
 		for (var profile : Profile.all()) {
 			var stats = checksum(profile);
-			table.add(profile.name, Pretty.length(stats.length / stats.count), Pretty.length(stats.length), Pretty.hash(stats.hash));
+			table.add(
+				profile.name,
+				Pretty.length(stats.count),
+				Pretty.length(stats.length / stats.count),
+				Pretty.length(stats.normalized / stats.count),
+				Pretty.length(stats.normalized),
+				Pretty.hash(stats.hash));
 		}
 		Pretty.print(table.format());
 	}

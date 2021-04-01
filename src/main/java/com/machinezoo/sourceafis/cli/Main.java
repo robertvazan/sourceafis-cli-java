@@ -22,15 +22,16 @@ public class Main {
 			.register("Report version of SourceAFIS library being used.");
 		// extract <image-path> <template-path>
 		// extract <width> <height> <image-path> <template-path>
-		// match <probe-path> <candidate-path>
-		// zip extractor <image-path> <zip-path>
-		// zip matcher <probe-path> <candidate-path> <zip-path>
-		new Args.Command("accuracy")
-			.action(Accuracy::report)
+		// compare <probe-path> <candidate-path>
+		// log extractor <image-path> <zip-path>
+		// log matcher <probe-path> <candidate-path> <zip-path>
+		// benchmark - accuracy + speed + footprint
+		new Args.Command("benchmark","accuracy")
+			.action(BenchmarkAccuracy::report)
 			.register("Measure algorithm accuracy.");
-		// benchmark - speed benchmarks
-		new Args.Command("footprint")
-			.action(Footprint::report)
+		// benchmark speed
+		new Args.Command("benchmark", "footprint")
+			.action(BenchmarkFootprint::report)
 			.register("Measure template footprint.");
 		new Args.Command("log", "extractor")
 			.action("key", LogExtractor::collect)
