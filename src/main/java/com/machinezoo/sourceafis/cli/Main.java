@@ -3,6 +3,7 @@ package com.machinezoo.sourceafis.cli;
 
 import org.apache.commons.lang3.exception.*;
 import org.slf4j.*;
+import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
@@ -16,7 +17,9 @@ public class Main {
 			.register("Location of cache directory.");
 	}
 	private static void registerCommands() {
-		// version - Show SourceAFIS version.
+		new Args.Command("version")
+			.action(() -> Pretty.print("SourceAFIS for Java " + FingerprintCompatibility.version()))
+			.register("Report version of SourceAFIS library being used.");
 		// extract <image-path> <template-path>
 		// extract <width> <height> <image-path> <template-path>
 		// match <probe-path> <candidate-path>

@@ -2,29 +2,28 @@
 package com.machinezoo.sourceafis.cli.outputs;
 
 import java.nio.file.*;
-import org.slf4j.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
 public class Accuracy {
-	public static class Stats {
-		public double eer;
-		public double fmr100;
-		public double fmr1K;
-		public double fmr10K;
+	private static class Stats {
+		double eer;
+		double fmr100;
+		double fmr1K;
+		double fmr10K;
 	}
-	public static Stats measure(Dataset dataset) {
+	private static Stats measure(Dataset dataset) {
 		return Cache.get(Stats.class, Paths.get("accuracy"), dataset.path(), () -> {
 			var trio = QuantileFunction.of(dataset);
-			var accuracy = new Stats();
-			accuracy.fmr100 = QuantileFunction.fnmrAtFmr(trio.matching, trio.nonmatching, 1.0 / 100);
-			accuracy.fmr1K = QuantileFunction.fnmrAtFmr(trio.matching, trio.nonmatching, 1.0 / 1_000);
-			accuracy.fmr10K = QuantileFunction.fnmrAtFmr(trio.matching, trio.nonmatching, 1.0 / 10_000);
-			accuracy.eer = QuantileFunction.eer(trio.matching, trio.nonmatching);
-			return accuracy;
+			var stats = new Stats();
+			stats.fmr100 = QuantileFunction.fnmrAtFmr(trio.matching, trio.nonmatching, 1.0 / 100);
+			stats.fmr1K = QuantileFunction.fnmrAtFmr(trio.matching, trio.nonmatching, 1.0 / 1_000);
+			stats.fmr10K = QuantileFunction.fnmrAtFmr(trio.matching, trio.nonmatching, 1.0 / 10_000);
+			stats.eer = QuantileFunction.eer(trio.matching, trio.nonmatching);
+			return stats;
 		});
 	}
-	public static Stats average() {
+	private static Stats measure() {
 		var average = new Stats();
 		int count = Dataset.all().size();
 		for (var dataset : Dataset.all()) {
@@ -36,17 +35,18 @@ public class Accuracy {
 		}
 		return average;
 	}
-	private static final Logger logger = LoggerFactory.getLogger(Accuracy.class);
-	public static void report(String name, Stats accuracy) {
-		logger.info("Accuracy/{}: EER = {}%, FMR100 = {}%, FMR1K = {}%, FMR10K = {}%", name,
-			String.format("%.2f", 100 * accuracy.eer),
-			String.format("%.2f", 100 * accuracy.fmr100),
-			String.format("%.2f", 100 * accuracy.fmr1K),
-			String.format("%.2f", 100 * accuracy.fmr10K));
+	private static void report(Pretty.Table table, String dataset, Stats stats) {
+		table.add(dataset,
+			Pretty.percents(stats.eer),
+			Pretty.percents(stats.fmr100),
+			Pretty.percents(stats.fmr1K),
+			Pretty.percents(stats.fmr10K));
 	}
 	public static void report() {
+		var table = new Pretty.Table("Dataset", "EER", "FMR100", "FMR1K", "FMR10K");
 		for (var dataset : Dataset.all())
-			report(dataset.name, measure(dataset));
-		report("average", average());
+			report(table, dataset.name, measure(dataset));
+		report(table, "All", measure());
+		Pretty.print(table.format());
 	}
 }

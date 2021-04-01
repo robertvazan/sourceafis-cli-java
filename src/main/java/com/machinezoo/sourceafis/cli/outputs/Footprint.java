@@ -3,17 +3,16 @@ package com.machinezoo.sourceafis.cli.outputs;
 
 import java.nio.file.*;
 import java.util.*;
-import org.slf4j.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
 public class Footprint {
-	public static class Stats {
-		public int count;
-		public int serialized;
+	private static class Stats {
+		int count;
+		double serialized;
 	}
-	public static Stats measure(Fingerprint fp) {
+	private static Stats measure(Fingerprint fp) {
 		return Cache.get(Stats.class, Paths.get("footprints"), fp.path(), () -> {
 			var footprint = new Stats();
 			var serialized = Template.serialized(fp);
@@ -22,7 +21,7 @@ public class Footprint {
 			return footprint;
 		});
 	}
-	public static Stats sum(List<Stats> list) {
+	private static Stats measure(List<Stats> list) {
 		var sum = new Stats();
 		for (var footprint : list) {
 			sum.count += footprint.count;
@@ -30,12 +29,20 @@ public class Footprint {
 		}
 		return sum;
 	}
-	public static Stats sum() {
-		return sum(StreamEx.of(Fingerprint.all()).map(fp -> measure(fp)).toList());
+	private static Stats measure(Dataset dataset) {
+		return measure(StreamEx.of(dataset.fingerprints()).map(fp -> measure(fp)).toList());
 	}
-	private static final Logger logger = LoggerFactory.getLogger(Footprint.class);
+	private static Stats measure() {
+		return measure(StreamEx.of(Fingerprint.all()).map(fp -> measure(fp)).toList());
+	}
+	private static void report(Pretty.Table table, String title, Stats stats) {
+		table.add(title, Pretty.bytes(stats.serialized / stats.count));
+	}
 	public static void report() {
-		var sum = sum();
-		logger.info("Template footprint: {} B serialized", sum.serialized / sum.count);
+		var table = new Pretty.Table("Dataset", "Serialized");
+		for (var dataset : Dataset.all())
+			report(table, dataset.name, measure(dataset));
+		report(table, "All", measure());
+		Pretty.print(table.format());
 	}
 }
