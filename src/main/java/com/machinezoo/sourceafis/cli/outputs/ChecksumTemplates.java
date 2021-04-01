@@ -2,45 +2,43 @@
 package com.machinezoo.sourceafis.cli.outputs;
 
 import java.nio.file.*;
-import java.util.*;
-import org.slf4j.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
-import one.util.streamex.*;
 
 public class ChecksumTemplates {
-	public static class Stats {
-		public int count;
-		public int size;
-		public byte[] hash;
+	private static class Stats {
+		int count;
+		long length;
+		byte[] hash;
 	};
-	public static Stats checksum(Fingerprint fp) {
+	private static Stats checksum(Fingerprint fp) {
 		return Cache.get(Stats.class, Paths.get("checksums", "templates"), fp.path(), () -> {
 			var checksum = new Stats();
 			var serialized = Template.serialized(fp);
 			checksum.count = 1;
-			checksum.size = serialized.length;
+			checksum.length = serialized.length;
 			checksum.hash = Hash.of(Serializer.normalize(serialized));
 			return checksum;
 		});
 	}
-	public static Stats sum(List<Stats> list) {
+	private static Stats checksum(Profile profile) {
 		var sum = new Stats();
 		var hash = new Hash();
-		for (var footprint : list) {
-			sum.count += footprint.count;
-			sum.size += footprint.size;
-			hash.add(footprint.hash);
+		for (var fp : profile.fingerprints()) {
+			var stats = checksum(fp);
+			sum.count += stats.count;
+			sum.length += stats.length;
+			hash.add(stats.hash);
 		}
 		sum.hash = hash.compute();
 		return sum;
 	}
-	public static Stats sum() {
-		return sum(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
-	}
-	private static final Logger logger = LoggerFactory.getLogger(ChecksumTemplates.class);
 	public static void report() {
-		var sum = sum();
-		logger.info("Template hash: {}", Pretty.hash(sum.hash));
+		var table = new Pretty.Table("Dataset", "Length", "Total", "Hash");
+		for (var profile : Profile.all()) {
+			var stats = checksum(profile);
+			table.add(profile.name, Pretty.length(stats.length / stats.count), Pretty.length(stats.length), Pretty.hash(stats.hash));
+		}
+		Pretty.print(table.format());
 	}
 }

@@ -2,7 +2,6 @@
 package com.machinezoo.sourceafis.cli.outputs;
 
 import java.util.*;
-import org.slf4j.*;
 import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
@@ -10,17 +9,17 @@ public class ChecksumTransparency {
 	public static class Stats {
 		public String mime;
 		public int count;
-		public long size;
-		public long sizeNormalized;
+		public long length;
+		public long normalized;
 		public byte[] hash;
 	}
 	public static Stats checksum(String mime, byte[] data) {
 		var stats = new Stats();
 		stats.mime = mime;
 		stats.count = 1;
-		stats.size = data.length;
+		stats.length = data.length;
 		var normalized = Serializer.normalize(mime, data);
-		stats.sizeNormalized = normalized.length;
+		stats.normalized = normalized.length;
 		stats.hash = Hash.of(normalized);
 		return stats;
 	}
@@ -30,8 +29,8 @@ public class ChecksumTransparency {
 		var hash = new Hash();
 		for (var stats : list) {
 			sum.count += stats.count;
-			sum.size += stats.size;
-			sum.sizeNormalized = stats.sizeNormalized;
+			sum.length += stats.length;
+			sum.normalized += stats.normalized;
 			hash.add(stats.hash);
 		}
 		sum.hash = hash.compute();
@@ -84,12 +83,19 @@ public class ChecksumTransparency {
 			return Table.merge(collector.records);
 		}
 	}
-	private static final Logger logger = LoggerFactory.getLogger(ChecksumTransparency.class);
 	public static void report(Table table) {
+		var ptable = new Pretty.Table("Key", "MIME", "Count", "Length", "Normalized", "Total", "Hash");
 		for (var row : table.rows) {
 			var stats = row.stats;
-			logger.info("Transparency/{}: {}, {}x, {} B (normalized {} B), hash {}",
-				row.key, stats.mime, stats.count, stats.size / stats.count, stats.sizeNormalized / stats.count, Pretty.hash(stats.hash));
+			ptable.add(
+				row.key,
+				stats.mime,
+				Pretty.length(stats.count),
+				Pretty.length(stats.length / stats.count),
+				Pretty.length(stats.normalized / stats.count),
+				Pretty.length(stats.normalized),
+				Pretty.hash(stats.hash));
 		}
+		Pretty.print(ptable.format());
 	}
 }

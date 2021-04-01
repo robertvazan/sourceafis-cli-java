@@ -10,9 +10,10 @@ import com.machinezoo.sourceafis.cli.utils.*;
 
 public class ExportPng {
 	public static void export() {
+		var category = Paths.get("exports", "png");
 		for (var dataset : Dataset.all(Download.Format.ORIGINAL)) {
 			for (var fp : dataset.fingerprints()) {
-				Cache.get(byte[].class, Paths.get("exports", "png"), Cache.withExtension(fp.path(), ".png"), () -> {
+				Cache.get(byte[].class, category, Cache.withExtension(fp.path(), ".png"), () -> {
 					var buffered = Exceptions.sneak().get(() -> ImageIO.read(new ByteArrayInputStream(fp.load())));
 					if (buffered == null)
 						throw new IllegalArgumentException("Unsupported image format.");
@@ -24,5 +25,6 @@ public class ExportPng {
 				});
 			}
 		}
+		Pretty.print("Saved: " + Pretty.dump(category));
 	}
 }

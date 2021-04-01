@@ -10,9 +10,10 @@ import com.machinezoo.sourceafis.cli.utils.*;
 
 public class ExportGrayscale {
 	public static void export() {
+		var category = Paths.get("exports", "grayscale");
 		for (var dataset : Dataset.all(Download.Format.ORIGINAL)) {
 			for (var fp : dataset.fingerprints()) {
-				Cache.get(byte[].class, Paths.get("exports", "grayscale"), Cache.withExtension(fp.path(), ".gray"), () -> {
+				Cache.get(byte[].class, category, Cache.withExtension(fp.path(), ".gray"), () -> {
 					var buffered = Exceptions.sneak().get(() -> ImageIO.read(new ByteArrayInputStream(fp.load())));
 					if (buffered == null)
 						throw new IllegalArgumentException("Unsupported image format.");
@@ -34,5 +35,6 @@ public class ExportGrayscale {
 				});
 			}
 		}
+		Pretty.print("Saved: " + Pretty.dump(category));
 	}
 }

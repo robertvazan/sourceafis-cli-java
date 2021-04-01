@@ -10,13 +10,17 @@ public class LogExtractor {
 	public static Path identity(String key, Fingerprint fp) {
 		return Cache.withExtension(fp.path(), Pretty.extension(ChecksumTransparencyExtractor.row(fp, key).mime));
 	}
+	private static Path category(String key) {
+		return Paths.get("logs", "extractor", "raw", key);
+	}
 	public static byte[] collect(String key, Fingerprint fp) {
-		return Cache.get(byte[].class, Paths.get("logs", "extractor", "raw", key), identity(key, fp), () -> {
-			return Log.ofKey(key, () -> new FingerprintTemplate(fp.decode())).get(0);
+		return Cache.get(byte[].class, category(key), identity(key, fp), () -> {
+			return Log.key(key, () -> new FingerprintTemplate(fp.decode())).get(0);
 		});
 	}
 	public static void collect(String key) {
 		for (var fp : Fingerprint.all())
 			collect(key, fp);
+		Pretty.print("Saved: " + Pretty.dump(category(key)));
 	}
 }

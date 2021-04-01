@@ -1,9 +1,11 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
 package com.machinezoo.sourceafis.cli.utils;
 
+import java.nio.file.*;
 import java.util.*;
 import java.util.stream.*;
 import org.slf4j.*;
+import com.machinezoo.sourceafis.cli.*;
 
 public class Pretty {
 	private static final Logger logger = LoggerFactory.getLogger(Pretty.class);
@@ -52,6 +54,9 @@ public class Pretty {
 			return ".dat";
 		}
 	}
+	public static String dump(Path category) {
+		return Configuration.output().resolve(category).toString();
+	}
 	public static String percents(double value) {
 		double scaled = 100 * value;
 		double abs = Math.abs(scaled);
@@ -73,5 +78,8 @@ public class Pretty {
 	}
 	public static String bytes(double value) {
 		return unit(value, "B");
+	}
+	public static String length(long length) {
+		return String.format("%,d", length);
 	}
 }

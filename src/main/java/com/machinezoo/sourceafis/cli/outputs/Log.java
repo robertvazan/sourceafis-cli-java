@@ -6,9 +6,9 @@ import com.machinezoo.sourceafis.*;
 
 public class Log {
 	private static class KeyCollector extends FingerprintTransparency {
-		public final String key;
-		public final List<byte[]> files = new ArrayList<>();
-		public KeyCollector(String key) {
+		final String key;
+		final List<byte[]> files = new ArrayList<>();
+		KeyCollector(String key) {
 			this.key = key;
 		}
 		@Override
@@ -20,7 +20,7 @@ public class Log {
 			files.add(data);
 		}
 	}
-	public static List<byte[]> ofKey(String key, Runnable action) {
+	public static List<byte[]> key(String key, Runnable action) {
 		try (var collector = new KeyCollector(key)) {
 			action.run();
 			return collector.files;
