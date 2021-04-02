@@ -40,10 +40,10 @@ public class BenchmarkAccuracy {
 		for (var profile : Profile.all()) {
 			var stats = measure(profile);
 			table.add(profile.name,
-				Pretty.percents(stats.eer),
-				Pretty.percents(stats.fmr100),
-				Pretty.percents(stats.fmr1K),
-				Pretty.percents(stats.fmr10K));
+				Pretty.accuracy(stats.eer, profile.name, "EER"),
+				Pretty.accuracy(stats.fmr100, profile.name, "FMR100"),
+				Pretty.accuracy(stats.fmr1K, profile.name, "FMR1K"),
+				Pretty.accuracy(stats.fmr10K, profile.name, "FMR10K"));
 		}
 		Pretty.print(table.format());
 	}

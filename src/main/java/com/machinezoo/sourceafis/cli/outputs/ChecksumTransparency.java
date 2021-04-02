@@ -91,10 +91,10 @@ public class ChecksumTransparency {
 				row.key,
 				stats.mime,
 				Pretty.length(stats.count),
-				Pretty.length(stats.length / stats.count),
-				Pretty.length(stats.normalized / stats.count),
-				Pretty.length(stats.normalized),
-				Pretty.hash(stats.hash));
+				Pretty.length(stats.length / stats.count, row.key, "length"),
+				Pretty.length(stats.normalized / stats.count, row.key, "normalized"),
+				Pretty.length(stats.normalized, row.key, "total"),
+				Pretty.hash(stats.hash, row.key, "hash"));
 		}
 		Pretty.print(ptable.format());
 	}

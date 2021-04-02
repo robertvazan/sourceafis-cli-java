@@ -28,8 +28,13 @@ public class Configuration {
 	public static void configureHome(String path) {
 		home = Paths.get(path).toAbsolutePath();
 	}
-	public static Path output() {
-		return home().resolve("java").resolve(FingerprintCompatibility.version());
-	}
 	public static boolean normalized;
+	public static Path baseline;
+	public static boolean baselineMode;
+	public static Path output() {
+		if (baselineMode)
+			return home().resolve(baseline);
+		else
+			return home().resolve("java").resolve(FingerprintCompatibility.version());
+	}
 }

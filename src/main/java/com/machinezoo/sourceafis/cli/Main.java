@@ -1,6 +1,7 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
 package com.machinezoo.sourceafis.cli;
 
+import java.nio.file.*;
 import org.apache.commons.lang3.exception.*;
 import org.slf4j.*;
 import com.machinezoo.sourceafis.*;
@@ -18,6 +19,9 @@ public class Main {
 		new Args.Option("normalize")
 			.action(() -> Configuration.normalized = true)
 			.register("Log normalized transparency data instead of raw data obtained from the library.");
+		new Args.Option("baseline")
+			.action("path", p -> Configuration.baseline = Paths.get(p))
+			.register("Compare with output of another SourceAFIS CLI. Path may be relative to cache directory, e.g. 'java/1.2.3'.");
 	}
 	private static void registerCommands() {
 		new Args.Command("version")
@@ -61,7 +65,13 @@ public class Main {
 		try {
 			registerOptions();
 			registerCommands();
-			Args.evaluate(args);
+			var command = Args.parse(args);
+			if (Configuration.baseline != null) {
+				Configuration.baselineMode = true;
+				command.run();
+				Configuration.baselineMode = false;
+			}
+			command.run();
 		} catch (Throwable ex) {
 			logger.error("{}", StreamEx.of(ExceptionUtils.getThrowableList(ex)).map(x -> ExceptionUtils.getMessage(x)).joining(" -> "));
 			System.exit(1);

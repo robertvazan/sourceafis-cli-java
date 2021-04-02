@@ -32,7 +32,9 @@ public class BenchmarkFootprint {
 		var table = new Pretty.Table("Dataset", "Serialized");
 		for (var profile : Profile.all()) {
 			var stats = measure(profile);
-			table.add(profile.name, Pretty.bytes(stats.serialized / stats.count));
+			table.add(
+				profile.name,
+				Pretty.bytes(stats.serialized / stats.count, profile.name, "serialized"));
 		}
 		Pretty.print(table.format());
 	}

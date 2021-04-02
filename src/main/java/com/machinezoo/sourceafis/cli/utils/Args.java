@@ -90,7 +90,7 @@ public class Args {
 				logger.info("\t\tDefault: {}", fallback.get());
 		}
 	}
-	public static void evaluate(String args[]) {
+	public static Runnable parse(String args[]) {
 		if (args.length == 0) {
 			logger.info("SourceAFIS CLI for Java {}", FingerprintCompatibility.version());
 			logger.info("");
@@ -101,7 +101,7 @@ public class Args {
 			logger.info("Available options:");
 			for (var option : options)
 				option.help();
-			return;
+			System.exit(0);
 		}
 		int consumed = 0;
 		var group = commandRoot;
@@ -134,6 +134,6 @@ public class Args {
 		var command = group.overloads.get(commandArgs.size());
 		if (command == null)
 			throw new IllegalArgumentException("Unrecognized subcommand.");
-		command.action.accept(commandArgs);
+		return () -> command.action.accept(commandArgs);
 	}
 }

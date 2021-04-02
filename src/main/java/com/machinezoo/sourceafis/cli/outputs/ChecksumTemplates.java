@@ -44,10 +44,10 @@ public class ChecksumTemplates {
 			table.add(
 				profile.name,
 				Pretty.length(stats.count),
-				Pretty.length(stats.length / stats.count),
-				Pretty.length(stats.normalized / stats.count),
-				Pretty.length(stats.normalized),
-				Pretty.hash(stats.hash));
+				Pretty.length(stats.length / stats.count, profile.name, "length"),
+				Pretty.length(stats.normalized / stats.count, profile.name, "normalized"),
+				Pretty.length(stats.normalized, profile.name, "total"),
+				Pretty.hash(stats.hash, profile.name, "hash"));
 		}
 		Pretty.print(table.format());
 	}

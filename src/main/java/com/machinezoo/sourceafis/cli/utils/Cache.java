@@ -112,6 +112,8 @@ public abstract class Cache<T> implements Supplier<T> {
 			var path = compression.rename(serialization.rename(Configuration.output().resolve(category).resolve(identity)));
 			if (Files.exists(path))
 				return serialization.deserialize(compression.decompress(Files.readAllBytes(path)), clazz);
+			if (Configuration.baselineMode)
+				throw new IllegalStateException("Baseline data was not found.");
 			if (!reported.computeIfAbsent(category, c -> new AtomicBoolean()).getAndSet(true))
 				logger.info("Computing {}...", category);
 			T value = supplier.get();
