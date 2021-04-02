@@ -8,8 +8,9 @@ import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
 public class ChecksumTransparencyExtractor extends ChecksumTransparencyBase {
+	private static final Path category = Paths.get("checksums", "transparency", "extractor");
 	private static Table checksum(Fingerprint fp) {
-		return Cache.get(Table.class, Paths.get("checksums", "transparency", "extractor"), fp.path(), () -> {
+		return Cache.get(Table.class, category, fp.path(), () -> {
 			return collect(() -> new FingerprintTemplate(fp.decode()));
 		});
 	}
@@ -17,7 +18,7 @@ public class ChecksumTransparencyExtractor extends ChecksumTransparencyBase {
 		return count(checksum(fp), key);
 	}
 	private static Table checksum() {
-		return Cache.get(Table.class, Paths.get("checksums", "transparency", "extractor"), Paths.get("all"), () -> {
+		return Cache.get(Table.class, category, Paths.get("all"), () -> {
 			return merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
 		});
 	}

@@ -9,7 +9,7 @@ public class Checksum {
 		table.add("Templates", Pretty.hash(ChecksumTemplates.global()));
 		table.add("Scores", Pretty.hash(ChecksumScores.global()));
 		table.add("Extractor transparency", Pretty.hash(ChecksumTransparencyExtractor.global()));
-		table.add("Matcher transparency", Pretty.hash(ChecksumTransparencyMatcher.global()));
+		table.add("Match transparency", Pretty.hash(ChecksumTransparencyMatch.global()));
 		Pretty.print(table.format());
 	}
 }

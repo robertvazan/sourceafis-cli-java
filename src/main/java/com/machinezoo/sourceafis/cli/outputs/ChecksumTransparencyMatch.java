@@ -8,9 +8,10 @@ import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class ChecksumTransparencyMatcher extends ChecksumTransparencyBase {
+public class ChecksumTransparencyMatch extends ChecksumTransparencyBase {
+	private static final Path category = Paths.get("checksums", "transparency", "match");
 	private static Table checksum(FingerprintPair pair) {
-		return Cache.get(Table.class, Paths.get("checksums", "transparency", "matcher"), pair.path(), map -> {
+		return Cache.get(Table.class, category, pair.path(), map -> {
 			var dataset = pair.dataset;
 			var fingerprints = dataset.fingerprints();
 			var templates = StreamEx.of(fingerprints).map(fp -> Template.of(fp)).toList();
@@ -25,7 +26,7 @@ public class ChecksumTransparencyMatcher extends ChecksumTransparencyBase {
 		});
 	}
 	private static Table checksum(Fingerprint probe) {
-		return Cache.get(Table.class, Paths.get("checksums", "transparency", "matcher"), probe.path(), () -> {
+		return Cache.get(Table.class, category, probe.path(), () -> {
 			var tables = new ArrayList<Table>();
 			for (var candidate : probe.dataset.fingerprints())
 				tables.add(checksum(new FingerprintPair(probe, candidate)));
@@ -36,7 +37,7 @@ public class ChecksumTransparencyMatcher extends ChecksumTransparencyBase {
 		return count(checksum(pair), key);
 	}
 	private static Table checksum() {
-		return Cache.get(Table.class, Paths.get("checksums", "transparency", "matcher"), Paths.get("all"), () -> {
+		return Cache.get(Table.class, category, Paths.get("all"), () -> {
 			return merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
 		});
 	}

@@ -2,8 +2,10 @@
 package com.machinezoo.sourceafis.cli;
 
 import java.nio.file.*;
+import org.apache.commons.io.*;
 import org.apache.commons.lang3.exception.*;
 import org.slf4j.*;
+import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
@@ -27,11 +29,6 @@ public class Main {
 		new Args.Command("version")
 			.action(() -> Pretty.print("SourceAFIS for Java " + FingerprintCompatibility.version()))
 			.register("Report version of SourceAFIS library being used.");
-		// extract <image-path> <template-path>
-		// extract <width> <height> <image-path> <template-path>
-		// compare <probe-path> <candidate-path>
-		// log extractor <image-path> <zip-path>
-		// log matcher <probe-path> <candidate-path> <zip-path>
 		// benchmark - accuracy + speed + footprint
 		new Args.Command("benchmark", "accuracy")
 			.action(BenchmarkAccuracy::report)
@@ -43,9 +40,9 @@ public class Main {
 		new Args.Command("log", "extractor")
 			.action("key", LogExtractor::collect)
 			.register("Log extractor transparency data for given key.");
-		new Args.Command("log", "matcher")
-			.action("key", LogMatcher::collect)
-			.register("Log matcher transparency data for given key.");
+		new Args.Command("log", "match")
+			.action("key", LogMatch::collect)
+			.register("Log transparency data for given key during comparison of probe to candidate.");
 		new Args.Command("checksum")
 			.action(Checksum::report)
 			.register("Compute consistency checksum of all algorithm outputs.");
@@ -58,16 +55,18 @@ public class Main {
 		new Args.Command("checksum", "transparency", "extractor")
 			.action(ChecksumTransparencyExtractor::report)
 			.register("Compute consistency checksum of extractor transparency data.");
-		new Args.Command("checksum", "transparency", "matcher")
-			.action(ChecksumTransparencyMatcher::report)
-			.register("Compute consistency checksum of matcher transparency data.");
+		new Args.Command("checksum", "transparency", "match")
+			.action(ChecksumTransparencyMatch::report)
+			.register("Compute consistency checksum of transparency data generated during comparison of probe to candidate.");
 		new Args.Command("export", "png")
 			.action(ExportPng::export)
 			.register("Convert sample images to PNG.");
 		new Args.Command("export", "grayscale")
 			.action(ExportGrayscale::export)
 			.register("Convert sample images to grayscale.");
-		// purge - remove cached data except downloads
+		new Args.Command("purge")
+			.action(Exceptions.sneak().runnable(() -> FileUtils.deleteDirectory(Configuration.output().toFile())))
+			.register("Remove cached data except downloads.");
 	}
 	public static void main(String args[]) {
 		try {

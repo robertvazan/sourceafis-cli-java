@@ -7,12 +7,12 @@ import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class LogMatcher extends LogBase {
+public class LogMatch extends LogBase {
 	private static Path identity(String key, FingerprintPair pair, int index, int count, String mime) {
 		return identity(pair.path(), index, count, mime);
 	}
 	private static Path category(String key) {
-		return category(key, "matcher");
+		return category(key, "match");
 	}
 	private static byte[] collect(String key, FingerprintPair pair, int index, int count, String mime) {
 		return Cache.get(byte[].class, category(key), identity(key, pair, index, count, mime), map -> {
@@ -23,7 +23,7 @@ public class LogMatcher extends LogBase {
 				var matcher = new FingerprintMatcher(templates.get(probe.id));
 				for (var candidate : fingerprints) {
 					var wpair = new FingerprintPair(probe, candidate);
-					int wcount = ChecksumTransparencyMatcher.count(wpair, key);
+					int wcount = ChecksumTransparencyMatch.count(wpair, key);
 					var template = templates.get(candidate.id);
 					collect(key, index, wcount, mime, n -> identity(key, wpair, n, wcount, mime), () -> matcher.match(template), map);
 				}
@@ -31,11 +31,11 @@ public class LogMatcher extends LogBase {
 		});
 	}
 	public static void collect(String key) {
-		var mime = ChecksumTransparencyMatcher.mime(key);
+		var mime = ChecksumTransparencyMatch.mime(key);
 		for (var probe : Fingerprint.all()) {
 			for (var candidate : probe.dataset.fingerprints()) {
 				var pair = new FingerprintPair(probe, candidate);
-				int count = ChecksumTransparencyMatcher.count(pair, key);
+				int count = ChecksumTransparencyMatch.count(pair, key);
 				if (count > 0)
 					collect(key, pair, 0, count, mime);
 			}
