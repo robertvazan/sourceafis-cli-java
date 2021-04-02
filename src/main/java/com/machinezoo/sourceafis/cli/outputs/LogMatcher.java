@@ -14,8 +14,7 @@ public class LogMatcher extends LogBase {
 	private static Path category(String key) {
 		return category(key, "matcher");
 	}
-	private static byte[] collect(String key, FingerprintPair pair, int index, int count) {
-		var mime = ChecksumTransparencyMatcher.mime(pair, key);
+	private static byte[] collect(String key, FingerprintPair pair, int index, int count, String mime) {
 		return Cache.get(byte[].class, category(key), identity(key, pair, index, count, mime), map -> {
 			var dataset = pair.dataset;
 			var fingerprints = dataset.fingerprints();
@@ -32,12 +31,13 @@ public class LogMatcher extends LogBase {
 		});
 	}
 	public static void collect(String key) {
+		var mime = ChecksumTransparencyMatcher.mime(key);
 		for (var probe : Fingerprint.all()) {
 			for (var candidate : probe.dataset.fingerprints()) {
 				var pair = new FingerprintPair(probe, candidate);
 				int count = ChecksumTransparencyMatcher.count(pair, key);
 				if (count > 0)
-					collect(key, pair, 0, count);
+					collect(key, pair, 0, count, mime);
 			}
 		}
 		Pretty.print("Saved: " + Pretty.dump(category(key)));

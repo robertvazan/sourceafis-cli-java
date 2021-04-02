@@ -16,11 +16,13 @@ public class ChecksumTransparencyExtractor extends ChecksumTransparencyBase {
 	public static int count(Fingerprint fp, String key) {
 		return count(checksum(fp), key);
 	}
-	public static String mime(Fingerprint fp, String key) {
-		return mime(checksum(fp), key);
-	}
 	private static Table checksum() {
-		return merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
+		return Cache.get(Table.class, Paths.get("checksums", "transparency", "extractor"), Paths.get("all"), () -> {
+			return merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
+		});
+	}
+	public static String mime(String key) {
+		return mime(checksum(), key);
 	}
 	public static void report() {
 		report(checksum());

@@ -35,11 +35,13 @@ public class ChecksumTransparencyMatcher extends ChecksumTransparencyBase {
 	public static int count(FingerprintPair pair, String key) {
 		return count(checksum(pair), key);
 	}
-	public static String mime(FingerprintPair pair, String key) {
-		return mime(checksum(pair), key);
-	}
 	private static Table checksum() {
-		return merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
+		return Cache.get(Table.class, Paths.get("checksums", "transparency", "matcher"), Paths.get("all"), () -> {
+			return merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
+		});
+	}
+	public static String mime(String key) {
+		return mime(checksum(), key);
 	}
 	public static void report() {
 		report(checksum());

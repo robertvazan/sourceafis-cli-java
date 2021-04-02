@@ -13,17 +13,17 @@ public class LogExtractor extends LogBase {
 	private static Path category(String key) {
 		return category(key, "extractor");
 	}
-	private static byte[] collect(String key, Fingerprint fp, int index, int count) {
-		var mime = ChecksumTransparencyExtractor.mime(fp, key);
+	private static byte[] collect(String key, Fingerprint fp, int index, int count, String mime) {
 		return Cache.get(byte[].class, category(key), identity(key, fp, index, count, mime), map -> {
 			collect(key, index, count, mime, n -> identity(key, fp, n, count, mime), () -> new FingerprintTemplate(fp.decode()), map);
 		});
 	}
 	public static void collect(String key) {
+		var mime = ChecksumTransparencyExtractor.mime(key);
 		for (var fp : Fingerprint.all()) {
 			int count = ChecksumTransparencyExtractor.count(fp, key);
 			if (count > 0)
-				collect(key, fp, 0, count);
+				collect(key, fp, 0, count, mime);
 		}
 		Pretty.print("Saved: " + Pretty.dump(category(key)));
 	}
