@@ -52,7 +52,9 @@ public class Main {
 		new Args.Command("checksum", "transparency", "extractor")
 			.action(ChecksumTransparencyExtractor::report)
 			.register("Compute consistency checksum of extractor transparency data.");
-		// checksum transparency matcher
+		new Args.Command("checksum", "transparency", "matcher")
+			.action(ChecksumTransparencyMatcher::report)
+			.register("Compute consistency checksum of matcher transparency data.");
 		new Args.Command("export", "png")
 			.action(ExportPng::export)
 			.register("Convert sample images to PNG.");

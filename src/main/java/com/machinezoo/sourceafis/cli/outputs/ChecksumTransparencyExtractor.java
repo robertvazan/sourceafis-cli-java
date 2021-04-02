@@ -13,12 +13,12 @@ public class ChecksumTransparencyExtractor {
 			return ChecksumTransparency.collect(() -> new FingerprintTemplate(fp.decode()));
 		});
 	}
-	public static ChecksumTransparency.Stats row(Fingerprint fp, String key) {
+	public static String mime(Fingerprint fp, String key) {
 		return checksum(fp).rows.stream()
 			.filter(r -> r.key.equals(key))
 			.findFirst()
 			.orElseThrow(() -> new IllegalArgumentException("Transparency key not found: " + key))
-			.stats;
+			.stats.mime;
 	}
 	public static ChecksumTransparency.Table checksum() {
 		return ChecksumTransparency.Table.merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());

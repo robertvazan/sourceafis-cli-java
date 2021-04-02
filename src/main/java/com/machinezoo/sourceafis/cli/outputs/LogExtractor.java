@@ -9,7 +9,7 @@ import com.machinezoo.sourceafis.cli.utils.*;
 
 public class LogExtractor {
 	public static Path identity(String key, Fingerprint fp) {
-		return Cache.withExtension(fp.path(), Pretty.extension(ChecksumTransparencyExtractor.row(fp, key).mime));
+		return Cache.withExtension(fp.path(), Pretty.extension(ChecksumTransparencyExtractor.mime(fp, key)));
 	}
 	private static Path category(String key) {
 		if (Configuration.normalized)
@@ -20,7 +20,7 @@ public class LogExtractor {
 	public static byte[] collect(String key, Fingerprint fp) {
 		return Cache.get(byte[].class, category(key), identity(key, fp), () -> {
 			var raw = Log.key(key, () -> new FingerprintTemplate(fp.decode())).get(0);
-			return Configuration.normalized ? Serializer.normalize(ChecksumTransparencyExtractor.row(fp, key).mime, raw) : raw;
+			return Configuration.normalized ? Serializer.normalize(ChecksumTransparencyExtractor.mime(fp, key), raw) : raw;
 		});
 	}
 	public static void collect(String key) {
