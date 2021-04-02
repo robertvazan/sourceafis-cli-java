@@ -65,7 +65,7 @@ public class Pretty {
 	private static final Map<String, String> hashes = new HashMap<>();
 	public static String hash(byte[] hash, String... tag) {
 		if (tag.length == 0)
-			return Base64.getUrlEncoder().encodeToString(hash).replace("=", "");
+			return Base64.getUrlEncoder().encodeToString(hash).replace("=", "").substring(0, 8);
 		else if (Configuration.baselineMode) {
 			var formatted = hash(hash);
 			hashes.put(tag(tag), formatted);
