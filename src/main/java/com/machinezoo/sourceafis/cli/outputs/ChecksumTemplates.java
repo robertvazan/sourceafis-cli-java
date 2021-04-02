@@ -37,6 +37,9 @@ public class ChecksumTemplates {
 		sum.hash = hash.compute();
 		return sum;
 	}
+	public static byte[] global() {
+		return checksum(Profile.everything()).hash;
+	}
 	public static void report() {
 		var table = new Pretty.Table("Dataset", "Count", "Length", "Normalized", "Total", "Hash");
 		for (var profile : Profile.all()) {

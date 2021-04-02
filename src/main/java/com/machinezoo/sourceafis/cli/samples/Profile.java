@@ -11,11 +11,17 @@ public class Profile {
 		this.name = name;
 		this.datasets = datasets;
 	}
+	private static Profile everything(Download.Format format) {
+		return new Profile("All", Dataset.all(format));
+	}
+	public static Profile everything() {
+		return everything(Download.DEFAULT_FORMAT);
+	}
 	public static List<Profile> all(Download.Format format) {
 		return StreamEx.of(Dataset.all(format))
 			.map(ds -> new Profile(ds.name, List.of(ds)))
 			.append(new Profile("High quality", StreamEx.of("fvc2002-1b", "fvc2002-2b").map(n -> Dataset.get(n, format)).toList()))
-			.append(new Profile("All", Dataset.all(format)))
+			.append(everything(format))
 			.toList();
 	}
 	public static List<Profile> all() {

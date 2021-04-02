@@ -96,6 +96,12 @@ public class ChecksumTransparencyBase {
 		var row = row(table, key).orElse(null);
 		return row != null ? row.count : 0;
 	}
+	protected static byte[] global(Table table) {
+		var hash = new Hash();
+		for (var row : table.rows)
+			hash.add(row.stats.hash);
+		return hash.compute();
+	}
 	protected static void report(Table table) {
 		var ptable = new Pretty.Table("Key", "MIME", "Count", "Length", "Normalized", "Total", "Hash");
 		for (var row : table.rows) {

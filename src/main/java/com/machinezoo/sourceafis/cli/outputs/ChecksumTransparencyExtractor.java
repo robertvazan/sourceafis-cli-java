@@ -24,6 +24,9 @@ public class ChecksumTransparencyExtractor extends ChecksumTransparencyBase {
 	public static String mime(String key) {
 		return mime(checksum(), key);
 	}
+	public static byte[] global() {
+		return global(checksum());
+	}
 	public static void report() {
 		report(checksum());
 	}

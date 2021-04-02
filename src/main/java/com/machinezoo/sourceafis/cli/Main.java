@@ -46,7 +46,9 @@ public class Main {
 		new Args.Command("log", "matcher")
 			.action("key", LogMatcher::collect)
 			.register("Log matcher transparency data for given key.");
-		// checksum
+		new Args.Command("checksum")
+			.action(Checksum::report)
+			.register("Compute consistency checksum of all algorithm outputs.");
 		new Args.Command("checksum", "templates")
 			.action(ChecksumTemplates::report)
 			.register("Compute consistency checksum of templates.");

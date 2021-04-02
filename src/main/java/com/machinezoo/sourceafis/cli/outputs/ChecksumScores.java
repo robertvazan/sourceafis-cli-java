@@ -65,6 +65,9 @@ public class ChecksumScores {
 		sum.hash = hash.compute();
 		return sum;
 	}
+	public static byte[] global() {
+		return checksum(Profile.everything()).hash;
+	}
 	public static void report() {
 		var table = new Pretty.Table("Dataset", "Matching", "Non-matching", "Self-matching", "Hash");
 		for (var profile : Profile.all()) {
