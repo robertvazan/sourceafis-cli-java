@@ -100,15 +100,12 @@ public class Pretty {
 		return percents(value - 1);
 	}
 	private static String change(double value, double baseline, String more, String less) {
-		/*
-		 * Avoid division by zero.
-		 */
 		if (value == baseline)
 			return "=";
 		boolean positive = value >= baseline;
 		var change = factor(positive ? value / baseline : baseline / value);
 		if (change.equals(factor(1)))
-			return "=";
+			return "~";
 		return change + " " + (positive ? more : less);
 	}
 	private static final Object2DoubleMap<String> measurements = new Object2DoubleOpenHashMap<>();
@@ -131,6 +128,8 @@ public class Pretty {
 	}
 	private static String unit(double value, String unit) {
 		double abs = Math.abs(value);
+		if (abs < 10)
+			return String.format("%.2f %s", value, unit);
 		if (abs < 100)
 			return String.format("%.1f %s", value, unit);
 		if (abs < 1000)
@@ -156,7 +155,17 @@ public class Pretty {
 			return length(length);
 		else {
 			long baseline = lengths.getLong(tag(tag));
-			return length(length) + " (" + (baseline == length ? "=" : length(length - baseline)) + ")";
+			return length(length) + " (" + (baseline == length ? "=" : String.format("%+,d", length - baseline)) + ")";
 		}
+	}
+	public static String decibans(double value, String... tag) {
+		if (tag.length == 0) {
+			if (value < 10)
+				return String.format("%.2f dban", value);
+			if (value < 100)
+				return String.format("%.1f dban", value);
+			return String.format("%.0f dban", value);
+		} else
+			return measurement(value, decibans(value), "higher", "lower", tag);
 	}
 }

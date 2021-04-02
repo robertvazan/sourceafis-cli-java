@@ -50,7 +50,9 @@ public class Main {
 		new Args.Command("checksum", "templates")
 			.action(ChecksumTemplates::report)
 			.register("Compute consistency checksum of templates.");
-		// checksum scores
+		new Args.Command("checksum", "scores")
+			.action(ChecksumScores::report)
+			.register("Compute consistency checksum of similarity scores.");
 		new Args.Command("checksum", "transparency", "extractor")
 			.action(ChecksumTransparencyExtractor::report)
 			.register("Compute consistency checksum of extractor transparency data.");
