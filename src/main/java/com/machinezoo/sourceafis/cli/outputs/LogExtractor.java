@@ -3,29 +3,28 @@ package com.machinezoo.sourceafis.cli.outputs;
 
 import java.nio.file.*;
 import com.machinezoo.sourceafis.*;
-import com.machinezoo.sourceafis.cli.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class LogExtractor {
-	public static Path identity(String key, Fingerprint fp) {
-		return Cache.withExtension(fp.path(), Pretty.extension(ChecksumTransparencyExtractor.mime(fp, key)));
+public class LogExtractor extends LogBase {
+	private static Path identity(String key, Fingerprint fp, int index, int count, String mime) {
+		return identity(fp.path(), index, count, mime);
 	}
 	private static Path category(String key) {
-		if (Configuration.normalized)
-			return Paths.get("logs", "extractor", "normalized", key);
-		else
-			return Paths.get("logs", "extractor", key);
+		return category(key, "extractor");
 	}
-	public static byte[] collect(String key, Fingerprint fp) {
-		return Cache.get(byte[].class, category(key), identity(key, fp), () -> {
-			var raw = Log.key(key, () -> new FingerprintTemplate(fp.decode())).get(0);
-			return Configuration.normalized ? Serializer.normalize(ChecksumTransparencyExtractor.mime(fp, key), raw) : raw;
+	private static byte[] collect(String key, Fingerprint fp, int index, int count) {
+		var mime = ChecksumTransparencyExtractor.mime(fp, key);
+		return Cache.get(byte[].class, category(key), identity(key, fp, index, count, mime), map -> {
+			collect(key, index, count, mime, n -> identity(key, fp, n, count, mime), () -> new FingerprintTemplate(fp.decode()), map);
 		});
 	}
 	public static void collect(String key) {
-		for (var fp : Fingerprint.all())
-			collect(key, fp);
+		for (var fp : Fingerprint.all()) {
+			int count = ChecksumTransparencyExtractor.count(fp, key);
+			if (count > 0)
+				collect(key, fp, 0, count);
+		}
 		Pretty.print("Saved: " + Pretty.dump(category(key)));
 	}
 }

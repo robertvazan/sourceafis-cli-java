@@ -43,7 +43,9 @@ public class Main {
 		new Args.Command("log", "extractor")
 			.action("key", LogExtractor::collect)
 			.register("Log extractor transparency data for given key.");
-		// log matcher <key>
+		new Args.Command("log", "matcher")
+			.action("key", LogMatcher::collect)
+			.register("Log matcher transparency data for given key.");
 		// checksum
 		new Args.Command("checksum", "templates")
 			.action(ChecksumTemplates::report)

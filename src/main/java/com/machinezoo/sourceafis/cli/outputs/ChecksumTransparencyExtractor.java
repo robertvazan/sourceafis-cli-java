@@ -7,23 +7,22 @@ import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class ChecksumTransparencyExtractor {
-	public static ChecksumTransparency.Table checksum(Fingerprint fp) {
-		return Cache.get(ChecksumTransparency.Table.class, Paths.get("checksums", "transparency", "extractor"), fp.path(), () -> {
-			return ChecksumTransparency.collect(() -> new FingerprintTemplate(fp.decode()));
+public class ChecksumTransparencyExtractor extends ChecksumTransparencyBase {
+	private static Table checksum(Fingerprint fp) {
+		return Cache.get(Table.class, Paths.get("checksums", "transparency", "extractor"), fp.path(), () -> {
+			return collect(() -> new FingerprintTemplate(fp.decode()));
 		});
 	}
-	public static String mime(Fingerprint fp, String key) {
-		return checksum(fp).rows.stream()
-			.filter(r -> r.key.equals(key))
-			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("Transparency key not found: " + key))
-			.stats.mime;
+	public static int count(Fingerprint fp, String key) {
+		return count(checksum(fp), key);
 	}
-	public static ChecksumTransparency.Table checksum() {
-		return ChecksumTransparency.Table.merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
+	public static String mime(Fingerprint fp, String key) {
+		return mime(checksum(fp), key);
+	}
+	private static Table checksum() {
+		return merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
 	}
 	public static void report() {
-		ChecksumTransparency.report(checksum());
+		report(checksum());
 	}
 }

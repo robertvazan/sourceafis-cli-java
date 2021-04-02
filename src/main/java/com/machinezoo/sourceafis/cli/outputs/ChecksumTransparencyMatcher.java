@@ -8,22 +8,40 @@ import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class ChecksumTransparencyMatcher {
-	public static ChecksumTransparency.Table checksum(Fingerprint probe) {
-		return Cache.get(ChecksumTransparency.Table.class, Paths.get("checksums", "transparency", "matcher"), probe.path(), () -> {
-			var matcher = new FingerprintMatcher(Template.of(probe));
-			var tables = new ArrayList<ChecksumTransparency.Table>();
-			for (var candidate : probe.dataset.fingerprints()) {
-				var template = Template.of(candidate);
-				tables.add(ChecksumTransparency.collect(() -> matcher.match(template)));
+public class ChecksumTransparencyMatcher extends ChecksumTransparencyBase {
+	private static Table checksum(FingerprintPair pair) {
+		return Cache.get(Table.class, Paths.get("checksums", "transparency", "matcher"), pair.path(), map -> {
+			var dataset = pair.dataset;
+			var fingerprints = dataset.fingerprints();
+			var templates = StreamEx.of(fingerprints).map(fp -> Template.of(fp)).toList();
+			for (var probe : fingerprints) {
+				var matcher = new FingerprintMatcher(templates.get(probe.id));
+				for (var candidate : fingerprints) {
+					var template = templates.get(candidate.id);
+					var table = collect(() -> matcher.match(template));
+					map.put(new FingerprintPair(probe, candidate).path(), table);
+				}
 			}
-			return ChecksumTransparency.Table.merge(tables);
 		});
 	}
-	public static ChecksumTransparency.Table checksum() {
-		return ChecksumTransparency.Table.merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
+	private static Table checksum(Fingerprint probe) {
+		return Cache.get(Table.class, Paths.get("checksums", "transparency", "matcher"), probe.path(), () -> {
+			var tables = new ArrayList<Table>();
+			for (var candidate : probe.dataset.fingerprints())
+				tables.add(checksum(new FingerprintPair(probe, candidate)));
+			return merge(tables);
+		});
+	}
+	public static int count(FingerprintPair pair, String key) {
+		return count(checksum(pair), key);
+	}
+	public static String mime(FingerprintPair pair, String key) {
+		return mime(checksum(pair), key);
+	}
+	private static Table checksum() {
+		return merge(StreamEx.of(Fingerprint.all()).map(fp -> checksum(fp)).toList());
 	}
 	public static void report() {
-		ChecksumTransparency.report(checksum());
+		report(checksum());
 	}
 }

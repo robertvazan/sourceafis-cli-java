@@ -3,6 +3,7 @@ package com.machinezoo.sourceafis.cli.utils;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import java.util.function.*;
@@ -105,21 +106,31 @@ public abstract class Cache<T> implements Supplier<T> {
 		return new TrivialCompression();
 	}
 	private static final ConcurrentMap<Path, AtomicBoolean> reported = new ConcurrentHashMap<>();
-	public static <T> T get(Class<T> clazz, Path category, Path identity, Supplier<T> supplier) {
+	public static <T> T get(Class<T> clazz, Path category, Path identity, Consumer<Map<Path, Object>> generator) {
 		return Exceptions.sneak().get(() -> {
-			var serialization = serialization(clazz);
-			var compression = compression(serialization.rename(identity));
-			var path = compression.rename(serialization.rename(Configuration.output().resolve(category).resolve(identity)));
-			if (Files.exists(path))
-				return serialization.deserialize(compression.decompress(Files.readAllBytes(path)), clazz);
-			if (Configuration.baselineMode)
-				throw new IllegalStateException("Baseline data was not found.");
-			if (!reported.computeIfAbsent(category, c -> new AtomicBoolean()).getAndSet(true))
-				logger.info("Computing {}...", category);
-			T value = supplier.get();
-			Files.createDirectories(path.getParent());
-			Files.write(path, compression.compress(serialization.serialize(value)));
-			return value;
+			var deserialization = serialization(clazz);
+			var decompression = compression(deserialization.rename(identity));
+			var path = decompression.rename(deserialization.rename(Configuration.output().resolve(category).resolve(identity)));
+			if (!Files.exists(path)) {
+				if (Configuration.baselineMode)
+					throw new IllegalStateException("Baseline data was not found.");
+				if (!reported.computeIfAbsent(category, c -> new AtomicBoolean()).getAndSet(true))
+					logger.info("Computing {}...", category);
+				var collection = new HashMap<Path, Object>();
+				generator.accept(collection);
+				for (var key : collection.keySet()) {
+					var value = collection.get(key);
+					var serialization = serialization(value.getClass());
+					var compression = compression(serialization.rename(key));
+					var destination = compression.rename(serialization.rename(Configuration.output().resolve(category).resolve(key)));
+					Files.createDirectories(destination.getParent());
+					Files.write(destination, compression.compress(serialization.serialize(value)));
+				}
+			}
+			return deserialization.deserialize(decompression.decompress(Files.readAllBytes(path)), clazz);
 		});
+	}
+	public static <T> T get(Class<T> clazz, Path category, Path identity, Supplier<T> supplier) {
+		return get(clazz, category, identity, map -> map.put(identity, supplier.get()));
 	}
 }
