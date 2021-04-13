@@ -7,11 +7,12 @@ import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class ChecksumTransparencyExtractor extends ChecksumTransparencyBase {
-	private static final Path category = Paths.get("checksums", "transparency", "extractor");
+public class MatcherTransparencyChecksum extends TransparencyChecksumBase {
+	private static final Path category = Paths.get("checksums", "transparency", "matcher");
 	private static Table checksum(Fingerprint fp) {
 		return Cache.get(Table.class, category, fp.path(), () -> {
-			return collect(() -> new FingerprintTemplate(fp.decode()));
+			var template = Template.of(fp);
+			return collect(() -> new FingerprintMatcher(template));
 		});
 	}
 	public static int count(Fingerprint fp, String key) {

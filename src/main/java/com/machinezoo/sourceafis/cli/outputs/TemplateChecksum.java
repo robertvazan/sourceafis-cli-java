@@ -5,7 +5,7 @@ import java.nio.file.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class ChecksumTemplates {
+public class TemplateChecksum {
 	private static class Stats {
 		int count;
 		long length;

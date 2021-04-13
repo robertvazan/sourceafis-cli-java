@@ -7,7 +7,7 @@ import org.openjdk.jol.info.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class BenchmarkFootprint {
+public class FootprintBenchmark {
 	private static class Stats {
 		int count;
 		double serialized;

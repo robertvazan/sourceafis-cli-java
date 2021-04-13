@@ -5,7 +5,7 @@ import java.nio.file.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class BenchmarkAccuracy {
+public class AccuracyBenchmark {
 	private static class Stats {
 		double eer;
 		double fmr100;

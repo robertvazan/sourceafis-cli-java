@@ -8,7 +8,7 @@ import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class ExportPng {
+public class PngExport {
 	public static void export() {
 		var category = Paths.get("exports", "png");
 		for (var dataset : Dataset.all(Download.Format.ORIGINAL)) {

@@ -6,22 +6,23 @@ import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class LogExtractor extends LogBase {
+public class MatcherLog extends LogBase {
 	private static Path identity(String key, Fingerprint fp, int index, int count, String mime) {
 		return identity(fp.path(), index, count, mime);
 	}
 	private static Path category(String key) {
-		return category(key, "extractor");
+		return category(key, "matcher");
 	}
 	private static byte[] collect(String key, Fingerprint fp, int index, int count, String mime) {
 		return Cache.get(byte[].class, category(key), identity(key, fp, index, count, mime), map -> {
-			collect(key, index, count, mime, n -> identity(key, fp, n, count, mime), () -> new FingerprintTemplate(fp.decode()), map);
+			var template = Template.of(fp);
+			collect(key, index, count, mime, n -> identity(key, fp, n, count, mime), () -> new FingerprintMatcher(template), map);
 		});
 	}
 	public static void collect(String key) {
-		var mime = ChecksumTransparencyExtractor.mime(key);
+		var mime = ExtractorTransparencyChecksum.mime(key);
 		for (var fp : Fingerprint.all()) {
-			int count = ChecksumTransparencyExtractor.count(fp, key);
+			int count = ExtractorTransparencyChecksum.count(fp, key);
 			if (count > 0)
 				collect(key, fp, 0, count, mime);
 		}

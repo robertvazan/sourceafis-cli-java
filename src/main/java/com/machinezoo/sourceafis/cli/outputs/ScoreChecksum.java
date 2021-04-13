@@ -8,7 +8,7 @@ import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class ChecksumScores {
+public class ScoreChecksum {
 	private static class QFunctionStats {
 		long count;
 		double average;

@@ -8,7 +8,7 @@ import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class ExportGrayscale {
+public class GrayscaleExport {
 	public static void export() {
 		var category = Paths.get("exports", "grayscale");
 		for (var dataset : Dataset.all(Download.Format.ORIGINAL)) {
