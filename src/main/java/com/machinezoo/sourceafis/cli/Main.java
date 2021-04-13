@@ -40,6 +40,9 @@ public class Main {
 		new Args.Command("log", "extractor")
 			.action("key", LogExtractor::collect)
 			.register("Log extractor transparency data for given key.");
+		new Args.Command("log", "matcher")
+			.action("key", LogMatcher::collect)
+			.register("Log transparency data for given key while preparing probe for matching.");
 		new Args.Command("log", "match")
 			.action("key", LogMatch::collect)
 			.register("Log transparency data for given key during comparison of probe to candidate.");
@@ -55,6 +58,9 @@ public class Main {
 		new Args.Command("checksum", "transparency", "extractor")
 			.action(ChecksumTransparencyExtractor::report)
 			.register("Compute consistency checksum of extractor transparency data.");
+		new Args.Command("checksum", "transparency", "matcher")
+			.action(ChecksumTransparencyMatcher::report)
+			.register("Compute consistency checksum of transparency data generated when preparing probe for matching.");
 		new Args.Command("checksum", "transparency", "match")
 			.action(ChecksumTransparencyMatch::report)
 			.register("Compute consistency checksum of transparency data generated during comparison of probe to candidate.");
