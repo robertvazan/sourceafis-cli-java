@@ -8,7 +8,7 @@ import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class LogBase {
+public class TransparencyLog {
 	private static class KeyCollector extends FingerprintTransparency {
 		final String key;
 		final List<byte[]> files = new ArrayList<>();

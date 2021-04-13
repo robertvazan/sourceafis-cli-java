@@ -8,9 +8,9 @@ public class Checksum {
 		var table = new Pretty.Table("Data", "Hash");
 		table.add("Templates", Pretty.hash(TemplateChecksum.global(), "templates"));
 		table.add("Scores", Pretty.hash(ScoreChecksum.global(), "scores"));
-		table.add("Extractor transparency", Pretty.hash(ExtractorTransparencyChecksum.global(), "transparency", "extractor"));
-		table.add("Matcher transparency", Pretty.hash(MatcherTransparencyChecksum.global(), "transparency", "matcher"));
-		table.add("Match transparency", Pretty.hash(MatchTransparencyChecksum.global(), "transparency", "match"));
+		table.add("Extractor transparency", Pretty.hash(ExtractorChecksum.global(), "transparency", "extractor"));
+		table.add("Matcher transparency", Pretty.hash(MatcherChecksum.global(), "transparency", "matcher"));
+		table.add("Match transparency", Pretty.hash(MatchChecksum.global(), "transparency", "match"));
 		Pretty.print(table.format());
 	}
 }

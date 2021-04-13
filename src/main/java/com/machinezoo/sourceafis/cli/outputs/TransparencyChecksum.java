@@ -5,7 +5,7 @@ import java.util.*;
 import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class TransparencyChecksumBase {
+public class TransparencyChecksum {
 	protected static class Stats {
 		public String mime;
 		public int count;

@@ -7,7 +7,7 @@ import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class MatcherTransparencyChecksum extends TransparencyChecksumBase {
+public class MatcherChecksum extends TransparencyChecksum {
 	private static final Path category = Paths.get("checksums", "transparency", "matcher");
 	private static Table checksum(Fingerprint fp) {
 		return Cache.get(Table.class, category, fp.path(), () -> {

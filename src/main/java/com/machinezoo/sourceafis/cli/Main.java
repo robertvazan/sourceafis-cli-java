@@ -56,13 +56,13 @@ public class Main {
 			.action(ScoreChecksum::report)
 			.register("Compute consistency checksum of similarity scores.");
 		new Args.Command("checksum", "transparency", "extractor")
-			.action(ExtractorTransparencyChecksum::report)
+			.action(ExtractorChecksum::report)
 			.register("Compute consistency checksum of extractor transparency data.");
 		new Args.Command("checksum", "transparency", "matcher")
-			.action(MatcherTransparencyChecksum::report)
+			.action(MatcherChecksum::report)
 			.register("Compute consistency checksum of transparency data generated when preparing probe for matching.");
 		new Args.Command("checksum", "transparency", "match")
-			.action(MatchTransparencyChecksum::report)
+			.action(MatchChecksum::report)
 			.register("Compute consistency checksum of transparency data generated during comparison of probe to candidate.");
 		new Args.Command("export", "png")
 			.action(PngExport::export)

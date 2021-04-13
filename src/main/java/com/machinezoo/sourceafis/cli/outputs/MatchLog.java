@@ -7,7 +7,7 @@ import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class MatchLog extends LogBase {
+public class MatchLog extends TransparencyLog {
 	private static Path identity(String key, FingerprintPair pair, int index, int count, String mime) {
 		return identity(pair.path(), index, count, mime);
 	}
@@ -23,7 +23,7 @@ public class MatchLog extends LogBase {
 				var matcher = new FingerprintMatcher(templates.get(probe.id));
 				for (var candidate : fingerprints) {
 					var wpair = new FingerprintPair(probe, candidate);
-					int wcount = MatchTransparencyChecksum.count(wpair, key);
+					int wcount = MatchChecksum.count(wpair, key);
 					var template = templates.get(candidate.id);
 					collect(key, index, wcount, mime, n -> identity(key, wpair, n, wcount, mime), () -> matcher.match(template), map);
 				}
@@ -31,11 +31,11 @@ public class MatchLog extends LogBase {
 		});
 	}
 	public static void collect(String key) {
-		var mime = MatchTransparencyChecksum.mime(key);
+		var mime = MatchChecksum.mime(key);
 		for (var probe : Fingerprint.all()) {
 			for (var candidate : probe.dataset.fingerprints()) {
 				var pair = new FingerprintPair(probe, candidate);
-				int count = MatchTransparencyChecksum.count(pair, key);
+				int count = MatchChecksum.count(pair, key);
 				if (count > 0)
 					collect(key, pair, 0, count, mime);
 			}

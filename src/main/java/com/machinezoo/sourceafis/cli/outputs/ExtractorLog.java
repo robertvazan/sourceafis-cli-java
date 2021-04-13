@@ -6,7 +6,7 @@ import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class ExtractorLog extends LogBase {
+public class ExtractorLog extends TransparencyLog {
 	private static Path identity(String key, Fingerprint fp, int index, int count, String mime) {
 		return identity(fp.path(), index, count, mime);
 	}
@@ -19,9 +19,9 @@ public class ExtractorLog extends LogBase {
 		});
 	}
 	public static void collect(String key) {
-		var mime = ExtractorTransparencyChecksum.mime(key);
+		var mime = ExtractorChecksum.mime(key);
 		for (var fp : Fingerprint.all()) {
-			int count = ExtractorTransparencyChecksum.count(fp, key);
+			int count = ExtractorChecksum.count(fp, key);
 			if (count > 0)
 				collect(key, fp, 0, count, mime);
 		}
