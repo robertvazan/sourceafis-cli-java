@@ -63,6 +63,12 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.2.3</version>
 		</dependency>
+		<dependency>
+			<!-- Used to measure memory footprint of SourceAFIS templates. Causes warnings. Needs replacement. -->
+			<groupId>org.openjdk.jol</groupId>
+			<artifactId>jol-core</artifactId>
+			<version>0.10</version>
+		</dependency>
 	</dependencies>
 
 	<build>

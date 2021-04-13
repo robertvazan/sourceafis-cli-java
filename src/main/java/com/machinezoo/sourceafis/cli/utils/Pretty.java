@@ -136,6 +136,8 @@ public class Pretty {
 			return String.format("%.0f %s", value, unit);
 		if (abs < 10_000)
 			return String.format("%.2f K%s", value / 1000, unit);
+		if (abs < 100_000)
+			return String.format("%.1f K%s", value / 1000, unit);
 		return String.format("%g %s", value, unit);
 	}
 	private static String unit(double value, String unit, String more, String less, String... tag) {
@@ -143,6 +145,9 @@ public class Pretty {
 	}
 	public static String bytes(double value, String... tag) {
 		return unit(value, "B", "larger", "smaller", tag);
+	}
+	public static String minutiae(double value, String... tag) {
+		return measurement(value, String.format("%.0f", value), "more", "fewer", tag);
 	}
 	private static final Object2LongMap<String> lengths = new Object2LongOpenHashMap<>();
 	public static String length(long length, String... tag) {
