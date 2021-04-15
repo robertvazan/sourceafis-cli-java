@@ -2,7 +2,7 @@
 package com.machinezoo.sourceafis.cli.samples;
 
 import java.nio.file.*;
-import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 
 public class FingerprintPair implements DataIdentifier {
 	public final Dataset dataset;

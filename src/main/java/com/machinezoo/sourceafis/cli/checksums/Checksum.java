@@ -7,7 +7,7 @@ import com.machinezoo.sourceafis.cli.utils.*;
 public class Checksum implements Runnable {
 	@Override
 	public void run() {
-		var table = new Pretty.Table("Data", "Hash");
+		var table = new PrettyTable("Data", "Hash");
 		table.add("Templates", Pretty.hash(new TemplateChecksum().global(), "templates"));
 		table.add("Scores", Pretty.hash(new ScoreChecksum().global(), "scores"));
 		for (var transparency : List.of(new ExtractorChecksum(), new MatcherChecksum(), new MatchChecksum()))

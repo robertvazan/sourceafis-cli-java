@@ -11,13 +11,13 @@ public class Profile {
 		this.name = name;
 		this.datasets = datasets;
 	}
-	private static Profile everything(Download.Format format) {
+	private static Profile everything(ImageFormat format) {
 		return new Profile("All", Dataset.all(format));
 	}
 	public static Profile everything() {
-		return everything(Download.DEFAULT_FORMAT);
+		return everything(ImageFormat.DEFAULT);
 	}
-	public static List<Profile> all(Download.Format format) {
+	public static List<Profile> all(ImageFormat format) {
 		return StreamEx.of(Dataset.all(format))
 			.map(ds -> new Profile(ds.name, List.of(ds)))
 			.append(new Profile("High quality", StreamEx.of("fvc2002-1b", "fvc2002-2b").map(n -> Dataset.get(n, format)).toList()))
@@ -25,7 +25,7 @@ public class Profile {
 			.toList();
 	}
 	public static List<Profile> all() {
-		return all(Download.DEFAULT_FORMAT);
+		return all(ImageFormat.DEFAULT);
 	}
 	public List<Fingerprint> fingerprints() {
 		return StreamEx.of(datasets).flatCollection(ds -> ds.fingerprints()).toList();

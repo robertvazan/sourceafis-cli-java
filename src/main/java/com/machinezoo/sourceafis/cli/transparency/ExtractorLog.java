@@ -4,7 +4,7 @@ package com.machinezoo.sourceafis.cli.transparency;
 import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.checksums.*;
 import com.machinezoo.sourceafis.cli.samples.*;
-import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 
 public class ExtractorLog extends TransparencyLog<Fingerprint> {
 	@Override

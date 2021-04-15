@@ -7,6 +7,7 @@ import com.machinezoo.sourceafis.cli.benchmarks.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
 public class ScoreChecksum implements Runnable {
@@ -37,7 +38,7 @@ public class ScoreChecksum implements Runnable {
 	}
 	@Override
 	public void run() {
-		var table = new Pretty.Table("Dataset", "Matching", "Non-matching", "Self-matching", "Hash");
+		var table = new PrettyTable("Dataset", "Matching", "Non-matching", "Self-matching", "Hash");
 		for (var profile : Profile.all()) {
 			var stats = checksum(profile);
 			table.add(

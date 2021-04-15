@@ -4,6 +4,7 @@ package com.machinezoo.sourceafis.cli.benchmarks;
 import java.nio.file.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
 public class AccuracyBenchmark implements Runnable {
@@ -23,7 +24,7 @@ public class AccuracyBenchmark implements Runnable {
 	}
 	@Override
 	public void run() {
-		var table = new Pretty.Table("Dataset", "EER", "FMR100", "FMR1K", "FMR10K");
+		var table = new PrettyTable("Dataset", "EER", "FMR100", "FMR1K", "FMR10K");
 		for (var profile : Profile.all()) {
 			var stats = sum(profile);
 			table.add(profile.name,

@@ -26,13 +26,7 @@ public class Download {
 		"fvc2004-3b",
 		"fvc2004-4b"
 	};
-	public static enum Format {
-		ORIGINAL,
-		PNG,
-		GRAY
-	}
-	public static final Format DEFAULT_FORMAT = Format.GRAY;
-	private static String url(String dataset, Format format) {
+	private static String url(String dataset, ImageFormat format) {
 		switch (format) {
 		case ORIGINAL:
 			switch (dataset) {
@@ -125,7 +119,7 @@ public class Download {
 			throw new IllegalArgumentException();
 		}
 	}
-	public static Path directory(String dataset, Format format) {
+	public static Path directory(String dataset, ImageFormat format) {
 		String name;
 		switch (format) {
 		case ORIGINAL:
@@ -144,7 +138,7 @@ public class Download {
 	}
 	private static final Logger logger = LoggerFactory.getLogger(Download.class);
 	private static final AtomicBoolean reported = new AtomicBoolean();
-	public static Path unpack(String dataset, Format format) {
+	public static Path unpack(String dataset, ImageFormat format) {
 		var directory = directory(dataset, format);
 		if (!Files.isDirectory(directory)) {
 			var url = url(dataset, format);

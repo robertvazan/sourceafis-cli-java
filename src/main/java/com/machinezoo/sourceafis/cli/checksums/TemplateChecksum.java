@@ -5,6 +5,7 @@ import java.nio.file.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
 public class TemplateChecksum implements Runnable {
@@ -28,7 +29,7 @@ public class TemplateChecksum implements Runnable {
 	}
 	@Override
 	public void run() {
-		var table = new Pretty.Table("Dataset", "Count", "Length", "Normalized", "Total", "Hash");
+		var table = new PrettyTable("Dataset", "Count", "Length", "Normalized", "Total", "Hash");
 		for (var profile : Profile.all()) {
 			var stats = checksum(profile);
 			table.add(

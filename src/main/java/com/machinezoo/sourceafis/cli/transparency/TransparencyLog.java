@@ -6,6 +6,7 @@ import java.util.*;
 import com.machinezoo.sourceafis.cli.*;
 import com.machinezoo.sourceafis.cli.checksums.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 
 public abstract class TransparencyLog<K extends DataIdentifier> {
 	public abstract String name();

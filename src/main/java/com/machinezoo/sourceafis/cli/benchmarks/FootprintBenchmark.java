@@ -7,6 +7,7 @@ import org.openjdk.jol.info.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
 public class FootprintBenchmark implements Runnable {
@@ -38,7 +39,7 @@ public class FootprintBenchmark implements Runnable {
 	}
 	@Override
 	public void run() {
-		var table = new Pretty.Table("Dataset", "Serialized", "Memory", "Minutiae");
+		var table = new PrettyTable("Dataset", "Serialized", "Memory", "Minutiae");
 		for (var profile : Profile.all()) {
 			var stats = sum(profile);
 			table.add(

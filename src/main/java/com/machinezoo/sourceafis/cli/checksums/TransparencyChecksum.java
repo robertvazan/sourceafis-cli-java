@@ -4,6 +4,7 @@ package com.machinezoo.sourceafis.cli.checksums;
 import java.nio.file.*;
 import java.util.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
 public abstract class TransparencyChecksum<K> implements Runnable {
@@ -32,7 +33,7 @@ public abstract class TransparencyChecksum<K> implements Runnable {
 	}
 	@Override
 	public void run() {
-		var table = new Pretty.Table("Key", "MIME", "Count", "Length", "Normalized", "Total", "Hash");
+		var table = new PrettyTable("Key", "MIME", "Count", "Length", "Normalized", "Total", "Hash");
 		for (var row : checksum().rows) {
 			var stats = row.stats;
 			table.add(

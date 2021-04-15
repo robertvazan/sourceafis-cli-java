@@ -7,12 +7,13 @@ import javax.imageio.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 
 public class GrayscaleExport implements Runnable {
 	@Override
 	public void run() {
 		var category = Paths.get("exports", "grayscale");
-		for (var dataset : Dataset.all(Download.Format.ORIGINAL)) {
+		for (var dataset : Dataset.all(ImageFormat.ORIGINAL)) {
 			for (var fp : dataset.fingerprints()) {
 				Cache.get(byte[].class, category, Cache.withExtension(fp.path(), ".gray"), () -> {
 					var buffered = Exceptions.sneak().get(() -> ImageIO.read(new ByteArrayInputStream(fp.load())));

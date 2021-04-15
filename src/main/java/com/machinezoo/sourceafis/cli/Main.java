@@ -12,68 +12,69 @@ import com.machinezoo.sourceafis.cli.checksums.*;
 import com.machinezoo.sourceafis.cli.exports.*;
 import com.machinezoo.sourceafis.cli.transparency.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.args.*;
 import one.util.streamex.*;
 
 public class Main {
 	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 	private static void registerOptions() {
-		new Args.Option("home")
+		new Option("home")
 			.action("path", Configuration::configureHome)
 			.fallback(Configuration.home().toString())
 			.register("Location of cache directory.");
-		new Args.Option("normalize")
+		new Option("normalize")
 			.action(() -> Configuration.normalized = true)
 			.register("Log normalized transparency data instead of raw data obtained from the library.");
-		new Args.Option("baseline")
+		new Option("baseline")
 			.action("path", p -> Configuration.baseline = Paths.get(p))
 			.register("Compare with output of another SourceAFIS CLI. Path may be relative to cache directory, e.g. 'java/1.2.3'.");
 	}
 	private static void registerCommands() {
-		new Args.Command("version")
+		new Command("version")
 			.action(() -> Pretty.print("SourceAFIS for Java " + FingerprintCompatibility.version()))
 			.register("Report version of SourceAFIS library being used.");
 		// benchmark - accuracy + speed + footprint
-		new Args.Command("benchmark", "accuracy")
+		new Command("benchmark", "accuracy")
 			.action(new AccuracyBenchmark())
 			.register("Measure algorithm accuracy.");
 		// benchmark speed
-		new Args.Command("benchmark", "footprint")
+		new Command("benchmark", "footprint")
 			.action(new FootprintBenchmark())
 			.register("Measure template footprint.");
-		new Args.Command("checksum")
+		new Command("checksum")
 			.action(new Checksum())
 			.register("Compute consistency checksum of all algorithm outputs.");
-		new Args.Command("checksum", "templates")
+		new Command("checksum", "templates")
 			.action(new TemplateChecksum())
 			.register("Compute consistency checksum of templates.");
-		new Args.Command("checksum", "scores")
+		new Command("checksum", "scores")
 			.action(new ScoreChecksum())
 			.register("Compute consistency checksum of similarity scores.");
-		new Args.Command("checksum", "transparency", "extractor")
+		new Command("checksum", "transparency", "extractor")
 			.action(new ExtractorChecksum())
 			.register("Compute consistency checksum of extractor transparency data.");
-		new Args.Command("checksum", "transparency", "matcher")
+		new Command("checksum", "transparency", "matcher")
 			.action(new MatcherChecksum())
 			.register("Compute consistency checksum of transparency data generated when preparing probe for matching.");
-		new Args.Command("checksum", "transparency", "match")
+		new Command("checksum", "transparency", "match")
 			.action(new MatchChecksum())
 			.register("Compute consistency checksum of transparency data generated during comparison of probe to candidate.");
-		new Args.Command("log", "extractor")
+		new Command("log", "extractor")
 			.action("key", new ExtractorLog()::log)
 			.register("Log extractor transparency data for given key.");
-		new Args.Command("log", "matcher")
+		new Command("log", "matcher")
 			.action("key", new MatcherLog()::log)
 			.register("Log transparency data for given key while preparing probe for matching.");
-		new Args.Command("log", "match")
+		new Command("log", "match")
 			.action("key", new MatchLog()::log)
 			.register("Log transparency data for given key during comparison of probe to candidate.");
-		new Args.Command("export", "png")
+		new Command("export", "png")
 			.action(new PngExport())
 			.register("Convert sample images to PNG.");
-		new Args.Command("export", "grayscale")
+		new Command("export", "grayscale")
 			.action(new GrayscaleExport())
 			.register("Convert sample images to grayscale.");
-		new Args.Command("purge")
+		new Command("purge")
 			.action(Exceptions.sneak().runnable(() -> FileUtils.deleteDirectory(Configuration.output().toFile())))
 			.register("Remove cached data except downloads.");
 	}
@@ -81,7 +82,7 @@ public class Main {
 		try {
 			registerOptions();
 			registerCommands();
-			var command = Args.parse(args);
+			var command = CommandRegistry.parse(args);
 			if (Configuration.baseline != null) {
 				Configuration.baselineMode = true;
 				command.run();

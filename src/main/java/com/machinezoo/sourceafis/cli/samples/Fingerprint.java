@@ -5,7 +5,7 @@ import java.nio.file.*;
 import java.util.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.*;
-import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
 public class Fingerprint implements DataIdentifier {
@@ -33,7 +33,7 @@ public class Fingerprint implements DataIdentifier {
 	}
 	public FingerprintImage decode() {
 		var options = new FingerprintImageOptions().dpi(dataset.dpi);
-		if (dataset.format == Download.Format.GRAY) {
+		if (dataset.format == ImageFormat.GRAY) {
 			var gray = load();
 			int width = (Byte.toUnsignedInt(gray[0]) << 8) | Byte.toUnsignedInt(gray[1]);
 			int height = (Byte.toUnsignedInt(gray[2]) << 8) | Byte.toUnsignedInt(gray[3]);

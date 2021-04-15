@@ -5,7 +5,7 @@ import java.util.*;
 import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.samples.*;
-import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
 public class MatchChecksum extends TransparencyChecksum<FingerprintPair> {

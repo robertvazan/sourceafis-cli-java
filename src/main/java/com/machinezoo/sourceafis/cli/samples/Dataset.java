@@ -5,12 +5,12 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
 import org.apache.commons.lang3.tuple.*;
-import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
 public class Dataset implements DataIdentifier {
 	public final String name;
-	public final Download.Format format;
+	public final ImageFormat format;
 	public final double dpi;
 	public final DatasetLayout layout;
 	private static double dpi(String dataset) {
@@ -23,21 +23,21 @@ public class Dataset implements DataIdentifier {
 			return 500;
 		}
 	}
-	private Dataset(String name, Download.Format format) {
+	private Dataset(String name, ImageFormat format) {
 		this.name = name;
 		this.format = format;
 		dpi = dpi(name);
 		layout = new DatasetLayout(Download.unpack(name, format));
 	}
-	private static final ConcurrentMap<Pair<String, Download.Format>, Dataset> all = new ConcurrentHashMap<>();
-	public static Dataset get(String name, Download.Format format) {
+	private static final ConcurrentMap<Pair<String, ImageFormat>, Dataset> all = new ConcurrentHashMap<>();
+	public static Dataset get(String name, ImageFormat format) {
 		return all.computeIfAbsent(Pair.of(name, format), p -> new Dataset(p.getLeft(), p.getRight()));
 	}
-	public static List<Dataset> all(Download.Format format) {
+	public static List<Dataset> all(ImageFormat format) {
 		return StreamEx.of(Download.DATASETS).map(n -> get(n, format)).toList();
 	}
 	public static List<Dataset> all() {
-		return all(Download.DEFAULT_FORMAT);
+		return all(ImageFormat.DEFAULT);
 	}
 	public List<Fingerprint> fingerprints() {
 		return IntStreamEx.range(layout.fingerprints()).mapToObj(n -> new Fingerprint(this, n)).toList();

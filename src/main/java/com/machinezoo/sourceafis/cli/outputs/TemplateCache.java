@@ -4,7 +4,7 @@ package com.machinezoo.sourceafis.cli.outputs;
 import java.nio.file.*;
 import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.samples.*;
-import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 
 public class TemplateCache {
 	public static byte[] load(Fingerprint fp) {
