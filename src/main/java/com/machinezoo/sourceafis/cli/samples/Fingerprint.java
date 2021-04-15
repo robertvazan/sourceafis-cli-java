@@ -5,9 +5,10 @@ import java.nio.file.*;
 import java.util.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.*;
+import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class Fingerprint {
+public class Fingerprint implements DataIdentifier {
 	public final Dataset dataset;
 	public final int id;
 	public Fingerprint(Dataset dataset, int id) {
@@ -17,6 +18,7 @@ public class Fingerprint {
 	public String name() {
 		return dataset.layout.name(id);
 	}
+	@Override
 	public Path path() {
 		return dataset.path().resolve(name());
 	}

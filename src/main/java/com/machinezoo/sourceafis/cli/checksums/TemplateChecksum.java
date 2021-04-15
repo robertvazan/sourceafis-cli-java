@@ -1,21 +1,17 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
-package com.machinezoo.sourceafis.cli.outputs;
+package com.machinezoo.sourceafis.cli.checksums;
 
 import java.nio.file.*;
+import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import one.util.streamex.*;
 
-public class TemplateChecksum {
-	private static class Stats {
-		int count;
-		long length;
-		long normalized;
-		byte[] hash;
-	};
-	private static Stats checksum(Fingerprint fp) {
-		return Cache.get(Stats.class, Paths.get("checksums", "templates"), fp.path(), () -> {
-			var checksum = new Stats();
-			var serialized = Template.serialized(fp);
+public class TemplateChecksum implements Runnable {
+	private TemplateStats checksum(Fingerprint fp) {
+		return Cache.get(TemplateStats.class, Paths.get("checksums", "templates"), fp.path(), () -> {
+			var checksum = new TemplateStats();
+			var serialized = TemplateCache.load(fp);
 			checksum.count = 1;
 			checksum.length = serialized.length;
 			var normalized = Serializer.normalize(serialized);
@@ -24,23 +20,14 @@ public class TemplateChecksum {
 			return checksum;
 		});
 	}
-	private static Stats checksum(Profile profile) {
-		var sum = new Stats();
-		var hash = new Hash();
-		for (var fp : profile.fingerprints()) {
-			var stats = checksum(fp);
-			sum.count += stats.count;
-			sum.length += stats.length;
-			sum.normalized += stats.normalized;
-			hash.add(stats.hash);
-		}
-		sum.hash = hash.compute();
-		return sum;
+	private TemplateStats checksum(Profile profile) {
+		return TemplateStats.sum(StreamEx.of(profile.fingerprints()).map(this::checksum).toList());
 	}
-	public static byte[] global() {
+	public byte[] global() {
 		return checksum(Profile.everything()).hash;
 	}
-	public static void report() {
+	@Override
+	public void run() {
 		var table = new Pretty.Table("Dataset", "Count", "Length", "Normalized", "Total", "Hash");
 		for (var profile : Profile.all()) {
 			var stats = checksum(profile);

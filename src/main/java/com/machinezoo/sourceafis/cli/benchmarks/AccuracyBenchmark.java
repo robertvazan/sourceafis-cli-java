@@ -1,0 +1,37 @@
+// Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
+package com.machinezoo.sourceafis.cli.benchmarks;
+
+import java.nio.file.*;
+import com.machinezoo.sourceafis.cli.samples.*;
+import com.machinezoo.sourceafis.cli.utils.*;
+import one.util.streamex.*;
+
+public class AccuracyBenchmark implements Runnable {
+	private AccuracyStats measure(Dataset dataset) {
+		return Cache.get(AccuracyStats.class, Paths.get("benchmarks", "accuracy"), dataset.path(), () -> {
+			var trio = QuantileTrio.of(dataset);
+			var stats = new AccuracyStats();
+			stats.fmr100 = trio.fnmrAtFmr(1.0 / 100);
+			stats.fmr1K = trio.fnmrAtFmr(1.0 / 1_000);
+			stats.fmr10K = trio.fnmrAtFmr(1.0 / 10_000);
+			stats.eer = trio.eer();
+			return stats;
+		});
+	}
+	private AccuracyStats sum(Profile profile) {
+		return AccuracyStats.sum(StreamEx.of(profile.datasets).map(this::measure).toList());
+	}
+	@Override
+	public void run() {
+		var table = new Pretty.Table("Dataset", "EER", "FMR100", "FMR1K", "FMR10K");
+		for (var profile : Profile.all()) {
+			var stats = sum(profile);
+			table.add(profile.name,
+				Pretty.accuracy(stats.eer, profile.name, "EER"),
+				Pretty.accuracy(stats.fmr100, profile.name, "FMR100"),
+				Pretty.accuracy(stats.fmr1K, profile.name, "FMR1K"),
+				Pretty.accuracy(stats.fmr10K, profile.name, "FMR10K"));
+		}
+		Pretty.print(table.format());
+	}
+}

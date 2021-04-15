@@ -7,11 +7,11 @@ import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class Scores {
-	public static double[][] of(Dataset dataset) {
+public class ScoreCache {
+	public static double[][] load(Dataset dataset) {
 		return Cache.get(double[][].class, Paths.get("scores"), dataset.path(), () -> {
 			var fingerprints = dataset.fingerprints();
-			var templates = StreamEx.of(fingerprints).map(fp -> Template.of(fp)).toList();
+			var templates = StreamEx.of(fingerprints).map(fp -> TemplateCache.deserialize(fp)).toList();
 			var scores = new double[fingerprints.size()][];
 			for (var probe : fingerprints) {
 				var matcher = new FingerprintMatcher(templates.get(probe.id));

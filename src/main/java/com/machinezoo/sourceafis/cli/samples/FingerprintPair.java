@@ -2,8 +2,9 @@
 package com.machinezoo.sourceafis.cli.samples;
 
 import java.nio.file.*;
+import com.machinezoo.sourceafis.cli.utils.*;
 
-public class FingerprintPair {
+public class FingerprintPair implements DataIdentifier {
 	public final Dataset dataset;
 	public final int probeId;
 	public final int candidateId;
@@ -20,6 +21,7 @@ public class FingerprintPair {
 	public Fingerprint candidate() {
 		return new Fingerprint(dataset, candidateId);
 	}
+	@Override
 	public Path path() {
 		return probe().path().resolve(candidate().name());
 	}

@@ -1,0 +1,52 @@
+// Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
+package com.machinezoo.sourceafis.cli.checksums;
+
+import java.nio.*;
+import java.nio.file.*;
+import com.machinezoo.sourceafis.cli.benchmarks.*;
+import com.machinezoo.sourceafis.cli.outputs.*;
+import com.machinezoo.sourceafis.cli.samples.*;
+import com.machinezoo.sourceafis.cli.utils.*;
+import one.util.streamex.*;
+
+public class ScoreChecksum implements Runnable {
+	private ScoreStats checksum(Dataset dataset) {
+		return Cache.get(ScoreStats.class, Paths.get("checksums", "scores"), dataset.path(), () -> {
+			var trio = QuantileTrio.of(dataset);
+			var stats = new ScoreStats();
+			stats.matching = trio.matching.average();
+			stats.nonmatching = trio.nonmatching.average();
+			stats.selfmatching = trio.selfmatching.average();
+			var buffer = new byte[8];
+			var hash = new Hash();
+			for (var row : ScoreCache.load(dataset)) {
+				for (var score : row) {
+					ByteBuffer.wrap(buffer).putDouble(score);
+					hash.add(buffer);
+				}
+			}
+			stats.hash = hash.compute();
+			return stats;
+		});
+	}
+	private ScoreStats checksum(Profile profile) {
+		return ScoreStats.sum(StreamEx.of(profile.datasets).map(this::checksum).toList());
+	}
+	public byte[] global() {
+		return checksum(Profile.everything()).hash;
+	}
+	@Override
+	public void run() {
+		var table = new Pretty.Table("Dataset", "Matching", "Non-matching", "Self-matching", "Hash");
+		for (var profile : Profile.all()) {
+			var stats = checksum(profile);
+			table.add(
+				profile.name,
+				Pretty.decibans(stats.matching, profile.name, "matching"),
+				Pretty.decibans(stats.nonmatching, profile.name, "nonmatching"),
+				Pretty.decibans(stats.selfmatching, profile.name, "selfmatching"),
+				Pretty.hash(stats.hash, profile.name, "hash"));
+		}
+		Pretty.print(table.format());
+	}
+}

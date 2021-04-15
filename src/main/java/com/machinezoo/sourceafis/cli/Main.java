@@ -7,7 +7,10 @@ import org.apache.commons.lang3.exception.*;
 import org.slf4j.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.*;
-import com.machinezoo.sourceafis.cli.outputs.*;
+import com.machinezoo.sourceafis.cli.benchmarks.*;
+import com.machinezoo.sourceafis.cli.checksums.*;
+import com.machinezoo.sourceafis.cli.exports.*;
+import com.machinezoo.sourceafis.cli.transparency.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
@@ -31,44 +34,44 @@ public class Main {
 			.register("Report version of SourceAFIS library being used.");
 		// benchmark - accuracy + speed + footprint
 		new Args.Command("benchmark", "accuracy")
-			.action(AccuracyBenchmark::report)
+			.action(new AccuracyBenchmark())
 			.register("Measure algorithm accuracy.");
 		// benchmark speed
 		new Args.Command("benchmark", "footprint")
-			.action(FootprintBenchmark::report)
+			.action(new FootprintBenchmark())
 			.register("Measure template footprint.");
-		new Args.Command("log", "extractor")
-			.action("key", ExtractorLog::collect)
-			.register("Log extractor transparency data for given key.");
-		new Args.Command("log", "matcher")
-			.action("key", MatcherLog::collect)
-			.register("Log transparency data for given key while preparing probe for matching.");
-		new Args.Command("log", "match")
-			.action("key", MatchLog::collect)
-			.register("Log transparency data for given key during comparison of probe to candidate.");
 		new Args.Command("checksum")
-			.action(Checksum::report)
+			.action(new Checksum())
 			.register("Compute consistency checksum of all algorithm outputs.");
 		new Args.Command("checksum", "templates")
-			.action(TemplateChecksum::report)
+			.action(new TemplateChecksum())
 			.register("Compute consistency checksum of templates.");
 		new Args.Command("checksum", "scores")
-			.action(ScoreChecksum::report)
+			.action(new ScoreChecksum())
 			.register("Compute consistency checksum of similarity scores.");
 		new Args.Command("checksum", "transparency", "extractor")
-			.action(ExtractorChecksum::report)
+			.action(new ExtractorChecksum())
 			.register("Compute consistency checksum of extractor transparency data.");
 		new Args.Command("checksum", "transparency", "matcher")
-			.action(MatcherChecksum::report)
+			.action(new MatcherChecksum())
 			.register("Compute consistency checksum of transparency data generated when preparing probe for matching.");
 		new Args.Command("checksum", "transparency", "match")
-			.action(MatchChecksum::report)
+			.action(new MatchChecksum())
 			.register("Compute consistency checksum of transparency data generated during comparison of probe to candidate.");
+		new Args.Command("log", "extractor")
+			.action("key", new ExtractorLog()::log)
+			.register("Log extractor transparency data for given key.");
+		new Args.Command("log", "matcher")
+			.action("key", new MatcherLog()::log)
+			.register("Log transparency data for given key while preparing probe for matching.");
+		new Args.Command("log", "match")
+			.action("key", new MatchLog()::log)
+			.register("Log transparency data for given key during comparison of probe to candidate.");
 		new Args.Command("export", "png")
-			.action(PngExport::export)
+			.action(new PngExport())
 			.register("Convert sample images to PNG.");
 		new Args.Command("export", "grayscale")
-			.action(GrayscaleExport::export)
+			.action(new GrayscaleExport())
 			.register("Convert sample images to grayscale.");
 		new Args.Command("purge")
 			.action(Exceptions.sneak().runnable(() -> FileUtils.deleteDirectory(Configuration.output().toFile())))

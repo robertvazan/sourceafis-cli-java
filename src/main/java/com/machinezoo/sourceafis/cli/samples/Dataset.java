@@ -5,9 +5,10 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
 import org.apache.commons.lang3.tuple.*;
+import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class Dataset {
+public class Dataset implements DataIdentifier {
 	public final String name;
 	public final Download.Format format;
 	public final double dpi;
@@ -41,6 +42,7 @@ public class Dataset {
 	public List<Fingerprint> fingerprints() {
 		return IntStreamEx.range(layout.fingerprints()).mapToObj(n -> new Fingerprint(this, n)).toList();
 	}
+	@Override
 	public Path path() {
 		return Paths.get(name);
 	}

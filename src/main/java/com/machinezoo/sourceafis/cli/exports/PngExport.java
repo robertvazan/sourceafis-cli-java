@@ -1,5 +1,5 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
-package com.machinezoo.sourceafis.cli.outputs;
+package com.machinezoo.sourceafis.cli.exports;
 
 import java.io.*;
 import java.nio.file.*;
@@ -8,8 +8,9 @@ import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class PngExport {
-	public static void export() {
+public class PngExport implements Runnable {
+	@Override
+	public void run() {
 		var category = Paths.get("exports", "png");
 		for (var dataset : Dataset.all(Download.Format.ORIGINAL)) {
 			for (var fp : dataset.fingerprints()) {
