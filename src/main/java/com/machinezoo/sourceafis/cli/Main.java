@@ -10,7 +10,7 @@ import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.benchmarks.*;
 import com.machinezoo.sourceafis.cli.checksums.*;
 import com.machinezoo.sourceafis.cli.exports.*;
-import com.machinezoo.sourceafis.cli.transparency.*;
+import com.machinezoo.sourceafis.cli.logs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import one.util.streamex.*;

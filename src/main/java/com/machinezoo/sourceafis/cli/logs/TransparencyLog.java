@@ -1,5 +1,5 @@
 // Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
-package com.machinezoo.sourceafis.cli.transparency;
+package com.machinezoo.sourceafis.cli.logs;
 
 import java.nio.file.*;
 import java.util.*;
