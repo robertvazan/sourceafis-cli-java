@@ -15,7 +15,8 @@ public class ExtractorSpeed extends SpeedBenchmark {
 	@Override
 	protected TimingStats measure() {
 		return Cache.get(TimingStats.class, Paths.get("benchmarks", "speed", "extractor"), Paths.get("sample"), () -> {
-			var fingerprints = Fingerprint.all();
+			var fingerprints = new ArrayList<>(Fingerprint.all());
+			Collections.shuffle(fingerprints);
 			var templates = StreamEx.of(fingerprints).toMap(TemplateCache::load);
 			var recorder = new TimingRecorder(System.nanoTime(), DURATION, SAMPLE_SIZE);
 			boolean nondeterministic = false;
