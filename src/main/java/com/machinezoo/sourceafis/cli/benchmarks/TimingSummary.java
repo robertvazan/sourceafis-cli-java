@@ -21,12 +21,14 @@ public class TimingSummary {
 		var datasets = StreamEx.of(list)
 			.flatCollection(s -> s.keySet())
 			.distinct()
-			.filter(ds -> list.stream().allMatch(s -> s.containsKey(ds)))
 			.toSet();
 		var seconds = list.stream().flatMapToInt(s -> s.values().stream().mapToInt(ts -> ts.length)).min().getAsInt();
 		return StreamEx.of(datasets).toMap(dataset -> {
 			return IntStreamEx.range(seconds)
-				.mapToObj(interval -> sum(StreamEx.of(list).map(s -> s.get(dataset)[interval]).toList()))
+				.mapToObj(interval -> sum(StreamEx.of(list)
+					.filter(s -> s.containsKey(dataset))
+					.map(s -> s.get(dataset)[interval])
+					.toList()))
 				.toArray(TimingSummary[]::new);
 		});
 	}

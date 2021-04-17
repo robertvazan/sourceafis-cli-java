@@ -4,6 +4,7 @@ package com.machinezoo.sourceafis.cli.samples;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
+import org.apache.commons.lang3.builder.*;
 import org.apache.commons.lang3.tuple.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
@@ -45,5 +46,19 @@ public class Dataset implements DataIdentifier {
 	@Override
 	public Path path() {
 		return Paths.get(name);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Dataset))
+			return false;
+		var other = (Dataset)obj;
+		return new EqualsBuilder()
+			.append(name, other.name)
+			.append(format, other.format)
+			.isEquals();
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, format);
 	}
 }

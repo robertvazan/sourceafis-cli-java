@@ -3,6 +3,7 @@ package com.machinezoo.sourceafis.cli.samples;
 
 import java.nio.file.*;
 import java.util.*;
+import org.apache.commons.lang3.builder.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
@@ -40,5 +41,19 @@ public class Fingerprint implements DataIdentifier {
 			return new FingerprintImage(width, height, Arrays.copyOfRange(gray, 4, gray.length), options);
 		} else
 			return new FingerprintImage(load(), options);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Fingerprint))
+			return false;
+		var other = (Fingerprint)obj;
+		return new EqualsBuilder()
+			.append(dataset, other.dataset)
+			.append(id, other.id)
+			.isEquals();
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(dataset, id);
 	}
 }
