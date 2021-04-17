@@ -40,6 +40,9 @@ public class Main {
 		new Command("benchmark", "speed", "extractor")
 			.action(new ExtractorSpeed())
 			.register("Measure feature extractor speed.");
+		new Command("benchmark", "speed", "identification")
+			.action(new IdentificationSpeed())
+			.register("Measure identification speed, i.e. speed of comparison to non-matching candidates.");
 		new Command("benchmark", "footprint")
 			.action(new FootprintBenchmark())
 			.register("Measure template footprint.");

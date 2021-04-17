@@ -25,6 +25,11 @@ public abstract class SpeedBenchmark<K> implements Runnable {
 	protected abstract Dataset dataset(K id);
 	protected abstract List<K> shuffle();
 	protected abstract TimingStats measure();
+	protected static <T> List<T> shuffle(List<T> list) {
+		var shuffled = new ArrayList<>(list);
+		Collections.shuffle(shuffled);
+		return shuffled;
+	}
 	private static List<TimingStats> parallelize(Supplier<Supplier<TimingStats>> setup) {
 		var threads = new ArrayList<Thread>();
 		var futures = new ArrayList<CompletableFuture<TimingStats>>();

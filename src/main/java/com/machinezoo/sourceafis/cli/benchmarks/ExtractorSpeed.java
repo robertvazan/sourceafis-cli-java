@@ -7,20 +7,10 @@ import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import one.util.streamex.*;
 
-public class ExtractorSpeed extends SpeedBenchmark<Fingerprint> {
+public class ExtractorSpeed extends SoloSpeed {
 	@Override
 	public String name() {
 		return "extractor";
-	}
-	@Override
-	protected Dataset dataset(Fingerprint fp) {
-		return fp.dataset;
-	}
-	@Override
-	protected List<Fingerprint> shuffle() {
-		var fingerprints = new ArrayList<>(Fingerprint.all());
-		Collections.shuffle(fingerprints);
-		return fingerprints;
 	}
 	@Override
 	protected TimingStats measure() {

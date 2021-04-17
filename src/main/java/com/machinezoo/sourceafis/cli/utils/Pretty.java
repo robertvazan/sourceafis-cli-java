@@ -101,6 +101,16 @@ public class Pretty {
 	}
 	private static String unit(double value, String unit) {
 		double abs = Math.abs(value);
+		if (abs < 0.000_000_1)
+			return String.format("%.1f n%s", value * 1_000_000_000, unit);
+		if (abs < 0.000_001)
+			return String.format("%.0f n%s", value * 1_000_000_000, unit);
+		if (abs < 0.000_01)
+			return String.format("%.2f u%s", value * 1_000_000, unit);
+		if (abs < 0.000_1)
+			return String.format("%.1f u%s", value * 1_000_000, unit);
+		if (abs < 0.001)
+			return String.format("%.0f u%s", value * 1_000_000, unit);
 		if (abs < 0.01)
 			return String.format("%.2f m%s", value * 1000, unit);
 		if (abs < 0.1)
