@@ -146,4 +146,7 @@ public class Pretty {
 		} else
 			return measurement(value, decibans(value), "higher", "lower", tag);
 	}
+	public static String speed(double value, String... tag) {
+		return unit(value, "fp/s", "faster", "slower", tag);
+	}
 }
