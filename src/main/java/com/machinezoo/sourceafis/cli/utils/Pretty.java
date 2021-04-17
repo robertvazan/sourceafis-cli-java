@@ -101,6 +101,12 @@ public class Pretty {
 	}
 	private static String unit(double value, String unit) {
 		double abs = Math.abs(value);
+		if (abs < 0.01)
+			return String.format("%.2f m%s", value * 1000, unit);
+		if (abs < 0.1)
+			return String.format("%.1f m%s", value * 1000, unit);
+		if (abs < 1)
+			return String.format("%.0f m%s", value * 1000, unit);
 		if (abs < 10)
 			return String.format("%.2f %s", value, unit);
 		if (abs < 100)
@@ -148,5 +154,8 @@ public class Pretty {
 	}
 	public static String speed(double value, String... tag) {
 		return unit(value, "fp/s", "faster", "slower", tag);
+	}
+	public static String time(double value, String... tag) {
+		return unit(value, "s", "slower", "faster", tag);
 	}
 }

@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import java.util.function.*;
+import org.apache.commons.math3.stat.descriptive.moment.*;
+import org.apache.commons.math3.stat.descriptive.rank.*;
 import org.slf4j.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.samples.*;
@@ -16,6 +18,8 @@ import one.util.streamex.*;
 public abstract class SpeedBenchmark<K> implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(SpeedBenchmark.class);
 	public static final int DURATION = 10;
+	public static final int WARMUP = 3;
+	public static final int NET_DURATION = DURATION - WARMUP;
 	public static final int SAMPLE_SIZE = 10_000;
 	public abstract String name();
 	protected abstract Dataset dataset(K id);
@@ -58,7 +62,7 @@ public abstract class SpeedBenchmark<K> implements Runnable {
 							operation.execute();
 							long end = System.nanoTime();
 							if (!operation.verify())
-								nondeterministic.set(true);;
+								nondeterministic.set(true);
 							if (!recorder.record(dataset(id), start, end))
 								return recorder.complete();
 						}
@@ -72,10 +76,27 @@ public abstract class SpeedBenchmark<K> implements Runnable {
 	}
 	@Override
 	public void run() {
-		var stats = measure();
-		var sum = TimingSummary.sum(StreamEx.of(stats.segments.values()).flatArray(a -> a).toList());
-		var table = new PrettyTable("Gross");
-		table.add(Pretty.speed(sum.count / (double)DURATION, "all", "gross"));
+		var all = measure().skip(WARMUP);
+		var global = TimingSummary.sum(StreamEx.of(all.segments.values()).flatArray(a -> a).toList());
+		Pretty.print("Gross speed: " + Pretty.speed(global.count / (double)NET_DURATION, "gross"));
+		var table = new PrettyTable("Dataset", "Measurements", "Parallel", "Thread", "Average", "Min", "Max", "Median", "Stddev");
+		for (var profile : Profile.all()) {
+			var stats = all.narrow(profile);
+			var total = TimingSummary.sum(StreamEx.of(stats.segments.values()).flatArray(a -> a).toList());
+			double duration = total.sum / total.count;
+			double speed = 1 / duration;
+			var sample = Arrays.stream(stats.sample).mapToDouble(o -> o.end - o.start).toArray();
+			table.add(
+				profile.name,
+				Pretty.length(total.count),
+				Pretty.speed(speed * all.threads),
+				Pretty.speed(speed, profile.name, "thread"),
+				Pretty.time(duration),
+				Pretty.time(total.min),
+				Pretty.time(total.max),
+				Pretty.time(new Median().evaluate(sample)),
+				Pretty.time(new StandardDeviation().evaluate(sample, duration)));
+		}
 		Pretty.print(table.format());
 	}
 }

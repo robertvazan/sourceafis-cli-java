@@ -14,7 +14,7 @@ public class TimingSummary {
 		sum.count = list.stream().mapToLong(s -> s.count).sum();
 		sum.sum = list.stream().mapToDouble(s -> s.sum).sum();
 		sum.max = list.stream().mapToDouble(s -> s.max).max().orElse(0);
-		sum.min = list.stream().mapToDouble(s -> s.min).max().orElse(0);
+		sum.min = list.stream().filter(s -> s.count > 0).mapToDouble(s -> s.min).min().orElse(0);
 		return sum;
 	}
 	public static Map<String, TimingSummary[]> aggregate(List<Map<String, TimingSummary[]>> list) {
