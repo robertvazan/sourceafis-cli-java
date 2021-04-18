@@ -28,7 +28,7 @@ public abstract class MatchSpeed extends SpeedBenchmark<FingerprintPair> {
 			.toList();
 	}
 	@Override
-	protected TimingStats measure() {
+	public TimingStats measure() {
 		var footprint = new FootprintBenchmark().sum();
 		int ballooning = Math.max(1, (int)(RAM_FOOTPRINT / (footprint.memory / footprint.count * Fingerprint.all().size())));
 		var templates = StreamEx.of(Fingerprint.all())

@@ -13,7 +13,7 @@ public class DeserializationSpeed extends SoloSpeed {
 		return "deserialization";
 	}
 	@Override
-	protected TimingStats measure() {
+	public TimingStats measure() {
 		var serialized = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::load);
 		return measure(() -> new TimedOperation<Fingerprint>() {
 			byte[] input;

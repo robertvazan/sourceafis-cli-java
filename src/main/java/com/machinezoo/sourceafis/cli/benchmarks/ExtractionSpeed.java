@@ -7,13 +7,13 @@ import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import one.util.streamex.*;
 
-public class ExtractorSpeed extends SoloSpeed {
+public class ExtractionSpeed extends SoloSpeed {
 	@Override
 	public String name() {
-		return "extractor";
+		return "extraction";
 	}
 	@Override
-	protected TimingStats measure() {
+	public TimingStats measure() {
 		var templates = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::load);
 		return measure(() -> new TimedOperation<Fingerprint>() {
 			FingerprintImage image;

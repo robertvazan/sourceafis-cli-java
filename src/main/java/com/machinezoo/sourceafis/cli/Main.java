@@ -37,8 +37,11 @@ public class Main {
 		new Command("benchmark", "accuracy")
 			.action(new AccuracyBenchmark())
 			.register("Measure algorithm accuracy.");
-		new Command("benchmark", "speed", "extractor")
-			.action(new ExtractorSpeed())
+		new Command("benchmark", "speed")
+			.action(new SpeedOverview())
+			.register("Measure algorithm speed.");
+		new Command("benchmark", "speed", "extraction")
+			.action(new ExtractionSpeed())
 			.register("Measure speed of feature extraction, i.e. FingerprintTemplate constructor.");
 		new Command("benchmark", "speed", "identification")
 			.action(new IdentificationSpeed())

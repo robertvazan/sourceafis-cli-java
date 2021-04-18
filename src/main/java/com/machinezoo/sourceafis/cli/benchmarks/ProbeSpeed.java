@@ -12,7 +12,7 @@ public class ProbeSpeed extends SoloSpeed {
 		return "probe";
 	}
 	@Override
-	protected TimingStats measure() {
+	public TimingStats measure() {
 		var templates = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::deserialize);
 		var scores = StreamEx.of(Dataset.all()).toMap(ds -> ScoreCache.load(ds));
 		return measure(() -> new TimedOperation<Fingerprint>() {
