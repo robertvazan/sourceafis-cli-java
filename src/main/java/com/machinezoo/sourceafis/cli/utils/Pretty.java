@@ -127,6 +127,14 @@ public class Pretty {
 			return String.format("%.2f K%s", value / 1000, unit);
 		if (abs < 100_000)
 			return String.format("%.1f K%s", value / 1000, unit);
+		if (abs < 1_000_000)
+			return String.format("%.0f K%s", value / 1000, unit);
+		if (abs < 10_000_000)
+			return String.format("%.2f M%s", value / 1_000_000, unit);
+		if (abs < 100_000_000)
+			return String.format("%.1f M%s", value / 1_000_000, unit);
+		if (abs < 1_000_000_000)
+			return String.format("%.0f M%s", value / 1_000_000, unit);
 		return String.format("%g %s", value, unit);
 	}
 	private static String unit(double value, String unit, String more, String less, String... tag) {

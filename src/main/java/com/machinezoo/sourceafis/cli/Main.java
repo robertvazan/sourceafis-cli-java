@@ -46,6 +46,15 @@ public class Main {
 		new Command("benchmark", "speed", "verification")
 			.action(new VerificationSpeed())
 			.register("Measure speed of verification, i.e. calling match() with matching candidate.");
+		new Command("benchmark", "speed", "probe")
+			.action(new ProbeSpeed())
+			.register("Measure speed of preparing probe template for matching, i.e. FingerprintMatcher constructor.");
+		new Command("benchmark", "speed", "serialization")
+			.action(new SerializationSpeed())
+			.register("Measure speed of template serialization.");
+		new Command("benchmark", "speed", "deserialization")
+			.action(new DeserializationSpeed())
+			.register("Measure speed of template deserialization.");
 		new Command("benchmark", "footprint")
 			.action(new FootprintBenchmark())
 			.register("Measure template footprint.");
