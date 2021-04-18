@@ -15,8 +15,8 @@ import one.util.streamex.*;
 
 public abstract class SpeedBenchmark<K> implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(SpeedBenchmark.class);
-	public static final int DURATION = 10;
-	public static final int WARMUP = 3;
+	public static final int DURATION = 60;
+	public static final int WARMUP = 20;
 	public static final int NET_DURATION = DURATION - WARMUP;
 	public static final int SAMPLE_SIZE = 10_000;
 	public abstract String name();
