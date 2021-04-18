@@ -3,7 +3,6 @@ package com.machinezoo.sourceafis.cli.utils.args;
 
 import java.util.*;
 import org.slf4j.*;
-import com.machinezoo.sourceafis.*;
 
 public class CommandRegistry {
 	private static final Logger logger = LoggerFactory.getLogger(CommandRegistry.class);
@@ -21,7 +20,7 @@ public class CommandRegistry {
 	}
 	public static Runnable parse(String args[]) {
 		if (args.length == 0) {
-			logger.info("SourceAFIS CLI for Java {}", FingerprintCompatibility.version());
+			logger.info("SourceAFIS CLI for Java");
 			logger.info("");
 			logger.info("Available subcommands:");
 			for (var command : commands)
