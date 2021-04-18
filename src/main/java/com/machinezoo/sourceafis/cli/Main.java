@@ -39,10 +39,13 @@ public class Main {
 			.register("Measure algorithm accuracy.");
 		new Command("benchmark", "speed", "extractor")
 			.action(new ExtractorSpeed())
-			.register("Measure feature extractor speed.");
+			.register("Measure speed of feature extraction, i.e. FingerprintTemplate constructor.");
 		new Command("benchmark", "speed", "identification")
 			.action(new IdentificationSpeed())
-			.register("Measure identification speed, i.e. speed of comparison to non-matching candidates.");
+			.register("Measure speed of identification, i.e. calling match() with non-matching candidate.");
+		new Command("benchmark", "speed", "verification")
+			.action(new VerificationSpeed())
+			.register("Measure speed of verification, i.e. calling match() with matching candidate.");
 		new Command("benchmark", "footprint")
 			.action(new FootprintBenchmark())
 			.register("Measure template footprint.");

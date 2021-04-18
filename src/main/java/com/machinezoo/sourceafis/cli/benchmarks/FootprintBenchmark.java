@@ -37,6 +37,9 @@ public class FootprintBenchmark implements Runnable {
 	private FootprintStats sum(Profile profile) {
 		return FootprintStats.sum(StreamEx.of(profile.fingerprints()).map(this::measure).toList());
 	}
+	public FootprintStats sum() {
+		return sum(Profile.everything());
+	}
 	@Override
 	public void run() {
 		var table = new PrettyTable("Dataset", "Serialized", "Memory", "Minutiae");

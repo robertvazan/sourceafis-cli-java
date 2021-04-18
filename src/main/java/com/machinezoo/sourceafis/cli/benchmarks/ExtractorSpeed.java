@@ -15,7 +15,7 @@ public class ExtractorSpeed extends SoloSpeed {
 	@Override
 	protected TimingStats measure() {
 		var templates = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::load);
-		return measure(new TimedOperation<Fingerprint>() {
+		return measure(() -> new TimedOperation<Fingerprint>() {
 			FingerprintImage image;
 			FingerprintTemplate template;
 			byte[] expected;
