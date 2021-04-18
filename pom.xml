@@ -9,8 +9,8 @@
 	<packaging>jar</packaging>
 
 	<name>SourceAFIS CLI for Java</name>
-	<url>https://sourceafis.machinezoo.com/java</url>
-	<description>Accuracy evaluation, consistency checks, and benchmarks of SourceAFIS for Java.</description>
+	<url>https://sourceafis.machinezoo.com/cli</url>
+	<description>Command-line interface to SourceAFIS for Java. Measures accuracy, footprint, and speed. Checks consistency with other SourceAFIS ports.</description>
 	<inceptionYear>2021</inceptionYear>
 
 	<licenses>

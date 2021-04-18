@@ -1,4 +1,4 @@
-// Part of SourceAFIS for Java CLI: https://sourceafis.machinezoo.com/java
+// Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 package com.machinezoo.sourceafis.cli.samples;
 
 public enum ImageFormat {
