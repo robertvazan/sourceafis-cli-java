@@ -50,14 +50,15 @@ public abstract class SpeedBenchmark<K> implements Runnable {
 			Exceptions.sneak().run(() -> thread.join());
 		return StreamEx.of(futures).map(CompletableFuture::join).toList();
 	}
-	protected TimingStats measure(Supplier<TimedOperation<K>> setup) {
+	protected TimingStats measure(Supplier<Supplier<TimedOperation<K>>> setup) {
 		return Cache.get(TimingStats.class, Paths.get("benchmarks", "speed", name()), Paths.get("measurement"), () -> {
 			var nondeterministic = new AtomicBoolean(false);
 			var epoch = System.nanoTime();
+			var allocator = setup.get();
 			var strata = parallelize(() -> {
 				var ids = shuffle();
 				var recorder = new TimingRecorder(epoch, DURATION, SAMPLE_SIZE);
-				var operation = setup.get();
+				var operation = allocator.get();
 				return () -> {
 					while (true) {
 						for (var id : ids) {

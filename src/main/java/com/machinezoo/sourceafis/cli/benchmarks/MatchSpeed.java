@@ -29,35 +29,37 @@ public abstract class MatchSpeed extends SpeedBenchmark<FingerprintPair> {
 	}
 	@Override
 	public TimingStats measure() {
-		var footprint = new FootprintBenchmark().sum();
-		int ballooning = Math.max(1, (int)(RAM_FOOTPRINT / (footprint.memory / footprint.count * Fingerprint.all().size())));
-		var templates = StreamEx.of(Fingerprint.all())
-			.toMap(fp -> StreamEx.generate(() -> TemplateCache.deserialize(fp))
-				.limit(ballooning)
-				.toList());
-		var scores = StreamEx.of(Dataset.all()).toMap(ds -> ScoreCache.load(ds));
-		return measure(() -> new TimedOperation<FingerprintPair>() {
-			FingerprintPair pair;
-			FingerprintMatcher matcher;
-			FingerprintTemplate candidate;
-			double score;
-			Random random = new Random();
-			@Override
-			public void prepare(FingerprintPair pair) {
-				if (matcher == null || !this.pair.probe().equals(pair.probe()))
-					matcher = new FingerprintMatcher(templates.get(pair.probe()).get(0));
-				var alternatives = templates.get(pair.candidate());
-				candidate = alternatives.get(random.nextInt(alternatives.size()));
-				this.pair = pair;
-			}
-			@Override
-			public void execute() {
-				score = matcher.match(candidate);
-			}
-			@Override
-			public boolean verify() {
-				return scores.get(pair.dataset)[pair.probeId][pair.candidateId] == score;
-			}
+		return measure(() -> {
+			var footprint = new FootprintBenchmark().sum();
+			int ballooning = Math.max(1, (int)(RAM_FOOTPRINT / (footprint.memory / footprint.count * Fingerprint.all().size())));
+			var templates = StreamEx.of(Fingerprint.all())
+				.toMap(fp -> StreamEx.generate(() -> TemplateCache.deserialize(fp))
+					.limit(ballooning)
+					.toList());
+			var scores = StreamEx.of(Dataset.all()).toMap(ds -> ScoreCache.load(ds));
+			return () -> new TimedOperation<FingerprintPair>() {
+				FingerprintPair pair;
+				FingerprintMatcher matcher;
+				FingerprintTemplate candidate;
+				double score;
+				Random random = new Random();
+				@Override
+				public void prepare(FingerprintPair pair) {
+					if (matcher == null || !this.pair.probe().equals(pair.probe()))
+						matcher = new FingerprintMatcher(templates.get(pair.probe()).get(0));
+					var alternatives = templates.get(pair.candidate());
+					candidate = alternatives.get(random.nextInt(alternatives.size()));
+					this.pair = pair;
+				}
+				@Override
+				public void execute() {
+					score = matcher.match(candidate);
+				}
+				@Override
+				public boolean verify() {
+					return scores.get(pair.dataset)[pair.probeId][pair.candidateId] == score;
+				}
+			};
 		});
 	}
 }

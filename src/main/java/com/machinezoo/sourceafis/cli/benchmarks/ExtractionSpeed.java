@@ -14,24 +14,26 @@ public class ExtractionSpeed extends SoloSpeed {
 	}
 	@Override
 	public TimingStats measure() {
-		var templates = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::load);
-		return measure(() -> new TimedOperation<Fingerprint>() {
-			FingerprintImage image;
-			FingerprintTemplate template;
-			byte[] expected;
-			@Override
-			public void prepare(Fingerprint fp) {
-				image = fp.decode();
-				expected = templates.get(fp);
-			}
-			@Override
-			public void execute() {
-				template = new FingerprintTemplate(image);
-			}
-			@Override
-			public boolean verify() {
-				return Arrays.equals(expected, template.toByteArray());
-			}
+		return measure(() -> {
+			var templates = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::load);
+			return () -> new TimedOperation<Fingerprint>() {
+				FingerprintImage image;
+				FingerprintTemplate template;
+				byte[] expected;
+				@Override
+				public void prepare(Fingerprint fp) {
+					image = fp.decode();
+					expected = templates.get(fp);
+				}
+				@Override
+				public void execute() {
+					template = new FingerprintTemplate(image);
+				}
+				@Override
+				public boolean verify() {
+					return Arrays.equals(expected, template.toByteArray());
+				}
+			};
 		});
 	}
 }

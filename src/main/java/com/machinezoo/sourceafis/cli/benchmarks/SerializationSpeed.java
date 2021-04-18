@@ -14,25 +14,27 @@ public class SerializationSpeed extends SoloSpeed {
 	}
 	@Override
 	public TimingStats measure() {
-		var templates = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::deserialize);
-		var serialized = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::load);
-		return measure(() -> new TimedOperation<Fingerprint>() {
-			FingerprintTemplate template;
-			byte[] output;
-			byte[] expected;
-			@Override
-			public void prepare(Fingerprint fp) {
-				template = templates.get(fp);
-				expected = serialized.get(fp);
-			}
-			@Override
-			public void execute() {
-				output = template.toByteArray();
-			}
-			@Override
-			public boolean verify() {
-				return Arrays.equals(expected, output);
-			}
+		return measure(() -> {
+			var templates = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::deserialize);
+			var serialized = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::load);
+			return () -> new TimedOperation<Fingerprint>() {
+				FingerprintTemplate template;
+				byte[] output;
+				byte[] expected;
+				@Override
+				public void prepare(Fingerprint fp) {
+					template = templates.get(fp);
+					expected = serialized.get(fp);
+				}
+				@Override
+				public void execute() {
+					output = template.toByteArray();
+				}
+				@Override
+				public boolean verify() {
+					return Arrays.equals(expected, output);
+				}
+			};
 		});
 	}
 }
