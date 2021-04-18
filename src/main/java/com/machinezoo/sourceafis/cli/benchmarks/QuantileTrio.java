@@ -20,7 +20,7 @@ public class QuantileTrio {
 				var score = scores[probe.id][candidate.id];
 				if (probe.equals(candidate))
 					selfmatching.add(score);
-				else if (probe.finger().equals(candidate.finger().id))
+				else if (probe.finger().equals(candidate.finger()))
 					matching.add(score);
 				else
 					nonmatching.add(score);

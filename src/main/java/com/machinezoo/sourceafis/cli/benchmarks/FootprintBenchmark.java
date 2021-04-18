@@ -40,10 +40,9 @@ public class FootprintBenchmark implements Runnable {
 	public FootprintStats sum() {
 		return sum(Profile.everything());
 	}
-	@Override
-	public void run() {
+	public void print(List<Profile> profiles) {
 		var table = new PrettyTable("Dataset", "Serialized", "Memory", "Minutiae");
-		for (var profile : Profile.all()) {
+		for (var profile : profiles) {
 			var stats = sum(profile);
 			table.add(
 				profile.name,
@@ -52,5 +51,9 @@ public class FootprintBenchmark implements Runnable {
 				Pretty.minutiae(stats.minutiae / stats.count, profile.name, "minutiae"));
 		}
 		Pretty.print(table.format());
+	}
+	@Override
+	public void run() {
+		print(Profile.all());
 	}
 }

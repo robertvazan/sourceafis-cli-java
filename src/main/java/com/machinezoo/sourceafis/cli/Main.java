@@ -33,7 +33,9 @@ public class Main {
 		new Command("version")
 			.action(() -> Pretty.print("SourceAFIS for Java " + FingerprintCompatibility.version()))
 			.register("Report version of SourceAFIS library being used.");
-		// benchmark - accuracy + speed + footprint
+		new Command("benchmark")
+			.action(new BenchmarkOverview())
+			.register("Measure algorithm accuracy, template footprint, and implementation speed.");
 		new Command("benchmark", "accuracy")
 			.action(new AccuracyBenchmark())
 			.register("Measure algorithm accuracy.");
