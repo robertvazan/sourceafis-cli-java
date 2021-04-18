@@ -63,7 +63,7 @@ public class Pretty {
 			return String.format("%.2f%%", scaled);
 		return String.format("%.1f%%", scaled);
 	}
-	private static String factor(double value) {
+	public static String factor(double value) {
 		if (value >= 100)
 			return String.format("%.0fx", value);
 		if (value >= 10)

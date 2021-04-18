@@ -6,8 +6,6 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import java.util.function.*;
-import org.apache.commons.math3.stat.descriptive.moment.*;
-import org.apache.commons.math3.stat.descriptive.rank.*;
 import org.slf4j.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.samples.*;
@@ -85,23 +83,33 @@ public abstract class SpeedBenchmark<K> implements Runnable {
 		var all = measure().skip(WARMUP);
 		var global = TimingSummary.sum(StreamEx.of(all.segments.values()).flatArray(a -> a).toList());
 		Pretty.print("Gross speed: " + Pretty.speed(global.count / (double)NET_DURATION, "gross"));
-		var table = new PrettyTable("Dataset", "Sample", "Parallel", "Thread", "Average", "Min", "Max", "Median", "Stddev");
+		var table = new PrettyTable("Dataset", "Iterations", "Parallel", "Thread", "Mean", "Min", "Max", "Sample", "Median", "SD", "Geom.mean", "GSD");
 		for (var profile : Profile.all()) {
 			var stats = all.narrow(profile);
 			var total = TimingSummary.sum(StreamEx.of(stats.segments.values()).flatArray(a -> a).toList());
-			double duration = total.sum / total.count;
-			double speed = 1 / duration;
-			var sample = Arrays.stream(stats.sample).mapToDouble(o -> o.end - o.start).toArray();
+			double mean = total.sum / total.count;
+			double speed = 1 / mean;
+			var sample = Arrays.stream(stats.sample).mapToDouble(o -> o.end - o.start).sorted().toArray();
+			double median = sample.length % 2 == 0
+				? 0.5 * (sample[sample.length / 2 - 1] + sample[sample.length / 2])
+				: sample[sample.length / 2];
+			var sd = Math.sqrt(Arrays.stream(sample).map(v -> Math.pow(v - mean, 2)).sum() / (sample.length - 1));
+			var positive = Arrays.stream(sample).filter(v -> v > 0).toArray();
+			var gm = Math.exp(Arrays.stream(positive).map(v -> Math.log(v)).sum() / positive.length);
+			var gsd = Math.exp(Math.sqrt(Arrays.stream(positive).map(v -> Math.pow(Math.log(v / gm), 2)).sum() / positive.length));
 			table.add(
 				profile.name,
 				Pretty.length(total.count),
 				Pretty.speed(speed * all.threads),
 				Pretty.speed(speed, profile.name, "thread"),
-				Pretty.time(duration),
+				Pretty.time(mean),
 				Pretty.time(total.min),
 				Pretty.time(total.max),
-				Pretty.time(new Median().evaluate(sample)),
-				Pretty.time(new StandardDeviation().evaluate(sample, duration)));
+				Pretty.length(sample.length),
+				Pretty.time(median),
+				Pretty.time(sd),
+				Pretty.time(gm),
+				Pretty.factor(gsd));
 		}
 		Pretty.print(table.format());
 	}
