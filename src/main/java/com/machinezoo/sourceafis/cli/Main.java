@@ -31,7 +31,7 @@ public class Main {
 	}
 	private static void registerCommands() {
 		new Command("version")
-			.action(() -> Pretty.print("SourceAFIS for Java " + FingerprintCompatibility.version()))
+			.action(() -> Pretty.print(FingerprintCompatibility.version()))
 			.register("Report version of SourceAFIS library being used.");
 		new Command("benchmark")
 			.action(new BenchmarkOverview())
