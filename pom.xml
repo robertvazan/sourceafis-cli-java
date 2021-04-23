@@ -41,7 +41,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>11</maven.compiler.release>
-		<sourceafis.version>3.12.0</sourceafis.version>
+		<sourceafis.version>3.13.0</sourceafis.version>
 		<exec.mainClass>com.machinezoo.sourceafis.cli.Main</exec.mainClass>
 		<exec.args>benchmark</exec.args>
 	</properties>
