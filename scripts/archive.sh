@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 # This is implied by exec:java goal, but let's do it first, to avoid mixing output from different goals.
 mvn compile
 ARCHIVE=target/archive
