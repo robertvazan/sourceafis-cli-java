@@ -26,13 +26,10 @@ public class QuantileTrio {
 					nonmatching.add(score);
 			}
 		}
-		matching.sort(null);
-		nonmatching.sort(null);
-		selfmatching.sort(null);
 		var trio = new QuantileTrio();
-		trio.matching = new QuantileFunction(matching.toDoubleArray());
-		trio.nonmatching = new QuantileFunction(nonmatching.toDoubleArray());
-		trio.selfmatching = new QuantileFunction(selfmatching.toDoubleArray());
+		trio.matching = new QuantileFunction(matching);
+		trio.nonmatching = new QuantileFunction(nonmatching);
+		trio.selfmatching = new QuantileFunction(selfmatching);
 		return trio;
 	}
 	public double fnmrAtFmr(double fmr) {

@@ -10,7 +10,7 @@ import org.slf4j.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.*;
 
-public abstract class Cache<T> implements Supplier<T> {
+public class Cache<T> {
 	private static final Logger logger = LoggerFactory.getLogger(Cache.class);
 	public static Path withExtension(Path path, String extension) {
 		return path.resolveSibling(path.getFileName() + extension);

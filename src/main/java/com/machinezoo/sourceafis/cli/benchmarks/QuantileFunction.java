@@ -2,11 +2,13 @@
 package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
+import it.unimi.dsi.fastutil.doubles.*;
 
 public class QuantileFunction {
 	public final double[] function;
-	public QuantileFunction(double[] function) {
-		this.function = function;
+	public QuantileFunction(DoubleArrayList list) {
+		list.sort(null);
+		function = list.toDoubleArray();
 	}
 	public double read(double probability) {
 		double index = probability * (function.length - 1);
