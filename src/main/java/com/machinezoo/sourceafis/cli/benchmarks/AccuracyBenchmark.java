@@ -11,7 +11,7 @@ import one.util.streamex.*;
 public class AccuracyBenchmark implements Runnable {
 	private AccuracyStats measure(Dataset dataset) {
 		return Cache.get(AccuracyStats.class, Paths.get("benchmarks", "accuracy"), dataset.path(), () -> {
-			var trio = QuantileTrio.of(dataset);
+			var trio = new QuantileTrio(dataset);
 			var stats = new AccuracyStats();
 			stats.fmr100 = trio.fnmrAtFmr(1.0 / 100);
 			stats.fmr1K = trio.fnmrAtFmr(1.0 / 1_000);

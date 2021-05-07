@@ -9,7 +9,7 @@ public class QuantileTrio {
 	public QuantileFunction matching;
 	public QuantileFunction nonmatching;
 	public QuantileFunction selfmatching;
-	public static QuantileTrio of(Dataset dataset) {
+	public QuantileTrio(Dataset dataset) {
 		var fingerprints = dataset.fingerprints();
 		var scores = ScoreCache.load(dataset);
 		var matching = new DoubleArrayList();
@@ -26,31 +26,31 @@ public class QuantileTrio {
 					nonmatching.add(score);
 			}
 		}
-		var trio = new QuantileTrio();
-		trio.matching = new QuantileFunction(matching);
-		trio.nonmatching = new QuantileFunction(nonmatching);
-		trio.selfmatching = new QuantileFunction(selfmatching);
-		return trio;
+		this.matching = new QuantileFunction(matching);
+		this.nonmatching = new QuantileFunction(nonmatching);
+		this.selfmatching = new QuantileFunction(selfmatching);
 	}
 	public double fnmrAtFmr(double fmr) {
 		double threshold = nonmatching.read(1 - fmr);
 		return matching.cdf(threshold);
 	}
 	public double eer() {
-		double min = nonmatching.read(0), max = nonmatching.read(1);
-		for (int i = 0; i < 30; ++i) {
-			double threshold = (min + max) / 2;
-			double fmr = 1 - nonmatching.cdf(threshold);
-			double fnmr = matching.cdf(threshold);
+		double min = 0, max = 1;
+		int iteration = 0;
+		while (true) {
+			double fmr = (min + max) / 2;
+			double fnmr = fnmrAtFmr(fmr);
+			if (iteration >= 30)
+				return fnmr;
 			/*
-			 * If we overshoot threshold, FNMR will be too high and FMR too low.
-			 * So if FNMR is higher than FMR, we have to try lower thresholds
+			 * FMR and FNMR change at the same time, but the basic rule still works:
+			 * If FMR > FNMR, we need to try lower FMR, otherwise higher FMR.
 			 */
-			if (fnmr >= fmr)
-				max = threshold;
+			if (fmr > fnmr)
+				max = fmr;
 			else
-				min = threshold;
+				min = fmr;
+			++iteration;
 		}
-		return matching.cdf((min + max) / 2);
 	}
 }

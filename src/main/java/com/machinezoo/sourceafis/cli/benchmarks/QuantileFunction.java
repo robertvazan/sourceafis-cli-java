@@ -11,16 +11,36 @@ public class QuantileFunction {
 		function = list.toDoubleArray();
 	}
 	public double read(double probability) {
-		double index = probability * (function.length - 1);
-		int indexLow = (int)index;
-		int indexHigh = indexLow + 1;
-		if (indexHigh >= function.length)
-			return function[indexLow];
-		double shareHigh = index - indexLow;
-		double shareLow = 1 - shareHigh;
-		return function[indexLow] * shareLow + function[indexHigh] * shareHigh;
+		double index = probability * function.length;
+		/*
+		 * Quantile function can be visualized as a histogram with equally wide bars.
+		 * Provided probability lies between centers of two bars.
+		 */
+		int upperBar = (int)(index + 0.5);
+		int lowerBar = upperBar - 1;
+		/*
+		 * Extrapolation to infinity for first and last half-bar is safe and realistic.
+		 */
+		if (upperBar >= function.length)
+			return Double.POSITIVE_INFINITY;
+		if (lowerBar < 0)
+			return Double.NEGATIVE_INFINITY;
+		/*
+		 * Interpolate between bar centers.
+		 */
+		double upperWeight = index - lowerBar - 0.5;
+		double lowerWeight = 1 - upperWeight;
+		return function[lowerBar] * lowerWeight + function[upperBar] * upperWeight;
 	}
 	public double cdf(double threshold) {
+		/*
+		 * Return 0%/100% if we sample data does not cover the threshold.
+		 * This also covers cases when threshold is infinite.
+		 */
+		if (threshold <= function[0])
+			return 0;
+		if (threshold > function[function.length - 1])
+			return 1;
 		double min = 0, max = 1;
 		for (int i = 0; i < 30; ++i) {
 			double probability = (min + max) / 2;

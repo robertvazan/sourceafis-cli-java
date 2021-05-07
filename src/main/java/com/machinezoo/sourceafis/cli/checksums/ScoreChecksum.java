@@ -13,7 +13,7 @@ import one.util.streamex.*;
 public class ScoreChecksum implements Runnable {
 	private ScoreStats checksum(Dataset dataset) {
 		return Cache.get(ScoreStats.class, Paths.get("checksums", "scores"), dataset.path(), () -> {
-			var trio = QuantileTrio.of(dataset);
+			var trio = new QuantileTrio(dataset);
 			var stats = new ScoreStats();
 			stats.matching = trio.matching.average();
 			stats.nonmatching = trio.nonmatching.average();
