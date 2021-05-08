@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.*;
 import java.util.function.*;
 import org.slf4j.*;
 import com.machinezoo.noexception.*;
-import com.machinezoo.sourceafis.cli.*;
+import com.machinezoo.sourceafis.cli.config.*;
 
 public class Cache<T> {
 	private static final Logger logger = LoggerFactory.getLogger(Cache.class);

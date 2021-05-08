@@ -3,8 +3,8 @@ package com.machinezoo.sourceafis.cli.logs;
 
 import java.nio.file.*;
 import java.util.*;
-import com.machinezoo.sourceafis.cli.*;
 import com.machinezoo.sourceafis.cli.checksums.*;
+import com.machinezoo.sourceafis.cli.config.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;

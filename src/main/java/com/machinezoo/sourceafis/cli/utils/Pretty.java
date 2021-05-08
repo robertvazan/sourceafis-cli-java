@@ -4,7 +4,7 @@ package com.machinezoo.sourceafis.cli.utils;
 import java.nio.file.*;
 import java.util.*;
 import org.slf4j.*;
-import com.machinezoo.sourceafis.cli.*;
+import com.machinezoo.sourceafis.cli.config.*;
 import it.unimi.dsi.fastutil.objects.*;
 
 public class Pretty {

@@ -7,9 +7,9 @@ import it.unimi.dsi.fastutil.ints.*;
 public class CommandGroup {
 	final Map<String, CommandGroup> subcommands = new HashMap<>();
 	final Int2ObjectMap<Command> overloads = new Int2ObjectOpenHashMap<>();
-	void register(int depth, Command command) {
+	void add(int depth, Command command) {
 		if (depth < command.subcommand().size())
-			subcommands.computeIfAbsent(command.subcommand().get(depth), c -> new CommandGroup()).register(depth + 1, command);
+			subcommands.computeIfAbsent(command.subcommand().get(depth), c -> new CommandGroup()).add(depth + 1, command);
 		else
 			overloads.put(command.parameters().size(), command);
 	}

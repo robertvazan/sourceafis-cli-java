@@ -4,7 +4,7 @@ package com.machinezoo.sourceafis.cli.utils.cache;
 import java.util.*;
 import org.apache.commons.io.*;
 import com.machinezoo.noexception.*;
-import com.machinezoo.sourceafis.cli.*;
+import com.machinezoo.sourceafis.cli.config.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 
 public class Purge extends Command {

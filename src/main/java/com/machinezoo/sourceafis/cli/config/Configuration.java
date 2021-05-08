@@ -1,5 +1,5 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
-package com.machinezoo.sourceafis.cli;
+package com.machinezoo.sourceafis.cli.config;
 
 import java.nio.file.*;
 import com.machinezoo.sourceafis.*;

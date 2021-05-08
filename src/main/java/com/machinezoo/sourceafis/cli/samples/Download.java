@@ -9,7 +9,7 @@ import java.util.zip.*;
 import org.apache.commons.io.*;
 import org.slf4j.*;
 import com.machinezoo.noexception.*;
-import com.machinezoo.sourceafis.cli.*;
+import com.machinezoo.sourceafis.cli.config.*;
 
 public class Download {
 	public static final String[] DATASETS = new String[] {
