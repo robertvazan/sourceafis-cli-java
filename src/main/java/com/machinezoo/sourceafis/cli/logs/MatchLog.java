@@ -14,6 +14,10 @@ public class MatchLog extends TransparencyLog<FingerprintPair> {
 		return "match";
 	}
 	@Override
+	public String description() {
+		return "Log transparency data for given key during comparison of probe to candidate.";
+	}
+	@Override
 	protected TransparencyChecksum<FingerprintPair> checksum() {
 		return new MatchChecksum();
 	}

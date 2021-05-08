@@ -7,10 +7,19 @@ import org.openjdk.jol.info.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
-public class FootprintBenchmark implements Runnable {
+public class FootprintBenchmark extends Command {
+	@Override
+	public List<String> subcommand() {
+		return List.of("benchmark", "footprint");
+	}
+	@Override
+	public String description() {
+		return "Measure template footprint.";
+	}
 	private int memory(Fingerprint fp) {
 		/*
 		 * JOL will cause various warnings to be printed to the console.

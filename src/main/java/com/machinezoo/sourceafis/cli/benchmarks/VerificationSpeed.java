@@ -9,6 +9,10 @@ public class VerificationSpeed extends MatchSpeed {
 		return "verification";
 	}
 	@Override
+	public String description() {
+		return "Measure speed of verification, i.e. calling match() with matching candidate.";
+	}
+	@Override
 	protected boolean filter(FingerprintPair pair) {
 		return pair.probe().finger().equals(pair.candidate().finger()) && !pair.probe().equals(pair.candidate());
 	}

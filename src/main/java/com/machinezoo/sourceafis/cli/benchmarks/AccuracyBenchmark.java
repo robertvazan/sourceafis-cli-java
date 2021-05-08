@@ -5,10 +5,19 @@ import java.nio.file.*;
 import java.util.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
-public class AccuracyBenchmark implements Runnable {
+public class AccuracyBenchmark extends Command {
+	@Override
+	public List<String> subcommand() {
+		return List.of("benchmark", "accuracy");
+	}
+	@Override
+	public String description() {
+		return "Measure algorithm accuracy.";
+	}
 	private AccuracyStats measure(Dataset dataset) {
 		return Cache.get(AccuracyStats.class, Paths.get("benchmarks", "accuracy"), dataset.path(), () -> {
 			var trio = new QuantileTrio(dataset);

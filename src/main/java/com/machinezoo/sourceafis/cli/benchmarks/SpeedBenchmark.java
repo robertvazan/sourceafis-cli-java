@@ -10,10 +10,11 @@ import org.slf4j.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
-public abstract class SpeedBenchmark<K> implements Runnable {
+public abstract class SpeedBenchmark<K> extends Command {
 	private static final Logger logger = LoggerFactory.getLogger(SpeedBenchmark.class);
 	public static final int DURATION = 60;
 	public static final int WARMUP = 20;
@@ -23,6 +24,10 @@ public abstract class SpeedBenchmark<K> implements Runnable {
 	protected abstract Dataset dataset(K id);
 	protected abstract List<K> shuffle();
 	public abstract TimingStats measure();
+	@Override
+	public List<String> subcommand() {
+		return List.of("benchmark", "speed", name());
+	}
 	protected static <T> List<T> shuffle(List<T> list) {
 		var shuffled = new ArrayList<>(list);
 		Collections.shuffle(shuffled);

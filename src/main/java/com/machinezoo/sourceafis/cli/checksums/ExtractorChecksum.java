@@ -12,6 +12,10 @@ public class ExtractorChecksum extends TransparencyChecksum<Fingerprint> {
 		return "extractor";
 	}
 	@Override
+	public String description() {
+		return "Compute consistency checksum of extractor transparency data.";
+	}
+	@Override
 	public List<Fingerprint> ids() {
 		return Fingerprint.all();
 	}

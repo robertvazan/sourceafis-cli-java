@@ -12,6 +12,10 @@ public class ExtractorLog extends TransparencyLog<Fingerprint> {
 		return "extractor";
 	}
 	@Override
+	public String description() {
+		return "Log extractor transparency data for given key.";
+	}
+	@Override
 	protected TransparencyChecksum<Fingerprint> checksum() {
 		return new ExtractorChecksum();
 	}

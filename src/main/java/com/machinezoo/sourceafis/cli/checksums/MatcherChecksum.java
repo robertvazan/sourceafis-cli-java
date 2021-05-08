@@ -13,6 +13,10 @@ public class MatcherChecksum extends TransparencyChecksum<Fingerprint> {
 		return "matcher";
 	}
 	@Override
+	public String description() {
+		return "Compute consistency checksum of transparency data generated when preparing probe for matching.";
+	}
+	@Override
 	public List<Fingerprint> ids() {
 		return Fingerprint.all();
 	}

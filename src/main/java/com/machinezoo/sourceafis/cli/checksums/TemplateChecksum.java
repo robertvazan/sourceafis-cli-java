@@ -2,13 +2,23 @@
 package com.machinezoo.sourceafis.cli.checksums;
 
 import java.nio.file.*;
+import java.util.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
-public class TemplateChecksum implements Runnable {
+public class TemplateChecksum extends Command {
+	@Override
+	public List<String> subcommand() {
+		return List.of("checksum", "templates");
+	}
+	@Override
+	public String description() {
+		return "Compute consistency checksum of templates.";
+	}
 	private TemplateStats checksum(Fingerprint fp) {
 		return Cache.get(TemplateStats.class, Paths.get("checksums", "templates"), fp.path(), () -> {
 			var checksum = new TemplateStats();

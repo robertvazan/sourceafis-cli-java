@@ -3,6 +3,7 @@ package com.machinezoo.sourceafis.cli.utils.args;
 
 import java.util.*;
 import org.slf4j.*;
+import one.util.streamex.*;
 
 public class CommandRegistry {
 	private static final Logger logger = LoggerFactory.getLogger(CommandRegistry.class);
@@ -23,8 +24,10 @@ public class CommandRegistry {
 			logger.info("SourceAFIS CLI for Java");
 			logger.info("");
 			logger.info("Available subcommands:");
-			for (var command : commands)
-				command.help();
+			for (var command : commands) {
+				logger.info("\t{}{}", String.join(" ", command.subcommand()), StreamEx.of(command.parameters()).map(p -> " <" + p + ">").joining());
+				logger.info("\t\t{}", command.description());
+			}
 			logger.info("");
 			logger.info("Available options:");
 			for (var option : options)
@@ -62,6 +65,6 @@ public class CommandRegistry {
 		var command = group.overloads.get(commandArgs.size());
 		if (command == null)
 			throw new IllegalArgumentException("Unrecognized subcommand.");
-		return () -> command.action.accept(commandArgs);
+		return () -> command.run(commandArgs);
 	}
 }

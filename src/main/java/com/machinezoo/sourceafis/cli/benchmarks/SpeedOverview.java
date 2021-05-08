@@ -2,8 +2,17 @@
 package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
+import com.machinezoo.sourceafis.cli.utils.args.*;
 
-public class SpeedOverview implements Runnable {
+public class SpeedOverview extends Command {
+	@Override
+	public List<String> subcommand() {
+		return List.of("benchmark", "speed");
+	}
+	@Override
+	public String description() {
+		return "Measure algorithm speed.";
+	}
 	@Override
 	public void run() {
 		var benchmarks = List.of(

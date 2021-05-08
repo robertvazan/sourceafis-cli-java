@@ -3,14 +3,24 @@ package com.machinezoo.sourceafis.cli.checksums;
 
 import java.nio.*;
 import java.nio.file.*;
+import java.util.*;
 import com.machinezoo.sourceafis.cli.benchmarks.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
-public class ScoreChecksum implements Runnable {
+public class ScoreChecksum extends Command {
+	@Override
+	public List<String> subcommand() {
+		return List.of("checksum", "scores");
+	}
+	@Override
+	public String description() {
+		return "Compute consistency checksum of similarity scores.";
+	}
 	private ScoreStats checksum(Dataset dataset) {
 		return Cache.get(ScoreStats.class, Paths.get("checksums", "scores"), dataset.path(), () -> {
 			var trio = new QuantileTrio(dataset);

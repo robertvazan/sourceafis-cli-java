@@ -3,12 +3,22 @@ package com.machinezoo.sourceafis.cli.samples;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.*;
 import javax.imageio.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 
-public class GrayscaleExport implements Runnable {
+public class GrayscaleExport extends Command {
+	@Override
+	public List<String> subcommand() {
+		return List.of("export", "grayscale");
+	}
+	@Override
+	public String description() {
+		return "Convert sample images to grayscale.";
+	}
 	@Override
 	public void run() {
 		var category = Paths.get("exports", "grayscale");

@@ -13,6 +13,10 @@ public class ExtractionSpeed extends SoloSpeed {
 		return "extraction";
 	}
 	@Override
+	public String description() {
+		return "Measure speed of feature extraction, i.e. FingerprintTemplate constructor.";
+	}
+	@Override
 	public TimingStats measure() {
 		return measure(() -> {
 			var templates = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::load);

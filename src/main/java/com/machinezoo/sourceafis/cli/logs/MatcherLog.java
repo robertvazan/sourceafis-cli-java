@@ -13,6 +13,10 @@ public class MatcherLog extends TransparencyLog<Fingerprint> {
 		return "matcher";
 	}
 	@Override
+	public String description() {
+		return "Log transparency data for given key while preparing probe for matching.";
+	}
+	@Override
 	protected TransparencyChecksum<Fingerprint> checksum() {
 		return new MatcherChecksum();
 	}

@@ -12,6 +12,10 @@ public class ProbeSpeed extends SoloSpeed {
 		return "probe";
 	}
 	@Override
+	public String description() {
+		return "Measure speed of preparing probe template for matching, i.e. FingerprintMatcher constructor.";
+	}
+	@Override
 	public TimingStats measure() {
 		return measure(() -> {
 			var templates = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::deserialize);

@@ -8,9 +8,9 @@ public class CommandGroup {
 	final Map<String, CommandGroup> subcommands = new HashMap<>();
 	final Int2ObjectMap<Command> overloads = new Int2ObjectOpenHashMap<>();
 	void register(int depth, Command command) {
-		if (depth < command.path.size())
-			subcommands.computeIfAbsent(command.path.get(depth), c -> new CommandGroup()).register(depth + 1, command);
+		if (depth < command.subcommand().size())
+			subcommands.computeIfAbsent(command.subcommand().get(depth), c -> new CommandGroup()).register(depth + 1, command);
 		else
-			overloads.put(command.parameters.size(), command);
+			overloads.put(command.parameters().size(), command);
 	}
 }

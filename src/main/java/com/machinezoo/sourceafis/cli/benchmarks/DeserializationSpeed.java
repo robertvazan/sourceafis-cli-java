@@ -13,6 +13,10 @@ public class DeserializationSpeed extends SoloSpeed {
 		return "deserialization";
 	}
 	@Override
+	public String description() {
+		return "Measure speed of template deserialization.";
+	}
+	@Override
 	public TimingStats measure() {
 		return measure(() -> {
 			var serialized = StreamEx.of(Fingerprint.all()).toMap(TemplateCache::load);

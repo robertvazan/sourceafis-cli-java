@@ -3,8 +3,17 @@ package com.machinezoo.sourceafis.cli.checksums;
 
 import java.util.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.args.*;
 
-public class Checksum implements Runnable {
+public class Checksum extends Command {
+	@Override
+	public List<String> subcommand() {
+		return List.of("checksum");
+	}
+	@Override
+	public String description() {
+		return "Compute consistency checksum of all algorithm outputs.";
+	}
 	@Override
 	public void run() {
 		var table = new PrettyTable("Data", "Hash");

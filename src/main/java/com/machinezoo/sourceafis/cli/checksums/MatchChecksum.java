@@ -14,6 +14,10 @@ public class MatchChecksum extends TransparencyChecksum<FingerprintPair> {
 		return "match";
 	}
 	@Override
+	public String description() {
+		return "Compute consistency checksum of transparency data generated during comparison of probe to candidate.";
+	}
+	@Override
 	public List<FingerprintPair> ids() {
 		return StreamEx.of(Fingerprint.all()).flatMap(p -> StreamEx.of(p.dataset.fingerprints()).map(c -> new FingerprintPair(p, c))).toList();
 	}

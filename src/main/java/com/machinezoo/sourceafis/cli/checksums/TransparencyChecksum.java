@@ -4,13 +4,18 @@ package com.machinezoo.sourceafis.cli.checksums;
 import java.nio.file.*;
 import java.util.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
-public abstract class TransparencyChecksum<K> implements Runnable {
+public abstract class TransparencyChecksum<K> extends Command {
 	public abstract String name();
 	public abstract List<K> ids();
 	protected abstract TransparencyTable checksum(K id);
+	@Override
+	public List<String> subcommand() {
+		return List.of("checksum", "transparency", name());
+	}
 	protected Path category() {
 		return Paths.get("checksums", "transparency", name());
 	}
