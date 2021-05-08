@@ -9,8 +9,8 @@ import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.benchmarks.*;
 import com.machinezoo.sourceafis.cli.checksums.*;
-import com.machinezoo.sourceafis.cli.exports.*;
 import com.machinezoo.sourceafis.cli.logs.*;
+import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import one.util.streamex.*;
@@ -90,9 +90,6 @@ public class Main {
 		new Command("log", "match")
 			.action("key", new MatchLog()::log)
 			.register("Log transparency data for given key during comparison of probe to candidate.");
-		new Command("export", "png")
-			.action(new PngExport())
-			.register("Convert sample images to PNG.");
 		new Command("export", "grayscale")
 			.action(new GrayscaleExport())
 			.register("Convert sample images to grayscale.");

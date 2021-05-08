@@ -1,11 +1,10 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
-package com.machinezoo.sourceafis.cli.exports;
+package com.machinezoo.sourceafis.cli.samples;
 
 import java.io.*;
 import java.nio.file.*;
 import javax.imageio.*;
 import com.machinezoo.noexception.*;
-import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 
