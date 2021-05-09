@@ -22,9 +22,9 @@ public class MatcherLog extends TransparencyLog<Fingerprint> {
 	}
 	@Override
 	protected byte[] log(String key, Fingerprint fp, int index, int count, String mime) {
-		return Cache.get(byte[].class, category(key), identity(key, fp, index, count, mime), map -> {
+		return Cache.get(byte[].class, category(key), identity(key, fp, index, count, mime), batch -> {
 			var template = TemplateCache.deserialize(fp);
-			log(key, fp, index, count, mime, () -> new FingerprintMatcher(template), map);
+			log(key, fp, index, count, mime, () -> new FingerprintMatcher(template), batch);
 		});
 	}
 }

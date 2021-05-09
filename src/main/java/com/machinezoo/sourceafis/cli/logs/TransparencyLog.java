@@ -33,12 +33,12 @@ public abstract class TransparencyLog<K extends DataIdentifier> extends Command 
 			path = path.resolve(Integer.toString(index));
 		return Cache.withExtension(path, Pretty.extension(mime));
 	}
-	protected void log(String key, K id, int index, int count, String mime, Runnable action, Map<Path, Object> map) {
+	protected void log(String key, K id, int index, int count, String mime, Runnable action, CacheBatch batch) {
 		var collected = KeyDataCollector.collect(key, action);
 		for (int i = 0; i < count; ++i) {
 			var raw = collected.get(index);
 			var normalized = Configuration.normalized ? Serializer.normalize(mime, raw) : raw;
-			map.put(identity(key, id, i, count, mime), normalized);
+			batch.add(identity(key, id, i, count, mime), normalized);
 		}
 	}
 	public void log(String key) {

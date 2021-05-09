@@ -102,7 +102,7 @@ public class Download {
 		default:
 			throw new IllegalArgumentException();
 		}
-		return Configuration.home().resolve("samples").resolve(name).resolve(dataset);
+		return Configuration.home.resolve("samples").resolve(name).resolve(dataset);
 	}
 	private static final Logger logger = LoggerFactory.getLogger(Download.class);
 	private static final AtomicBoolean reported = new AtomicBoolean();

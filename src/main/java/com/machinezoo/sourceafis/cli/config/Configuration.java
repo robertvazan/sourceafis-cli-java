@@ -5,7 +5,7 @@ import java.nio.file.*;
 import com.machinezoo.sourceafis.*;
 
 public class Configuration {
-	private static Path home;
+	public static Path home;
 	static {
 		/*
 		 * First try XDG_* variables. Data directories may be in strange locations, for example inside flatpak.
@@ -22,19 +22,13 @@ public class Configuration {
 		}
 		home = root.resolve("sourceafis");
 	}
-	public static Path home() {
-		return home;
-	}
-	public static void configureHome(String path) {
-		home = Paths.get(path).toAbsolutePath();
-	}
 	public static boolean normalized;
 	public static Path baseline;
 	public static boolean baselineMode;
 	public static Path output() {
 		if (baselineMode)
-			return home().resolve(baseline);
+			return home.resolve(baseline);
 		else
-			return home().resolve("java").resolve(FingerprintCompatibility.version());
+			return home.resolve("java").resolve(FingerprintCompatibility.version());
 	}
 }

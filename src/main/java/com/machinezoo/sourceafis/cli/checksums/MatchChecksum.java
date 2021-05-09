@@ -23,7 +23,7 @@ public class MatchChecksum extends TransparencyChecksum<FingerprintPair> {
 	}
 	@Override
 	protected TransparencyTable checksum(FingerprintPair pair) {
-		return Cache.get(TransparencyTable.class, category(), pair.path(), map -> {
+		return Cache.get(TransparencyTable.class, category(), pair.path(), batch -> {
 			var dataset = pair.dataset;
 			var fingerprints = dataset.fingerprints();
 			var templates = StreamEx.of(fingerprints).map(fp -> TemplateCache.deserialize(fp)).toList();
@@ -32,7 +32,7 @@ public class MatchChecksum extends TransparencyChecksum<FingerprintPair> {
 				for (var candidate : fingerprints) {
 					var template = templates.get(candidate.id);
 					var table = ChecksumCollector.collect(() -> matcher.match(template));
-					map.put(new FingerprintPair(probe, candidate).path(), table);
+					batch.add(new FingerprintPair(probe, candidate).path(), table);
 				}
 			}
 		});
