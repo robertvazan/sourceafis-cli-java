@@ -5,8 +5,8 @@ import java.nio.*;
 import java.nio.file.*;
 import java.util.*;
 import com.machinezoo.sourceafis.cli.benchmarks.*;
+import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
-import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
@@ -41,7 +41,7 @@ public class ScoreChecksum extends Command {
 		});
 	}
 	private ScoreStats checksum(Profile profile) {
-		return ScoreStats.sum(StreamEx.of(profile.datasets).map(this::checksum).toList());
+		return ScoreStats.sum(StreamEx.of(profile.datasets()).map(this::checksum).toList());
 	}
 	public byte[] global() {
 		return checksum(Profile.everything()).hash;
@@ -52,11 +52,11 @@ public class ScoreChecksum extends Command {
 		for (var profile : Profile.all()) {
 			var stats = checksum(profile);
 			table.add(
-				profile.name,
-				Pretty.decibans(stats.matching, profile.name, "matching"),
-				Pretty.decibans(stats.nonmatching, profile.name, "nonmatching"),
-				Pretty.decibans(stats.selfmatching, profile.name, "selfmatching"),
-				Pretty.hash(stats.hash, profile.name, "hash"));
+				profile.name(),
+				Pretty.decibans(stats.matching, profile.name(), "matching"),
+				Pretty.decibans(stats.nonmatching, profile.name(), "nonmatching"),
+				Pretty.decibans(stats.selfmatching, profile.name(), "selfmatching"),
+				Pretty.hash(stats.hash, profile.name(), "hash"));
 		}
 		Pretty.print(table.format());
 	}

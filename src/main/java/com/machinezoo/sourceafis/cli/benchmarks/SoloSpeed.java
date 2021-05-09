@@ -2,7 +2,7 @@
 package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
-import com.machinezoo.sourceafis.cli.samples.*;
+import com.machinezoo.sourceafis.cli.datasets.*;
 
 public abstract class SoloSpeed extends SpeedBenchmark<Fingerprint> {
 	@Override

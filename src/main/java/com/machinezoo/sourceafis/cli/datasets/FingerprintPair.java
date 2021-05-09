@@ -1,5 +1,5 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
-package com.machinezoo.sourceafis.cli.samples;
+package com.machinezoo.sourceafis.cli.datasets;
 
 import java.nio.file.*;
 import java.util.*;
@@ -11,7 +11,7 @@ public class FingerprintPair implements DataIdentifier {
 	public final int probeId;
 	public final int candidateId;
 	public FingerprintPair(Fingerprint probe, Fingerprint candidate) {
-		if (!probe.dataset.name.equals(candidate.dataset.name))
+		if (!probe.dataset.equals(candidate.dataset))
 			throw new IllegalArgumentException();
 		this.dataset = probe.dataset;
 		this.probeId = probe.id;

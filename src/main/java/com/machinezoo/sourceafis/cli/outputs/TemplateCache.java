@@ -3,7 +3,7 @@ package com.machinezoo.sourceafis.cli.outputs;
 
 import java.nio.file.*;
 import com.machinezoo.sourceafis.*;
-import com.machinezoo.sourceafis.cli.samples.*;
+import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 
 public class TemplateCache {

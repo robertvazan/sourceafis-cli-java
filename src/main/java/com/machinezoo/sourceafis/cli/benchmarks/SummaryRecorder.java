@@ -2,7 +2,7 @@
 package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
-import com.machinezoo.sourceafis.cli.samples.*;
+import com.machinezoo.sourceafis.cli.datasets.*;
 import it.unimi.dsi.fastutil.objects.*;
 import one.util.streamex.*;
 
@@ -17,7 +17,7 @@ public class SummaryRecorder {
 	public SummaryRecorder(long epoch, int capacity) {
 		this.epoch = epoch;
 		for (var dataset : Dataset.all())
-			datasetIds.put(dataset.name, datasetIds.size());
+			datasetIds.put(dataset.name(), datasetIds.size());
 		this.capacity = capacity;
 		int segments = datasetIds.size() * capacity;
 		counts = new long[segments];
@@ -30,7 +30,7 @@ public class SummaryRecorder {
 		int interval = (int)((end - epoch) / 1_000_000_000);
 		long duration = end - start;
 		if (interval >= 0 && interval < capacity && duration >= 0) {
-			int segment = datasetIds.getOrDefault(dataset.name, -1) * capacity + interval;
+			int segment = datasetIds.getOrDefault(dataset.name(), -1) * capacity + interval;
 			sums[segment] += duration;
 			maxima[segment] = Math.max(maxima[segment], duration);
 			minima[segment] = Math.min(minima[segment], duration);

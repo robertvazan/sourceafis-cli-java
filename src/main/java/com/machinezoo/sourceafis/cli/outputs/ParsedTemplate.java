@@ -4,7 +4,7 @@ package com.machinezoo.sourceafis.cli.outputs;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.cbor.*;
 import com.machinezoo.noexception.*;
-import com.machinezoo.sourceafis.cli.samples.*;
+import com.machinezoo.sourceafis.cli.datasets.*;
 
 public class ParsedTemplate {
 	public String version;

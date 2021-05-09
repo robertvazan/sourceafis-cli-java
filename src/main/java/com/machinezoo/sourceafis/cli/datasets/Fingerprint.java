@@ -1,5 +1,5 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
-package com.machinezoo.sourceafis.cli.samples;
+package com.machinezoo.sourceafis.cli.datasets;
 
 import java.nio.file.*;
 import java.util.*;
@@ -17,23 +17,24 @@ public class Fingerprint implements DataIdentifier {
 		this.id = id;
 	}
 	public String name() {
-		return dataset.layout.name(id);
+		return dataset.layout().name(id);
 	}
 	@Override
 	public Path path() {
 		return dataset.path().resolve(name());
 	}
 	public Finger finger() {
-		return new Finger(dataset, dataset.layout.finger(id));
+		return new Finger(dataset, dataset.layout().finger(id));
 	}
 	public static List<Fingerprint> all() {
 		return StreamEx.of(Dataset.all()).flatCollection(ds -> ds.fingerprints()).toList();
 	}
 	public byte[] load() {
-		return Exceptions.sneak().get(() -> Files.readAllBytes(dataset.layout.directory.resolve(dataset.layout.filename(id))));
+		var layout = dataset.layout();
+		return Exceptions.sneak().get(() -> Files.readAllBytes(layout.directory.resolve(layout.filename(id))));
 	}
 	public FingerprintImage decode() {
-		var options = new FingerprintImageOptions().dpi(dataset.dpi);
+		var options = new FingerprintImageOptions().dpi(dataset.sample.dpi());
 		if (dataset.format == ImageFormat.GRAY) {
 			var gray = load();
 			int width = (Byte.toUnsignedInt(gray[0]) << 8) | Byte.toUnsignedInt(gray[1]);

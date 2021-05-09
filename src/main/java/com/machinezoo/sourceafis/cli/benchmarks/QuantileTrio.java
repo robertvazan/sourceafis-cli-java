@@ -1,8 +1,8 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 package com.machinezoo.sourceafis.cli.benchmarks;
 
+import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
-import com.machinezoo.sourceafis.cli.samples.*;
 import it.unimi.dsi.fastutil.doubles.*;
 
 public class QuantileTrio {

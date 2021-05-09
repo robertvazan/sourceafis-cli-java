@@ -1,9 +1,10 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
-package com.machinezoo.sourceafis.cli.samples;
+package com.machinezoo.sourceafis.cli.datasets;
 
 import static java.util.stream.Collectors.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.*;
 import org.apache.commons.io.*;
 import com.machinezoo.noexception.*;
@@ -80,5 +81,9 @@ public class DatasetLayout {
 			}
 			++finger;
 		}
+	}
+	private static final ConcurrentMap<Dataset, DatasetLayout> all = new ConcurrentHashMap<>();
+	public static DatasetLayout get(Dataset dataset) {
+		return all.computeIfAbsent(dataset, ds -> new DatasetLayout(Download.unpack(dataset)));
 	}
 }

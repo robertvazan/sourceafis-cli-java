@@ -1,5 +1,5 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
-package com.machinezoo.sourceafis.cli.samples;
+package com.machinezoo.sourceafis.cli.datasets;
 
 import java.util.*;
 import org.apache.commons.lang3.builder.*;
@@ -13,8 +13,10 @@ public class Finger {
 		this.id = id;
 	}
 	public List<Fingerprint> fingerprints() {
-		int count = dataset.layout.impressions(id);
-		return IntStreamEx.range(count).mapToObj(n -> new Fingerprint(dataset, dataset.layout.fingerprint(id, n))).toList();
+		var layout = dataset.layout();
+		return IntStreamEx.range(layout.impressions(id))
+			.mapToObj(n -> new Fingerprint(dataset, layout.fingerprint(id, n)))
+			.toList();
 	}
 	@Override
 	public boolean equals(Object obj) {

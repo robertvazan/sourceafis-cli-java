@@ -4,8 +4,8 @@ package com.machinezoo.sourceafis.cli.benchmarks;
 import java.nio.file.*;
 import java.util.*;
 import org.openjdk.jol.info.*;
+import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
-import com.machinezoo.sourceafis.cli.samples.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
@@ -54,10 +54,10 @@ public class FootprintBenchmark extends Command {
 		for (var profile : profiles) {
 			var stats = sum(profile);
 			table.add(
-				profile.name,
-				Pretty.bytes(stats.serialized / stats.count, profile.name, "serialized"),
-				Pretty.bytes(stats.memory / stats.count, profile.name, "memory"),
-				Pretty.minutiae(stats.minutiae / stats.count, profile.name, "minutiae"));
+				profile.name(),
+				Pretty.bytes(stats.serialized / stats.count, profile.name(), "serialized"),
+				Pretty.bytes(stats.memory / stats.count, profile.name(), "memory"),
+				Pretty.minutiae(stats.minutiae / stats.count, profile.name(), "minutiae"));
 		}
 		Pretty.print(table.format());
 	}

@@ -1,5 +1,5 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
-package com.machinezoo.sourceafis.cli.samples;
+package com.machinezoo.sourceafis.cli.datasets;
 
 import java.io.*;
 import java.nio.file.*;
@@ -22,7 +22,8 @@ public class GrayscaleExport extends Command {
 	@Override
 	public void run() {
 		var category = Paths.get("exports", "grayscale");
-		for (var dataset : Dataset.all(ImageFormat.ORIGINAL)) {
+		for (var sample : Sample.values()) {
+			var dataset = new Dataset(sample, ImageFormat.ORIGINAL);
 			for (var fp : dataset.fingerprints()) {
 				Cache.get(byte[].class, category, Cache.withExtension(fp.path(), ".gray"), () -> {
 					var buffered = Exceptions.sneak().get(() -> ImageIO.read(new ByteArrayInputStream(fp.load())));

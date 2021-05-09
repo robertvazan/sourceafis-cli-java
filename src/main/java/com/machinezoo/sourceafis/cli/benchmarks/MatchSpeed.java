@@ -3,8 +3,8 @@ package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
 import com.machinezoo.sourceafis.*;
+import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
-import com.machinezoo.sourceafis.cli.samples.*;
 import one.util.streamex.*;
 
 public abstract class MatchSpeed extends SpeedBenchmark<FingerprintPair> {

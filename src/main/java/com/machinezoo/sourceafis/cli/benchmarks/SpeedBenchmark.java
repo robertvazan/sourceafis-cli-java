@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.*;
 import java.util.function.*;
 import org.slf4j.*;
 import com.machinezoo.noexception.*;
-import com.machinezoo.sourceafis.cli.samples.*;
+import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
@@ -91,7 +91,7 @@ public abstract class SpeedBenchmark<K> extends Command {
 		Pretty.print("Gross speed: " + Pretty.speed(global.count / (double)NET_DURATION, "gross"));
 		var table = new SpeedTable("Dataset");
 		for (var profile : Profile.all())
-			table.add(profile.name, all.narrow(profile));
+			table.add(profile.name(), all.narrow(profile));
 		table.print();
 	}
 }

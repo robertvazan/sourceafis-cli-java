@@ -2,7 +2,7 @@
 package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
-import com.machinezoo.sourceafis.cli.samples.*;
+import com.machinezoo.sourceafis.cli.datasets.*;
 import one.util.streamex.*;
 
 public class SampleRecorder {
@@ -41,7 +41,7 @@ public class SampleRecorder {
 		if (generation == 0 || random.nextInt(1 << generation) == 0) {
 			starts[size] = start;
 			ends[size] = end;
-			datasets[size] = dataset.name;
+			datasets[size] = dataset.name();
 			++size;
 			if (size >= 2 * capacity)
 				compact();
