@@ -18,6 +18,6 @@ public class AllSamples extends SampleProfile {
 	}
 	@Override
 	public int hashCode() {
-		return getClass().hashCode();
+		return 0;
 	}
 }

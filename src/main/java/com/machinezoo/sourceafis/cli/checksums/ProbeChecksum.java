@@ -7,10 +7,10 @@ import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 
-public class MatcherChecksum extends TransparencyChecksum<Fingerprint> {
+public class ProbeChecksum extends TransparencyChecksum<Fingerprint> {
 	@Override
 	public String name() {
-		return "matcher";
+		return "probe";
 	}
 	@Override
 	public String description() {

@@ -14,7 +14,7 @@ public class ScoreStats {
 		sum.matching = list.stream().mapToDouble(s -> s.matching).average().getAsDouble();
 		sum.nonmatching = list.stream().mapToDouble(s -> s.nonmatching).average().getAsDouble();
 		sum.selfmatching = list.stream().mapToDouble(s -> s.selfmatching).average().getAsDouble();
-		var hash = new Hash();
+		var hash = new Hasher();
 		for (var stats : list)
 			hash.add(stats.hash);
 		sum.hash = hash.compute();

@@ -17,13 +17,13 @@ public class TransparencyStats {
 		stats.length = data.length;
 		var normalized = Serializer.normalize(mime, data);
 		stats.normalized = normalized.length;
-		stats.hash = Hash.of(normalized);
+		stats.hash = Hasher.of(normalized);
 		return stats;
 	}
 	public static TransparencyStats sum(List<TransparencyStats> list) {
 		var sum = new TransparencyStats();
 		sum.mime = list.get(0).mime;
-		var hash = new Hash();
+		var hash = new Hasher();
 		for (var stats : list) {
 			sum.count += stats.count;
 			sum.length += stats.length;

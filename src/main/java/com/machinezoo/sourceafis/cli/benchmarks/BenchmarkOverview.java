@@ -17,9 +17,9 @@ public class BenchmarkOverview extends Command {
 	}
 	@Override
 	public void run() {
-		new AccuracyBenchmark().print(Profile.aggegate());
+		new AccuracyBenchmark().print(Profile.aggregate());
 		Pretty.print("");
-		new FootprintBenchmark().print(Profile.aggegate());
+		new FootprintBenchmark().print(Profile.aggregate());
 		Pretty.print("");
 		new SpeedOverview().run();
 	}

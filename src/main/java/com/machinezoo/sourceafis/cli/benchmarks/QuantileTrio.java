@@ -6,9 +6,9 @@ import com.machinezoo.sourceafis.cli.outputs.*;
 import it.unimi.dsi.fastutil.doubles.*;
 
 public class QuantileTrio {
-	public QuantileFunction matching;
-	public QuantileFunction nonmatching;
-	public QuantileFunction selfmatching;
+	public final QuantileFunction matching;
+	public final QuantileFunction nonmatching;
+	public final QuantileFunction selfmatching;
 	public QuantileTrio(Dataset dataset) {
 		var fingerprints = dataset.fingerprints();
 		var scores = ScoreCache.load(dataset);

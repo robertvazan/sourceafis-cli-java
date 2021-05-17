@@ -7,10 +7,10 @@ import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 
-public class MatcherLog extends TransparencyLog<Fingerprint> {
+public class ProbeLog extends TransparencyLog<Fingerprint> {
 	@Override
 	public String name() {
-		return "matcher";
+		return "probe";
 	}
 	@Override
 	public String description() {
@@ -18,7 +18,7 @@ public class MatcherLog extends TransparencyLog<Fingerprint> {
 	}
 	@Override
 	protected TransparencyChecksum<Fingerprint> checksum() {
-		return new MatcherChecksum();
+		return new ProbeChecksum();
 	}
 	@Override
 	protected byte[] log(String key, Fingerprint fp, int index, int count, String mime) {

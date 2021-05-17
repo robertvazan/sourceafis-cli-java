@@ -47,7 +47,7 @@ public abstract class SpeedBenchmark<K> extends Command {
 					future.completeExceptionally(ex);
 				}
 			});
-			thread.start();
+			threads.add(thread);
 		}
 		for (var thread : threads)
 			thread.start();

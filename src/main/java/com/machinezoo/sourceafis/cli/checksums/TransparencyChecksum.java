@@ -31,7 +31,7 @@ public abstract class TransparencyChecksum<K> extends Command {
 		return checksum(id).count(key);
 	}
 	public byte[] global() {
-		var hash = new Hash();
+		var hash = new Hasher();
 		for (var row : checksum().rows)
 			hash.add(row.stats.hash);
 		return hash.compute();

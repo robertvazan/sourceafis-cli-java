@@ -35,10 +35,10 @@ public class Main {
 				.add(new TemplateChecksum())
 				.add(new ScoreChecksum())
 				.add(new ExtractorChecksum())
-				.add(new MatcherChecksum())
+				.add(new ProbeChecksum())
 				.add(new MatchChecksum())
 				.add(new ExtractorLog())
-				.add(new MatcherLog())
+				.add(new ProbeLog())
 				.add(new MatchLog())
 				.add(new GrayscaleExport())
 				.add(new Purge());

@@ -10,7 +10,7 @@ public class SampleRecorder {
 	private final int capacity;
 	private final long[] starts;
 	private final long[] ends;
-	private final String[] datasets;
+	private final int[] datasets;
 	private int size;
 	private int generation;
 	private final Random random = new Random();
@@ -19,7 +19,7 @@ public class SampleRecorder {
 		this.capacity = capacity;
 		starts = new long[2 * capacity];
 		ends = new long[2 * capacity];
-		datasets = new String[2 * capacity];
+		datasets = new int[2 * capacity];
 	}
 	private void compact() {
 		for (int i = 0; i < capacity; ++i) {
@@ -41,7 +41,7 @@ public class SampleRecorder {
 		if (generation == 0 || random.nextInt(1 << generation) == 0) {
 			starts[size] = start;
 			ends[size] = end;
-			datasets[size] = dataset.name();
+			datasets[size] = dataset.sample.ordinal();
 			++size;
 			if (size >= 2 * capacity)
 				compact();
@@ -52,7 +52,7 @@ public class SampleRecorder {
 			var operation = new OperationTiming();
 			operation.start = 0.000_000_001 * (starts[n] - epoch);
 			operation.end = 0.000_000_001 * (ends[n] - epoch);
-			operation.dataset = datasets[n];
+			operation.dataset = Sample.values()[datasets[n]].name;
 			return operation;
 		}).toArray(OperationTiming[]::new);
 	}

@@ -11,7 +11,7 @@ public class TemplateStats {
 	public byte[] hash;
 	public static TemplateStats sum(List<TemplateStats> list) {
 		var sum = new TemplateStats();
-		var hash = new Hash();
+		var hash = new Hasher();
 		for (var stats : list) {
 			sum.count += stats.count;
 			sum.length += stats.length;

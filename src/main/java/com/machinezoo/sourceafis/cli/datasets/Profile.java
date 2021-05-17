@@ -17,14 +17,14 @@ public class Profile {
 	public static Profile everything() {
 		return new Profile(new AllSamples(), ImageFormat.DEFAULT);
 	}
-	public static List<Profile> aggegate() {
+	public static List<Profile> aggregate() {
 		return StreamEx.of(SampleProfile.aggregate()).map(sp -> new Profile(sp, ImageFormat.DEFAULT)).toList();
 	}
 	public static List<Profile> all() {
 		return StreamEx.of(SampleProfile.all()).map(sp -> new Profile(sp, ImageFormat.DEFAULT)).toList();
 	}
 	public List<Dataset> datasets() {
-		return StreamEx.of(kind.samples()).map(s -> new Dataset(s, ImageFormat.DEFAULT)).toList();
+		return StreamEx.of(kind.samples()).map(s -> new Dataset(s, format)).toList();
 	}
 	public List<Fingerprint> fingerprints() {
 		return StreamEx.of(datasets()).flatCollection(ds -> ds.fingerprints()).toList();

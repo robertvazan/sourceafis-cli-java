@@ -29,7 +29,7 @@ public class ScoreChecksum extends Command {
 			stats.nonmatching = trio.nonmatching.average();
 			stats.selfmatching = trio.selfmatching.average();
 			var buffer = new byte[8];
-			var hash = new Hash();
+			var hash = new Hasher();
 			for (var row : ScoreCache.load(dataset)) {
 				for (var score : row) {
 					ByteBuffer.wrap(buffer).putDouble(score);

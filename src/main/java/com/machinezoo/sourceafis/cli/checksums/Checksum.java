@@ -19,7 +19,7 @@ public class Checksum extends Command {
 		var table = new PrettyTable("Data", "Hash");
 		table.add("Templates", Pretty.hash(new TemplateChecksum().global(), "templates"));
 		table.add("Scores", Pretty.hash(new ScoreChecksum().global(), "scores"));
-		for (var transparency : List.of(new ExtractorChecksum(), new MatcherChecksum(), new MatchChecksum()))
+		for (var transparency : List.of(new ExtractorChecksum(), new ProbeChecksum(), new MatchChecksum()))
 			table.add("Transparency/" + transparency.name(), Pretty.hash(transparency.global(), "transparency", transparency.name()));
 		Pretty.print(table.format());
 	}
