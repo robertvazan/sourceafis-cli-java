@@ -12,12 +12,12 @@ public class Hasher {
 	public byte[] compute() {
 		return hasher.digest();
 	}
-	public static byte[] of(byte[] data) {
+	public static byte[] hash(byte[] data) {
 		var hash = new Hasher();
 		hash.add(data);
 		return hash.compute();
 	}
-	public static byte[] of(String mime, byte[] data) {
-		return of(Serializer.normalize(mime, data));
+	public static byte[] hash(String mime, byte[] data) {
+		return hash(Serializer.normalize(mime, data));
 	}
 }

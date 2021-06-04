@@ -17,7 +17,7 @@ public class TransparencyStats {
 		stats.length = data.length;
 		var normalized = Serializer.normalize(mime, data);
 		stats.normalized = normalized.length;
-		stats.hash = Hasher.of(normalized);
+		stats.hash = Hasher.hash(normalized);
 		return stats;
 	}
 	public static TransparencyStats sum(List<TransparencyStats> list) {

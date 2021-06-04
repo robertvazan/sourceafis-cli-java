@@ -27,7 +27,7 @@ public class TemplateChecksum extends Command {
 			checksum.length = serialized.length;
 			var normalized = Serializer.normalize(serialized);
 			checksum.normalized = normalized.length;
-			checksum.hash = Hasher.of(normalized);
+			checksum.hash = Hasher.hash(normalized);
 			return checksum;
 		});
 	}
