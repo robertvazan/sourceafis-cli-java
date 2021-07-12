@@ -21,7 +21,7 @@ public class ExtractorLog extends TransparencyLog<Fingerprint> {
 	}
 	@Override
 	protected byte[] log(String key, Fingerprint fp, int index, int count, String mime) {
-		return Cache.get(byte[].class, category(key), identity(key, fp, index, count, mime), batch -> {
+		return Cache.get(byte[].class, category(key), identity(fp, index, count, mime), batch -> {
 			log(key, fp, index, count, mime, () -> new FingerprintTemplate(fp.decode()), batch);
 		});
 	}

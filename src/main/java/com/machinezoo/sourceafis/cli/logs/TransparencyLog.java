@@ -27,7 +27,7 @@ public abstract class TransparencyLog<K extends DataIdentifier> extends Command 
 		else
 			return Paths.get("logs", name(), key);
 	}
-	protected Path identity(String key, K id, int index, int count, String mime) {
+	protected Path identity(K id, int index, int count, String mime) {
 		var path = id.path();
 		if (count > 1)
 			path = path.resolve(Integer.toString(index));
@@ -38,7 +38,7 @@ public abstract class TransparencyLog<K extends DataIdentifier> extends Command 
 		for (int i = 0; i < count; ++i) {
 			var raw = collected.get(index);
 			var normalized = Configuration.normalized ? Serializer.normalize(mime, raw) : raw;
-			batch.add(identity(key, id, i, count, mime), normalized);
+			batch.add(identity(id, i, count, mime), normalized);
 		}
 	}
 	public void log(String key) {

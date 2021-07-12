@@ -23,7 +23,7 @@ public class MatchLog extends TransparencyLog<FingerprintPair> {
 	}
 	@Override
 	protected byte[] log(String key, FingerprintPair pair, int index, int count, String mime) {
-		return Cache.get(byte[].class, category(key), identity(key, pair, index, count, mime), batch -> {
+		return Cache.get(byte[].class, category(key), identity(pair, index, count, mime), batch -> {
 			var dataset = pair.dataset;
 			var fingerprints = dataset.fingerprints();
 			var templates = StreamEx.of(fingerprints).map(fp -> TemplateCache.deserialize(fp)).toList();
