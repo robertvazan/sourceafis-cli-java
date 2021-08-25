@@ -25,11 +25,13 @@ public class Serializer {
 		case OBJECT:
 			stream.write(0xBF);
 			for (var key : StreamEx.of(node.fieldNames()).sorted()) {
-				stream.write(0x78);
-				var utf = key.getBytes(StandardCharsets.UTF_8);
-				stream.write(utf.length);
-				stream.write(utf);
-				normalize(stream, node.get(key));
+				if (!key.equals("version")) {
+					stream.write(0x78);
+					var utf = key.getBytes(StandardCharsets.UTF_8);
+					stream.write(utf.length);
+					stream.write(utf);
+					normalize(stream, node.get(key));
+				}
 			}
 			stream.write(0xFF);
 			break;
