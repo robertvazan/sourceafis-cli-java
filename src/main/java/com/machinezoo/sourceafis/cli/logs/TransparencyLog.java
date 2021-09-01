@@ -36,7 +36,7 @@ public abstract class TransparencyLog<K extends DataIdentifier> extends Command 
 	protected void log(String key, K id, int index, int count, String mime, Runnable action, CacheBatch batch) {
 		var collected = KeyDataCollector.collect(key, action);
 		for (int i = 0; i < count; ++i) {
-			var raw = collected.get(index);
+			var raw = collected.get(i);
 			var normalized = Configuration.normalized ? Serializer.normalize(mime, raw) : raw;
 			batch.add(identity(id, i, count, mime), normalized);
 		}
