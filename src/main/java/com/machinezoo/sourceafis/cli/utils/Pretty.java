@@ -68,16 +68,15 @@ public class Pretty {
 			return String.format("%.0fx", value);
 		if (value >= 10)
 			return String.format("%.1fx", value);
-		if (value >= 2)
-			return String.format("%.2fx", value);
-		return percents(value - 1);
+		return String.format("%.2fx", value);
 	}
 	private static String change(double value, double baseline, String more, String less) {
 		if (value == baseline)
 			return "=";
 		boolean positive = value >= baseline;
-		var change = factor(positive ? value / baseline : baseline / value);
-		if (change.equals(factor(1)))
+		double factor = positive ? value / baseline : baseline / value;
+		var change = factor >= 2 ? factor(factor) : percents(Math.abs(value / baseline - 1));
+		if (change.equals(percents(0)))
 			return "~";
 		return change + " " + (positive ? more : less);
 	}
