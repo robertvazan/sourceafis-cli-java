@@ -5,57 +5,59 @@ import java.util.*;
 import it.unimi.dsi.fastutil.doubles.*;
 
 public class QuantileFunction {
-	public final double[] function;
+	private final double[] function;
 	public QuantileFunction(DoubleArrayList list) {
 		list.sort(null);
 		function = list.toDoubleArray();
 	}
+	public int resolution() {
+		return function.length;
+	}
+	public double bar(int index) {
+		return function[index];
+	}
 	public double read(double probability) {
-		double index = probability * function.length;
-		/*
-		 * Quantile function can be visualized as a histogram with equally wide bars.
-		 * Provided probability lies between centers of two bars.
-		 */
-		int upperBar = (int)(index + 0.5);
-		int lowerBar = upperBar - 1;
-		/*
-		 * Extrapolation to infinity for first and last half-bar is safe and realistic.
-		 */
-		if (upperBar >= function.length)
-			return Double.POSITIVE_INFINITY;
-		if (lowerBar < 0)
-			return Double.NEGATIVE_INFINITY;
-		/*
-		 * Interpolate between bar centers.
-		 */
-		double upperWeight = index - lowerBar - 0.5;
-		double lowerWeight = 1 - upperWeight;
-		return function[lowerBar] * lowerWeight + function[upperBar] * upperWeight;
+		int index = (int)(probability * function.length);
+		if (index < 0)
+			return function[0];
+		if (index >= function.length)
+			return function[function.length - 1];
+		return function[index];
 	}
 	public double cdf(double threshold) {
 		/*
-		 * Return 0%/100% if we sample data does not cover the threshold.
+		 * Return 0%/100% if sample data does not cover the threshold.
 		 * This also covers cases when threshold is infinite.
 		 */
 		if (threshold <= function[0])
 			return 0;
 		if (threshold > function[function.length - 1])
 			return 1;
-		double min = 0, max = 1;
-		for (int i = 0; i < 30; ++i) {
-			double probability = (min + max) / 2;
-			double score = read(probability);
+		int min = 0, max = function.length - 1;
+		while (min < max) {
 			/*
-			 * Quantile function is monotonically rising.
-			 * If we overshoot probability, we will also overshoot score.
-			 * So if score is too high, we need to guess lower probability.
+			 * If min+1 < max, then pivot will be between min and max. If min+1 == max, then pivot == min.
 			 */
-			if (score >= threshold)
-				max = probability;
-			else
-				min = probability;
+			int pivot = (min + max) / 2;
+			double score = function[pivot];
+			/*
+			 * Quantile function is monotonically rising (but not strictly rising).
+			 * If we overshoot pivot, we will either overshoot score or get score equal to threshold.
+			 * If we undershoot pivot, we will also undershoot score.
+			 */
+			if (score >= threshold) {
+				/*
+				 * If min+1 == max, then max will be set to min here.
+				 */
+				max = pivot;
+			} else {
+				/*
+				 * If min+1 == max, then min will be set to max here.
+				 */
+				min = pivot + 1;
+			}
 		}
-		return (min + max) / 2;
+		return min / (double)function.length;
 	}
 	public double average() {
 		return Arrays.stream(function).average().getAsDouble();
