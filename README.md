@@ -1,6 +1,6 @@
 # SourceAFIS CLI for Java #
 
-[![Build Status](https://travis-ci.com/robertvazan/sourceafis-cli-java.svg?branch=master)](https://travis-ci.com/robertvazan/sourceafis-cli-java)
+[![Build Status](https://travis-ci.com/robertvazan/sourceafis-cli-java.svg?branch=master)](https://app.travis-ci.com/github/robertvazan/sourceafis-cli-java)
 
 SourceAFIS CLI for Java is a command-line interface to [SourceAFIS for Java](https://sourceafis.machinezoo.com/java). At the moment, it can benchmark algorithm accuracy, template footprint, and implementation speed. It also includes tools that aid in development of SourceAFIS for Java. Read more on [SourceAFIS CLI](https://sourceafis.machinezoo.com/cli) page.
 
