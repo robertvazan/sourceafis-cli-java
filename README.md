@@ -10,7 +10,7 @@ Read more on [SourceAFIS CLI](https://sourceafis.machinezoo.com/cli) page.
 
 ## Status
 
-Stable and maintained.
+Stable and maintained. [Stagean](https://stagean.machinezoo.com/) is used to track progress on class and method level.
 
 ## Getting started
 

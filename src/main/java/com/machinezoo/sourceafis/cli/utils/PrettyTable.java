@@ -3,7 +3,10 @@ package com.machinezoo.sourceafis.cli.utils;
 
 import java.util.*;
 import java.util.stream.*;
+import com.machinezoo.stagean.*;
 
+@DraftApi
+@ApiIssue("Support variable number of columns.")
 public class PrettyTable {
 	private final List<String> columns;
 	private final List<List<String>> rows = new ArrayList<>();

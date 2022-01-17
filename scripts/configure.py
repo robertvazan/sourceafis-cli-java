@@ -19,6 +19,7 @@ inception_year = lambda: 2021
 homepage = lambda: website() + 'cli'
 jdk_version = lambda: 17
 main_class_name = lambda: 'Main'
+stagean_annotations = lambda: True
 md_description = lambda: '''\
     SourceAFIS CLI for Java is a command-line interface to [SourceAFIS for Java](https://sourceafis.machinezoo.com/java).
     At the moment, it can benchmark algorithm accuracy, template footprint, and implementation speed.
