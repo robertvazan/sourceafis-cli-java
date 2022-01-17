@@ -10,7 +10,7 @@ Read more on [SourceAFIS CLI](https://sourceafis.machinezoo.com/cli) page.
 
 ## Status
 
-Experimental.
+Stable and maintained.
 
 ## Getting started
 
