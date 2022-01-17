@@ -21,5 +21,8 @@ open module com.machinezoo.sourceafis.cli {
 	requires org.apache.commons.io;
 	requires org.apache.commons.lang3;
 	requires org.slf4j;
+	/*
+	 * JOL library is not a module and there's no way to request this from JOL maintainers.
+	 */
 	requires jol.core;
 }
