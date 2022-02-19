@@ -22,6 +22,8 @@ See [homepage](https://sourceafis.machinezoo.com/cli).
 * [SourceAFIS for Java](https://sourceafis.machinezoo.com/java)
 * [SourceAFIS overview](https://sourceafis.machinezoo.com/)
 
+There is no javadoc yet. See [source code](src/main/java/com/machinezoo/sourceafis/cli) for available APIs.
+
 ## Feedback
 
 Bug reports and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
