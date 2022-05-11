@@ -29,10 +29,9 @@ md_description = lambda: '''\
 
 def dependencies():
     use('com.machinezoo.sourceafis:sourceafis:3.16.0')
-    use_slf4j()
     use_commons_lang()
     use_streamex()
-    use('ch.qos.logback:logback-classic:1.2.3')
+    use('org.slf4j:slf4j-simple:1.7.36')
     # Used to measure memory footprint of SourceAFIS templates.
     # Causes warnings. Needs replacement.
     use('org.openjdk.jol:jol-core:0.16')

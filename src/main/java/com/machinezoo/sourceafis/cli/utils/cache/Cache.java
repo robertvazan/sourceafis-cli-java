@@ -5,12 +5,11 @@ import java.nio.file.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import java.util.function.*;
-import org.slf4j.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.config.*;
+import com.machinezoo.sourceafis.cli.utils.*;
 
 public class Cache<T> {
-	private static final Logger logger = LoggerFactory.getLogger(Cache.class);
 	public static Path withExtension(Path path, String extension) {
 		return path.resolveSibling(path.getFileName() + extension);
 	}
@@ -26,7 +25,7 @@ public class Cache<T> {
 				if (Configuration.baselineMode)
 					throw new IllegalStateException("Baseline data was not found.");
 				if (!reported.computeIfAbsent(category, c -> new AtomicBoolean()).getAndSet(true))
-					logger.info("Computing {}...", category);
+					Pretty.format("Computing {0}...", category);
 				generator.accept(new CacheBatch(category));
 			}
 			return serialization.deserialize(compression.decompress(Files.readAllBytes(path)), clazz);

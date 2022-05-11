@@ -4,9 +4,7 @@ package com.machinezoo.sourceafis.cli.benchmarks;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.*;
 import java.util.function.*;
-import org.slf4j.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.utils.*;
@@ -15,7 +13,6 @@ import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
 public abstract class SpeedBenchmark<K> extends Command {
-	private static final Logger logger = LoggerFactory.getLogger(SpeedBenchmark.class);
 	public static final int DURATION = 60;
 	public static final int WARMUP = 20;
 	public static final int NET_DURATION = DURATION - WARMUP;
@@ -57,7 +54,6 @@ public abstract class SpeedBenchmark<K> extends Command {
 	}
 	protected TimingStats measure(Supplier<Supplier<TimedOperation<K>>> setup) {
 		return Cache.get(TimingStats.class, Paths.get("benchmarks", "speed", name()), Paths.get("measurement"), () -> {
-			var nondeterministic = new AtomicBoolean(false);
 			var epoch = System.nanoTime();
 			var allocator = setup.get();
 			var strata = parallelize(() -> {
@@ -72,15 +68,13 @@ public abstract class SpeedBenchmark<K> extends Command {
 							operation.execute();
 							long end = System.nanoTime();
 							if (!operation.verify())
-								nondeterministic.set(true);
+								throw new IllegalStateException("Non-deterministic algorithm.");
 							if (!recorder.record(dataset(id), start, end))
 								return recorder.complete();
 						}
 					}
 				};
 			});
-			if (nondeterministic.get())
-				logger.warn("Non-deterministic algorithm.");
 			return TimingStats.sum(SAMPLE_SIZE, strata);
 		});
 	}

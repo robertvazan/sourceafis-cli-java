@@ -2,29 +2,31 @@
 package com.machinezoo.sourceafis.cli.utils;
 
 import java.nio.file.*;
+import java.text.*;
 import java.util.*;
-import org.slf4j.*;
 import com.machinezoo.sourceafis.cli.config.*;
 import it.unimi.dsi.fastutil.objects.*;
 
 public class Pretty {
-	private static final Logger logger = LoggerFactory.getLogger(Pretty.class);
+	/*
+	 * Print complete line or several lines. Trailing newline is added if necessary.
+	 * At least one line is printed, so empty string creates empty ine in output.
+	 */
 	public static void print(String text) {
-		if (!Configuration.baselineMode) {
-			if (text.endsWith("\n"))
-				text = text.substring(0, text.length() - 1);
-			for (var line : text.split("\n"))
-				logger.info(line);
-		}
+		if (!Configuration.baselineMode)
+			System.out.println(text.stripTrailing());
+	}
+	public static void format(String pattern, Object... args) {
+		print(MessageFormat.format(pattern, args));
 	}
 	public static String extension(String mime) {
 		switch (mime) {
-		case "application/cbor":
-			return ".cbor";
-		case "text/plain":
-			return ".txt";
-		default:
-			return ".dat";
+			case "application/cbor" :
+				return ".cbor";
+			case "text/plain" :
+				return ".txt";
+			default :
+				return ".dat";
 		}
 	}
 	public static String dump(Path category) {

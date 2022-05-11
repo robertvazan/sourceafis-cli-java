@@ -2,11 +2,10 @@
 package com.machinezoo.sourceafis.cli.utils.args;
 
 import java.util.*;
-import org.slf4j.*;
+import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
 public class CommandParser {
-	private static final Logger logger = LoggerFactory.getLogger(CommandParser.class);
 	private final CommandGroup commandRoot = new CommandGroup();
 	private final List<Command> commands = new ArrayList<>();
 	private final Map<String, Option> optionMap = new HashMap<>();
@@ -23,20 +22,20 @@ public class CommandParser {
 	}
 	public Runnable parse(String[] args) {
 		if (args.length == 0) {
-			logger.info("SourceAFIS CLI for Java");
-			logger.info("");
-			logger.info("Available subcommands:");
+			Pretty.print("SourceAFIS CLI for Java");
+			Pretty.print("");
+			Pretty.print("Available subcommands:");
 			for (var command : commands) {
-				logger.info("\t{}{}", String.join(" ", command.subcommand()), StreamEx.of(command.parameters()).map(p -> " <" + p + ">").joining());
-				logger.info("\t\t{}", command.description());
+				Pretty.format("\t{0}{1}", String.join(" ", command.subcommand()), StreamEx.of(command.parameters()).map(p -> " <" + p + ">").joining());
+				Pretty.format("\t\t{0}", command.description());
 			}
-			logger.info("");
-			logger.info("Available options:");
+			Pretty.print("");
+			Pretty.print("Available options:");
 			for (var option : options) {
-				logger.info("\t--{}{}", option.name(), StreamEx.of(option.parameters()).map(p -> " <" + p + ">").joining());
-				logger.info("\t\t{}", option.description());
+				Pretty.format("\t--{0}{1}", option.name(), StreamEx.of(option.parameters()).map(p -> " <" + p + ">").joining());
+				Pretty.format("\t\t{0}", option.description());
 				if (option.fallback() != null)
-					logger.info("\t\tDefault: {}", option.fallback());
+					Pretty.format("\t\tDefault: {0}", option.fallback());
 			}
 			System.exit(0);
 		}

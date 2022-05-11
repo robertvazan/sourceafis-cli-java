@@ -2,7 +2,6 @@
 package com.machinezoo.sourceafis.cli;
 
 import org.apache.commons.lang3.exception.*;
-import org.slf4j.*;
 import com.machinezoo.sourceafis.cli.benchmarks.*;
 import com.machinezoo.sourceafis.cli.checksums.*;
 import com.machinezoo.sourceafis.cli.config.*;
@@ -10,10 +9,8 @@ import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.logs.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
-import one.util.streamex.*;
 
 public class Main {
-	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 	public static void main(String args[]) {
 		try {
 			var parser = new CommandParser()
@@ -50,7 +47,7 @@ public class Main {
 			}
 			command.run();
 		} catch (Throwable ex) {
-			logger.error("{}", StreamEx.of(ExceptionUtils.getThrowableList(ex)).map(x -> ExceptionUtils.getMessage(x)).joining(" -> "));
+			ExceptionUtils.printRootCauseStackTrace(ex);
 			System.exit(1);
 		}
 	}
