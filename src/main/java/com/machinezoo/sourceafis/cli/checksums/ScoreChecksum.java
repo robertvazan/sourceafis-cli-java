@@ -10,7 +10,6 @@ import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
-import one.util.streamex.*;
 
 public class ScoreChecksum extends Command {
 	@Override
@@ -41,7 +40,7 @@ public class ScoreChecksum extends Command {
 		});
 	}
 	private ScoreStats checksum(Profile profile) {
-		return ScoreStats.sum(StreamEx.of(profile.datasets()).map(this::checksum).toList());
+		return ScoreStats.sum(profile.datasets().parallelStream().map(this::checksum).toList());
 	}
 	public byte[] global() {
 		return checksum(Profile.everything()).hash;

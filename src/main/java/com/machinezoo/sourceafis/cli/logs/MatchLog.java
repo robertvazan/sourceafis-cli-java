@@ -6,7 +6,6 @@ import com.machinezoo.sourceafis.cli.checksums.*;
 import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
-import one.util.streamex.*;
 
 public class MatchLog extends TransparencyLog<FingerprintPair> {
 	@Override
@@ -23,19 +22,19 @@ public class MatchLog extends TransparencyLog<FingerprintPair> {
 	}
 	@Override
 	protected byte[] log(String key, FingerprintPair pair, int index, int count, String mime) {
-		return Cache.get(byte[].class, category(key), identity(pair, index, count, mime), batch -> {
+		return Cache.get(byte[].class, category(key), pair.dataset.path(), identity(pair, index, count, mime), batch -> {
 			var dataset = pair.dataset;
 			var fingerprints = dataset.fingerprints();
-			var templates = StreamEx.of(fingerprints).map(fp -> TemplateCache.deserialize(fp)).toList();
-			for (var probe : fingerprints) {
+			var templates = fingerprints.parallelStream().map(fp -> TemplateCache.deserialize(fp)).toList();
+			fingerprints.parallelStream().forEach(probe -> {
 				var matcher = new FingerprintMatcher(templates.get(probe.id));
 				for (var candidate : fingerprints) {
 					var wpair = new FingerprintPair(probe, candidate);
 					int wcount = new MatchChecksum().count(wpair, key);
 					var template = templates.get(candidate.id);
-					log(key, wpair, index, wcount, mime, () -> matcher.match(template), batch);
+					log(key, wpair, wcount, mime, () -> matcher.match(template), batch);
 				}
-			}
+			});
 		});
 	}
 }

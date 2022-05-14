@@ -8,7 +8,6 @@ import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
-import one.util.streamex.*;
 
 public class TemplateChecksum extends Command {
 	@Override
@@ -32,7 +31,7 @@ public class TemplateChecksum extends Command {
 		});
 	}
 	private TemplateStats checksum(Profile profile) {
-		return TemplateStats.sum(StreamEx.of(profile.fingerprints()).map(this::checksum).toList());
+		return TemplateStats.sum(profile.fingerprints().parallelStream().map(this::checksum).toList());
 	}
 	public byte[] global() {
 		return checksum(Profile.everything()).hash;

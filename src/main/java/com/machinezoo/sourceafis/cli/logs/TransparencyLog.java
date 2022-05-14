@@ -33,7 +33,7 @@ public abstract class TransparencyLog<K extends DataIdentifier> extends Command 
 			path = path.resolve(Integer.toString(index));
 		return Cache.withExtension(path, Pretty.extension(mime));
 	}
-	protected void log(String key, K id, int index, int count, String mime, Runnable action, CacheBatch batch) {
+	protected void log(String key, K id, int count, String mime, Runnable action, CacheBatch batch) {
 		var collected = KeyDataCollector.collect(key, action);
 		for (int i = 0; i < count; ++i) {
 			var raw = collected.get(i);
@@ -43,11 +43,11 @@ public abstract class TransparencyLog<K extends DataIdentifier> extends Command 
 	}
 	public void log(String key) {
 		var mime = checksum().mime(key);
-		for (var id : checksum().ids()) {
+		checksum().ids().forEach(id -> {
 			int count = checksum().count(id, key);
 			if (count > 0)
 				log(key, id, 0, count, mime);
-		}
+		});
 		Pretty.print("Saved: " + Pretty.dump(category(key)));
 	}
 	@Override

@@ -9,7 +9,6 @@ import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
-import one.util.streamex.*;
 
 public class FootprintBenchmark extends Command {
 	@Override
@@ -44,7 +43,7 @@ public class FootprintBenchmark extends Command {
 		});
 	}
 	private FootprintStats sum(Profile profile) {
-		return FootprintStats.sum(StreamEx.of(profile.fingerprints()).map(this::measure).toList());
+		return FootprintStats.sum(profile.fingerprints().parallelStream().map(this::measure).toList());
 	}
 	public FootprintStats sum() {
 		return sum(Profile.everything());

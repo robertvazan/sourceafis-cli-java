@@ -3,14 +3,17 @@ package com.machinezoo.sourceafis.cli.checksums;
 
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
-import one.util.streamex.*;
 
 public abstract class TransparencyChecksum<K> extends Command {
 	public abstract String name();
-	public abstract List<K> ids();
+	/*
+	 * Returns parallel stream if parallelization over IDs is desirable.
+	 */
+	public abstract Stream<K> ids();
 	protected abstract TransparencyTable checksum(K id);
 	@Override
 	public List<String> subcommand() {
@@ -21,7 +24,7 @@ public abstract class TransparencyChecksum<K> extends Command {
 	}
 	public TransparencyTable checksum() {
 		return Cache.get(TransparencyTable.class, category(), Paths.get("all"), () -> {
-			return TransparencyTable.sum(StreamEx.of(ids()).map(this::checksum).toList());
+			return TransparencyTable.sum(ids().map(this::checksum).toList());
 		});
 	}
 	public String mime(String key) {

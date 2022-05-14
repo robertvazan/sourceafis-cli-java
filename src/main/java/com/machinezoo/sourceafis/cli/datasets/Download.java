@@ -91,7 +91,7 @@ public class Download {
 		return Configuration.home.resolve("samples").resolve(subdirectory).resolve(dataset.name());
 	}
 	private static final AtomicBoolean reported = new AtomicBoolean();
-	public static Path unpack(Dataset dataset) {
+	public static synchronized Path unpack(Dataset dataset) {
 		var directory = directory(dataset);
 		if (!Files.isDirectory(directory)) {
 			var url = url(dataset);

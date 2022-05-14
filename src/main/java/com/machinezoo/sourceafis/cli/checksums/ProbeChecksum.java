@@ -1,7 +1,7 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 package com.machinezoo.sourceafis.cli.checksums;
 
-import java.util.*;
+import java.util.stream.*;
 import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
@@ -17,8 +17,8 @@ public class ProbeChecksum extends TransparencyChecksum<Fingerprint> {
 		return "Compute consistency checksum of transparency data generated when preparing probe for matching.";
 	}
 	@Override
-	public List<Fingerprint> ids() {
-		return Fingerprint.all();
+	public Stream<Fingerprint> ids() {
+		return Fingerprint.all().parallelStream();
 	}
 	@Override
 	protected TransparencyTable checksum(Fingerprint fp) {

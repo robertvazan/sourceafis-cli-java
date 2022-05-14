@@ -33,9 +33,11 @@ public abstract class MatchSpeed extends SpeedBenchmark<FingerprintPair> {
 			var footprint = new FootprintBenchmark().sum();
 			int ballooning = Math.max(1, (int)(RAM_FOOTPRINT / (footprint.memory / footprint.count * Fingerprint.all().size())));
 			var templates = StreamEx.of(Fingerprint.all())
-				.toMap(fp -> StreamEx.generate(() -> TemplateCache.deserialize(fp))
+				.parallel()
+				.mapToEntry(fp -> StreamEx.generate(() -> TemplateCache.deserialize(fp))
 					.limit(ballooning)
-					.toList());
+					.toList())
+				.toMap();
 			var scores = StreamEx.of(Dataset.all()).toMap(ds -> ScoreCache.load(ds));
 			return () -> new TimedOperation<FingerprintPair>() {
 				FingerprintPair pair;

@@ -1,12 +1,11 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 package com.machinezoo.sourceafis.cli.checksums;
 
-import java.util.*;
+import java.util.stream.*;
 import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
-import one.util.streamex.*;
 
 public class MatchChecksum extends TransparencyChecksum<FingerprintPair> {
 	@Override
@@ -18,23 +17,23 @@ public class MatchChecksum extends TransparencyChecksum<FingerprintPair> {
 		return "Compute consistency checksum of transparency data generated during comparison of probe to candidate.";
 	}
 	@Override
-	public List<FingerprintPair> ids() {
-		return StreamEx.of(Fingerprint.all()).flatMap(p -> StreamEx.of(p.dataset.fingerprints()).map(c -> new FingerprintPair(p, c))).toList();
+	public Stream<FingerprintPair> ids() {
+		return Fingerprint.all().stream().flatMap(p -> p.dataset.fingerprints().stream().map(c -> new FingerprintPair(p, c)));
 	}
 	@Override
 	protected TransparencyTable checksum(FingerprintPair pair) {
-		return Cache.get(TransparencyTable.class, category(), pair.path(), batch -> {
+		return Cache.get(TransparencyTable.class, category(), pair.dataset.path(), pair.path(), batch -> {
 			var dataset = pair.dataset;
 			var fingerprints = dataset.fingerprints();
-			var templates = StreamEx.of(fingerprints).map(fp -> TemplateCache.deserialize(fp)).toList();
-			for (var probe : fingerprints) {
+			var templates = fingerprints.parallelStream().map(fp -> TemplateCache.deserialize(fp)).toList();
+			fingerprints.parallelStream().forEach(probe -> {
 				var matcher = new FingerprintMatcher(templates.get(probe.id));
 				for (var candidate : fingerprints) {
 					var template = templates.get(candidate.id);
 					var table = ChecksumCollector.collect(() -> matcher.match(template));
 					batch.add(new FingerprintPair(probe, candidate).path(), table);
 				}
-			}
+			});
 		});
 	}
 }
