@@ -2,9 +2,7 @@
 import com.machinezoo.stagean.*;
 
 @ApiIssue("Wrap library APIs (engine, transparency, visualization) in CLI commands. Inputs and outputs in files.")
-@CodeIssue("Stats summing inspired by Rust's utils/statistics.")
-@CodeIssue("Could use code structure hints from Rust (e.g. input package).")
-@CodeIssue("Use records to implement equality.")
+@CodeIssue("Use records to implement equality. Plus other Java 17 features.")
 @DocIssue("Wrap description lines, so that descriptions can be longer.")
 @DocIssue("Dedicated homepage for Java port of the CLI.")
 /*

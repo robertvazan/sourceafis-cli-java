@@ -2,6 +2,7 @@
 package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
+import com.machinezoo.sourceafis.cli.utils.*;
 
 public class FootprintStats {
 	public int count;
@@ -10,12 +11,10 @@ public class FootprintStats {
 	public double minutiae;
 	public static FootprintStats sum(List<FootprintStats> list) {
 		var sum = new FootprintStats();
-		for (var stats : list) {
-			sum.count += stats.count;
-			sum.serialized += stats.serialized;
-			sum.memory += stats.memory;
-			sum.minutiae += stats.minutiae;
-		}
+		sum.count = Stats.sumAsInt(list, s -> s.count);
+		sum.serialized = Stats.sumAsDouble(list, s -> s.serialized);
+		sum.memory = Stats.sumAsDouble(list, s -> s.memory);
+		sum.minutiae = Stats.sumAsDouble(list, s -> s.minutiae);
 		return sum;
 	}
 }

@@ -11,14 +11,10 @@ public class TemplateStats {
 	public byte[] hash;
 	public static TemplateStats sum(List<TemplateStats> list) {
 		var sum = new TemplateStats();
-		var hash = new Hasher();
-		for (var stats : list) {
-			sum.count += stats.count;
-			sum.length += stats.length;
-			sum.normalized += stats.normalized;
-			hash.add(stats.hash);
-		}
-		sum.hash = hash.compute();
+		sum.count = Stats.sumAsInt(list, s -> s.count);
+		sum.length = Stats.sumAsLong(list, s -> s.length);
+		sum.normalized = Stats.sumAsLong(list, s -> s.normalized);
+		sum.hash = Stats.sumHash(list, s -> s.hash);
 		return sum;
 	}
 }

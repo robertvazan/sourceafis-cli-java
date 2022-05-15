@@ -11,13 +11,10 @@ public class ScoreStats {
 	public byte[] hash;
 	public static ScoreStats sum(List<ScoreStats> list) {
 		var sum = new ScoreStats();
-		sum.matching = list.stream().mapToDouble(s -> s.matching).average().getAsDouble();
-		sum.nonmatching = list.stream().mapToDouble(s -> s.nonmatching).average().getAsDouble();
-		sum.selfmatching = list.stream().mapToDouble(s -> s.selfmatching).average().getAsDouble();
-		var hash = new Hasher();
-		for (var stats : list)
-			hash.add(stats.hash);
-		sum.hash = hash.compute();
+		sum.matching = Stats.average(list, s -> s.matching);
+		sum.nonmatching = Stats.average(list, s -> s.nonmatching);
+		sum.selfmatching = Stats.average(list, s -> s.selfmatching);
+		sum.hash = Stats.sumHash(list, s -> s.hash);
 		return sum;
 	}
 }

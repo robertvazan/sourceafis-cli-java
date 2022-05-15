@@ -2,6 +2,7 @@
 package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
+import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
 public class TimingSummary {
@@ -11,8 +12,8 @@ public class TimingSummary {
 	public double min;
 	public static TimingSummary sum(List<TimingSummary> list) {
 		var sum = new TimingSummary();
-		sum.count = list.stream().mapToLong(s -> s.count).sum();
-		sum.sum = list.stream().mapToDouble(s -> s.sum).sum();
+		sum.count = Stats.sumAsLong(list, s -> s.count);
+		sum.sum = Stats.sumAsDouble(list, s -> s.sum);
 		sum.max = list.stream().mapToDouble(s -> s.max).max().orElse(0);
 		sum.min = list.stream().filter(s -> s.count > 0).mapToDouble(s -> s.min).min().orElse(0);
 		return sum;

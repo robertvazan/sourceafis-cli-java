@@ -23,14 +23,10 @@ public class TransparencyStats {
 	public static TransparencyStats sum(List<TransparencyStats> list) {
 		var sum = new TransparencyStats();
 		sum.mime = list.get(0).mime;
-		var hash = new Hasher();
-		for (var stats : list) {
-			sum.count += stats.count;
-			sum.length += stats.length;
-			sum.normalized += stats.normalized;
-			hash.add(stats.hash);
-		}
-		sum.hash = hash.compute();
+		sum.count = Stats.sumAsInt(list, s -> s.count);
+		sum.length = Stats.sumAsLong(list, s -> s.length);
+		sum.normalized = Stats.sumAsLong(list, s -> s.normalized);
+		sum.hash = Stats.sumHash(list, s -> s.hash);
 		return sum;
 	}
 }

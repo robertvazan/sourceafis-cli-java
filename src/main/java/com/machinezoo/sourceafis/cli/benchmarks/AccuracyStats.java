@@ -2,6 +2,7 @@
 package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
+import com.machinezoo.sourceafis.cli.utils.*;
 
 public class AccuracyStats {
 	public double eer;
@@ -10,13 +11,10 @@ public class AccuracyStats {
 	public double fmr10K;
 	public static AccuracyStats sum(List<AccuracyStats> list) {
 		var sum = new AccuracyStats();
-		int count = list.size();
-		for (var stats : list) {
-			sum.eer += stats.eer / count;
-			sum.fmr100 += stats.fmr100 / count;
-			sum.fmr1K += stats.fmr1K / count;
-			sum.fmr10K += stats.fmr10K / count;
-		}
+		sum.eer = Stats.average(list, s -> s.eer);
+		sum.fmr100 = Stats.average(list, s -> s.fmr100);
+		sum.fmr1K = Stats.average(list, s -> s.fmr1K);
+		sum.fmr10K = Stats.average(list, s -> s.fmr10K);
 		return sum;
 	}
 }
