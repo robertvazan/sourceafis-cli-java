@@ -56,16 +56,16 @@ public abstract class SpeedBenchmark<K> extends Command {
 				var recorder = new TimingRecorder(epoch, DURATION, SAMPLE_SIZE);
 				var operation = allocator.get();
 				return () -> {
+					var hasher = new Hasher();
 					while (true) {
 						var id = sampler.next();
 						operation.prepare(id);
 						long start = System.nanoTime();
 						operation.execute();
 						long end = System.nanoTime();
-						if (!operation.verify())
-							throw new IllegalStateException("Non-deterministic algorithm.");
+						operation.blackhole(hasher);
 						if (!recorder.record(dataset(id), start, end))
-							return recorder.complete();
+							return recorder.complete(hasher.compute());
 					}
 				};
 			});

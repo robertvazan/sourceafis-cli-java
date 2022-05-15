@@ -4,7 +4,7 @@ package com.machinezoo.sourceafis.cli.datasets;
 import java.time.*;
 import java.util.*;
 
-public abstract class PairSampler implements Sampler<FingerprintPair> {
+public class IdentificationSampler implements Sampler<FingerprintPair> {
 	/*
 	 * 100ms is enough to drown out probe overhead.
 	 */
@@ -18,15 +18,17 @@ public abstract class PairSampler implements Sampler<FingerprintPair> {
 	private Fingerprint probe;
 	private List<Fingerprint> candidates;
 	private int remaining;
-	protected PairSampler(Profile profile) {
+	public IdentificationSampler(Profile profile) {
 		fingerprints = profile.fingerprints();
 	}
-	protected abstract List<Fingerprint> candidates(Fingerprint probe);
+	public IdentificationSampler() {
+		this(Profile.everything());
+	}
 	@Override
 	public FingerprintPair next() {
 		if (remaining <= 0) {
 			probe = fingerprints.get(random.nextInt(fingerprints.size()));
-			candidates = candidates(probe);
+			candidates = probe.dataset.fingerprints().stream().filter(c -> !probe.finger().equals(c.finger())).toList();
 			remaining = BATCH;
 		}
 		--remaining;

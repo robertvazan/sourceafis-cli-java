@@ -17,10 +17,11 @@ public class TimingRecorder {
 		} else
 			return false;
 	}
-	public TimingStats complete() {
+	public TimingStats complete(byte[] hash) {
 		var stats = new TimingStats();
 		stats.segments = summaries.complete();
 		stats.sample = sample.complete();
+		stats.hash = hash;
 		return stats;
 	}
 }

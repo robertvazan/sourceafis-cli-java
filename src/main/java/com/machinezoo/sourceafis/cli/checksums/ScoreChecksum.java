@@ -1,7 +1,6 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 package com.machinezoo.sourceafis.cli.checksums;
 
-import java.nio.*;
 import java.nio.file.*;
 import java.util.*;
 import com.machinezoo.sourceafis.cli.benchmarks.*;
@@ -27,12 +26,10 @@ public class ScoreChecksum extends Command {
 			stats.matching = trio.matching.average();
 			stats.nonmatching = trio.nonmatching.average();
 			stats.selfmatching = trio.selfmatching.average();
-			var buffer = new byte[8];
 			var hash = new Hasher();
 			for (var row : ScoreCache.load(dataset)) {
 				for (var score : row) {
-					ByteBuffer.wrap(buffer).putDouble(score);
-					hash.add(buffer);
+					hash.add(score);
 				}
 			}
 			stats.hash = hash.compute();
