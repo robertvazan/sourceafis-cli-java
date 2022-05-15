@@ -3,6 +3,7 @@ package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 
 public class SpeedOverview extends Command {
 	@Override
@@ -22,7 +23,7 @@ public class SpeedOverview extends Command {
 			new DeserializationSpeed());
 		var table = new SpeedTable("Operation");
 		for (var benchmark : benchmarks)
-			table.add(benchmark.name(), benchmark.measure().skip(SpeedBenchmark.WARMUP));
+			MissingBaselineException.silence().run(() -> table.add(benchmark.name(), benchmark.measure().skip(SpeedBenchmark.WARMUP)));
 		table.print();
 	}
 }

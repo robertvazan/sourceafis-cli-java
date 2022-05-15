@@ -35,12 +35,14 @@ public class AccuracyBenchmark extends Command {
 	public void print(List<Profile> profiles) {
 		var table = new PrettyTable("Dataset", "EER", "FMR100", "FMR1K", "FMR10K");
 		for (var profile : profiles) {
-			var stats = sum(profile);
-			table.add(profile.name(),
-				Pretty.accuracy(stats.eer, profile.name(), "EER"),
-				Pretty.accuracy(stats.fmr100, profile.name(), "FMR100"),
-				Pretty.accuracy(stats.fmr1K, profile.name(), "FMR1K"),
-				Pretty.accuracy(stats.fmr10K, profile.name(), "FMR10K"));
+			MissingBaselineException.silence().run(() -> {
+				var stats = sum(profile);
+				table.add(profile.name(),
+					Pretty.accuracy(stats.eer, profile.name(), "EER"),
+					Pretty.accuracy(stats.fmr100, profile.name(), "FMR100"),
+					Pretty.accuracy(stats.fmr1K, profile.name(), "FMR1K"),
+					Pretty.accuracy(stats.fmr10K, profile.name(), "FMR10K"));
+			});
 		}
 		Pretty.print(table.format());
 	}

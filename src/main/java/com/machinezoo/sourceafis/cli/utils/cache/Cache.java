@@ -26,10 +26,11 @@ public class Cache<T> {
 			var lock = locks.computeIfAbsent(lockId, id -> new Object());
 			synchronized (lock) {
 				if (!Files.exists(path)) {
+					var cacheId = category;
 					if (Configuration.baselineMode)
-						throw new IllegalStateException("Baseline data was not found.");
-					if (!reported.computeIfAbsent(category, c -> new AtomicBoolean()).getAndSet(true))
-						Pretty.format("Computing {0}...", category);
+						throw new MissingBaselineException(cacheId);
+					if (!reported.computeIfAbsent(cacheId, c -> new AtomicBoolean()).getAndSet(true))
+						Pretty.format("Computing {0}...", cacheId);
 					generator.accept(new CacheBatch(category));
 				}
 				/*

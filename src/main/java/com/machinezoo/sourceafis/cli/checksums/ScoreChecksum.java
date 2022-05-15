@@ -46,13 +46,15 @@ public class ScoreChecksum extends Command {
 	public void run() {
 		var table = new PrettyTable("Dataset", "Matching", "Non-matching", "Self-matching", "Hash");
 		for (var profile : Profile.all()) {
-			var stats = checksum(profile);
-			table.add(
-				profile.name(),
-				Pretty.decibans(stats.matching, profile.name(), "matching"),
-				Pretty.decibans(stats.nonmatching, profile.name(), "nonmatching"),
-				Pretty.decibans(stats.selfmatching, profile.name(), "selfmatching"),
-				Pretty.hash(stats.hash, profile.name(), "hash"));
+			MissingBaselineException.silence().run(() -> {
+				var stats = checksum(profile);
+				table.add(
+					profile.name(),
+					Pretty.decibans(stats.matching, profile.name(), "matching"),
+					Pretty.decibans(stats.nonmatching, profile.name(), "nonmatching"),
+					Pretty.decibans(stats.selfmatching, profile.name(), "selfmatching"),
+					Pretty.hash(stats.hash, profile.name(), "hash"));
+			});
 		}
 		Pretty.print(table.format());
 	}

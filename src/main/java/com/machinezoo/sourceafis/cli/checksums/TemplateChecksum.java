@@ -40,14 +40,16 @@ public class TemplateChecksum extends Command {
 	public void run() {
 		var table = new PrettyTable("Dataset", "Count", "Length", "Normalized", "Total", "Hash");
 		for (var profile : Profile.all()) {
-			var stats = checksum(profile);
-			table.add(
-				profile.name(),
-				Pretty.length(stats.count),
-				Pretty.length(stats.length / stats.count, profile.name(), "length"),
-				Pretty.length(stats.normalized / stats.count, profile.name(), "normalized"),
-				Pretty.length(stats.normalized, profile.name(), "total"),
-				Pretty.hash(stats.hash, profile.name(), "hash"));
+			MissingBaselineException.silence().run(() -> {
+				var stats = checksum(profile);
+				table.add(
+					profile.name(),
+					Pretty.length(stats.count),
+					Pretty.length(stats.length / stats.count, profile.name(), "length"),
+					Pretty.length(stats.normalized / stats.count, profile.name(), "normalized"),
+					Pretty.length(stats.normalized, profile.name(), "total"),
+					Pretty.hash(stats.hash, profile.name(), "hash"));
+			});
 		}
 		Pretty.print(table.format());
 	}

@@ -42,18 +42,20 @@ public abstract class TransparencyChecksum<K> extends Command {
 	}
 	@Override
 	public void run() {
-		var table = new PrettyTable("Key", "MIME", "Count", "Length", "Normalized", "Total", "Hash");
-		for (var row : checksum().rows) {
-			var stats = row.stats;
-			table.add(
-				row.key,
-				stats.mime,
-				Pretty.length(stats.count),
-				Pretty.length(stats.length / stats.count, row.key, "length"),
-				Pretty.length(stats.normalized / stats.count, row.key, "normalized"),
-				Pretty.length(stats.normalized, row.key, "total"),
-				Pretty.hash(stats.hash, row.key, "hash"));
-		}
-		Pretty.print(table.format());
+		MissingBaselineException.silence().run(() -> {
+			var table = new PrettyTable("Key", "MIME", "Count", "Length", "Normalized", "Total", "Hash");
+			for (var row : checksum().rows) {
+				var stats = row.stats;
+				table.add(
+					row.key,
+					stats.mime,
+					Pretty.length(stats.count),
+					Pretty.length(stats.length / stats.count, row.key, "length"),
+					Pretty.length(stats.normalized / stats.count, row.key, "normalized"),
+					Pretty.length(stats.normalized, row.key, "total"),
+					Pretty.hash(stats.hash, row.key, "hash"));
+			}
+			Pretty.print(table.format());
+		});
 	}
 }
