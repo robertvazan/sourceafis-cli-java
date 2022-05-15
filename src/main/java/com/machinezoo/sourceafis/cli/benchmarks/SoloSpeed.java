@@ -1,7 +1,6 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 package com.machinezoo.sourceafis.cli.benchmarks;
 
-import java.util.*;
 import com.machinezoo.sourceafis.cli.datasets.*;
 
 public abstract class SoloSpeed extends SpeedBenchmark<Fingerprint> {
@@ -10,7 +9,7 @@ public abstract class SoloSpeed extends SpeedBenchmark<Fingerprint> {
 		return fp.dataset;
 	}
 	@Override
-	protected List<Fingerprint> shuffle() {
-		return shuffle(Fingerprint.all());
+	protected Sampler<Fingerprint> sampler() {
+		return new FingerprintSampler();
 	}
 }

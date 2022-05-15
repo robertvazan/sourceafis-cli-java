@@ -8,24 +8,10 @@ import com.machinezoo.sourceafis.cli.outputs.*;
 import one.util.streamex.*;
 
 public abstract class MatchSpeed extends SpeedBenchmark<FingerprintPair> {
-	public static final int BATCH = 1000;
 	public static final int RAM_FOOTPRINT = 200_000_000;
-	protected abstract boolean filter(FingerprintPair pair);
 	@Override
 	protected Dataset dataset(FingerprintPair pair) {
 		return pair.dataset;
-	}
-	@Override
-	protected List<FingerprintPair> shuffle() {
-		return StreamEx.of(shuffle(Fingerprint.all()))
-			.flatMap(p -> {
-				var pairs = StreamEx.of(shuffle(p.dataset.fingerprints()))
-					.map(c -> new FingerprintPair(p, c))
-					.filter(this::filter)
-					.toList();
-				return StreamEx.generate(() -> pairs).flatCollection(s -> s).limit(BATCH);
-			})
-			.toList();
 	}
 	@Override
 	public TimingStats measure() {

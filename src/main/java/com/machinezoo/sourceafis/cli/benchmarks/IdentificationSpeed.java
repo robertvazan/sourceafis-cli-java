@@ -13,7 +13,7 @@ public class IdentificationSpeed extends MatchSpeed {
 		return "Measure speed of identification, i.e. calling match() with non-matching candidate.";
 	}
 	@Override
-	protected boolean filter(FingerprintPair pair) {
-		return !pair.probe().finger().equals(pair.candidate().finger());
+	protected Sampler<FingerprintPair> sampler() {
+		return new NonmatchingPairSampler();
 	}
 }

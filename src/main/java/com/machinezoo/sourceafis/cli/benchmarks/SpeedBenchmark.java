@@ -19,16 +19,11 @@ public abstract class SpeedBenchmark<K> extends Command {
 	public static final int SAMPLE_SIZE = 10_000;
 	public abstract String name();
 	protected abstract Dataset dataset(K id);
-	protected abstract List<K> shuffle();
+	protected abstract Sampler<K> sampler();
 	public abstract TimingStats measure();
 	@Override
 	public List<String> subcommand() {
 		return List.of("benchmark", "speed", name());
-	}
-	protected static <T> List<T> shuffle(List<T> list) {
-		var shuffled = new ArrayList<>(list);
-		Collections.shuffle(shuffled);
-		return shuffled;
 	}
 	private static List<TimingStats> parallelize(Supplier<Supplier<TimingStats>> setup) {
 		var threads = new ArrayList<Thread>();
@@ -57,21 +52,20 @@ public abstract class SpeedBenchmark<K> extends Command {
 			var epoch = System.nanoTime();
 			var allocator = setup.get();
 			var strata = parallelize(() -> {
-				var ids = shuffle();
+				var sampler = sampler();
 				var recorder = new TimingRecorder(epoch, DURATION, SAMPLE_SIZE);
 				var operation = allocator.get();
 				return () -> {
 					while (true) {
-						for (var id : ids) {
-							operation.prepare(id);
-							long start = System.nanoTime();
-							operation.execute();
-							long end = System.nanoTime();
-							if (!operation.verify())
-								throw new IllegalStateException("Non-deterministic algorithm.");
-							if (!recorder.record(dataset(id), start, end))
-								return recorder.complete();
-						}
+						var id = sampler.next();
+						operation.prepare(id);
+						long start = System.nanoTime();
+						operation.execute();
+						long end = System.nanoTime();
+						if (!operation.verify())
+							throw new IllegalStateException("Non-deterministic algorithm.");
+						if (!recorder.record(dataset(id), start, end))
+							return recorder.complete();
 					}
 				};
 			});
