@@ -2,8 +2,10 @@
 package com.machinezoo.sourceafis.cli.checksums;
 
 import java.util.*;
+import java.util.function.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
+import com.machinezoo.sourceafis.cli.utils.cache.*;
 
 public class Checksum extends Command {
 	@Override
@@ -14,13 +16,29 @@ public class Checksum extends Command {
 	public String description() {
 		return "Compute consistency checksum of all algorithm outputs.";
 	}
+	private record GlobalHasher(String name, Supplier<byte[]> runner) {
+	}
+	private static byte[] total() {
+		var sum = new Hasher();
+		for (var hasher : GLOBAL_HASHERS)
+			if (hasher != TOTAL)
+				sum.add(hasher.runner.get());
+		return sum.compute();
+	}
+	private static final GlobalHasher TOTAL = new GlobalHasher("Total", () -> total());
+	private static final GlobalHasher[] GLOBAL_HASHERS = new GlobalHasher[] {
+		new GlobalHasher("Templates", () -> new TemplateChecksum().global()),
+		new GlobalHasher("Scores", () -> new ScoreChecksum().global()),
+		new GlobalHasher("Extractor", () -> new ExtractorChecksum().global()),
+		new GlobalHasher("Probe", () -> new ProbeChecksum().global()),
+		new GlobalHasher("Match", () -> new MatchChecksum().global()),
+		TOTAL
+	};
 	@Override
 	public void run() {
 		var table = new PrettyTable("Data", "Hash");
-		table.add("Templates", Pretty.hash(new TemplateChecksum().global(), "templates"));
-		table.add("Scores", Pretty.hash(new ScoreChecksum().global(), "scores"));
-		for (var transparency : List.of(new ExtractorChecksum(), new ProbeChecksum(), new MatchChecksum()))
-			table.add("Transparency/" + transparency.name(), Pretty.hash(transparency.global(), "transparency", transparency.name()));
+		for (var hasher : GLOBAL_HASHERS)
+			MissingBaselineException.silence().run(() -> table.add(hasher.name, Pretty.hash(hasher.runner.get(), hasher.name)));
 		Pretty.print(table.format());
 	}
 }
