@@ -21,10 +21,6 @@ public class VerificationSpeed extends SpeedBenchmark<FingerprintPair> {
 		return new VerificationSampler();
 	}
 	@Override
-	protected Dataset dataset(FingerprintPair pair) {
-		return pair.dataset;
-	}
-	@Override
 	public TimingStats measure() {
 		return measure(() -> {
 			var templates = StreamEx.of(Fingerprint.all()).parallel().toMap(TemplateCache::deserialize);

@@ -18,7 +18,6 @@ public abstract class SpeedBenchmark<K> extends Command {
 	public static final int NET_DURATION = DURATION - WARMUP;
 	public static final int SAMPLE_SIZE = 10_000;
 	public abstract String name();
-	protected abstract Dataset dataset(K id);
 	protected abstract Sampler<K> sampler();
 	public abstract TimingStats measure();
 	@Override
@@ -55,8 +54,8 @@ public abstract class SpeedBenchmark<K> extends Command {
 				var sampler = sampler();
 				var recorder = new TimingRecorder(epoch, DURATION, SAMPLE_SIZE);
 				var operation = allocator.get();
+				var hasher = new Hasher();
 				return () -> {
-					var hasher = new Hasher();
 					while (true) {
 						var id = sampler.next();
 						operation.prepare(id);
@@ -64,7 +63,7 @@ public abstract class SpeedBenchmark<K> extends Command {
 						operation.execute();
 						long end = System.nanoTime();
 						operation.blackhole(hasher);
-						if (!recorder.record(dataset(id), start, end))
+						if (!recorder.record(sampler.dataset(id), start, end))
 							return recorder.complete(hasher.compute());
 					}
 				};

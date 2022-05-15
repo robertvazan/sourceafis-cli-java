@@ -19,4 +19,8 @@ public class VerificationSampler implements Sampler<FingerprintPair> {
 		var candidate = candidates.get(random.nextInt(candidates.size()));
 		return new FingerprintPair(probe, candidate);
 	}
+	@Override
+	public Dataset dataset(FingerprintPair pair) {
+		return pair.dataset;
+	}
 }

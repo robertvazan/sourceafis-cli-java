@@ -7,7 +7,7 @@ import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class SerializationSpeed extends SoloSpeed {
+public class SerializationSpeed extends SpeedBenchmark<Fingerprint> {
 	@Override
 	public String name() {
 		return "serialization";
@@ -15,6 +15,10 @@ public class SerializationSpeed extends SoloSpeed {
 	@Override
 	public String description() {
 		return "Measure speed of template serialization.";
+	}
+	@Override
+	protected Sampler<Fingerprint> sampler() {
+		return new FingerprintSampler();
 	}
 	@Override
 	public TimingStats measure() {

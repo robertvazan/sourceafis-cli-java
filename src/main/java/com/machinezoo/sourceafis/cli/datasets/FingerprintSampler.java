@@ -16,4 +16,8 @@ public class FingerprintSampler implements Sampler<Fingerprint> {
 	public Fingerprint next() {
 		return fingerprints.get(random.nextInt(fingerprints.size()));
 	}
+	@Override
+	public Dataset dataset(Fingerprint fp) {
+		return fp.dataset;
+	}
 }

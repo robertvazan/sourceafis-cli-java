@@ -8,7 +8,7 @@ import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class IdentificationSpeed extends SpeedBenchmark<FingerprintPair> {
+public class IdentificationSpeed extends SpeedBenchmark<CrossDatasetPair> {
 	public static final int RAM_FOOTPRINT = 200_000_000;
 	@Override
 	public String name() {
@@ -19,12 +19,8 @@ public class IdentificationSpeed extends SpeedBenchmark<FingerprintPair> {
 		return "Measure speed of identification, i.e. calling match() with non-matching candidate.";
 	}
 	@Override
-	protected Sampler<FingerprintPair> sampler() {
+	protected Sampler<CrossDatasetPair> sampler() {
 		return new IdentificationSampler();
-	}
-	@Override
-	protected Dataset dataset(FingerprintPair pair) {
-		return pair.dataset;
 	}
 	@Override
 	public TimingStats measure() {
@@ -37,14 +33,14 @@ public class IdentificationSpeed extends SpeedBenchmark<FingerprintPair> {
 					.limit(ballooning)
 					.toList())
 				.toMap();
-			return () -> new TimedOperation<FingerprintPair>() {
-				FingerprintPair pair;
+			return () -> new TimedOperation<CrossDatasetPair>() {
+				CrossDatasetPair pair;
 				FingerprintMatcher matcher;
 				FingerprintTemplate candidate;
 				double score;
 				Random random = new Random();
 				@Override
-				public void prepare(FingerprintPair pair) {
+				public void prepare(CrossDatasetPair pair) {
 					if (matcher == null || !this.pair.probe().equals(pair.probe()))
 						matcher = new FingerprintMatcher(templates.get(pair.probe()).get(0));
 					var alternatives = templates.get(pair.candidate());

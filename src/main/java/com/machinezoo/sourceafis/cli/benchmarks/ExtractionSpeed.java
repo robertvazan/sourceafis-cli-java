@@ -5,7 +5,7 @@ import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class ExtractionSpeed extends SoloSpeed {
+public class ExtractionSpeed extends SpeedBenchmark<Fingerprint> {
 	@Override
 	public String name() {
 		return "extraction";
@@ -13,6 +13,10 @@ public class ExtractionSpeed extends SoloSpeed {
 	@Override
 	public String description() {
 		return "Measure speed of feature extraction, i.e. FingerprintTemplate constructor.";
+	}
+	@Override
+	protected Sampler<Fingerprint> sampler() {
+		return new FingerprintSampler();
 	}
 	@Override
 	public TimingStats measure() {

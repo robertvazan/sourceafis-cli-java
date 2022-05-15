@@ -4,7 +4,7 @@ package com.machinezoo.sourceafis.cli.datasets;
 import java.time.*;
 import java.util.*;
 
-public class IdentificationSampler implements Sampler<FingerprintPair> {
+public class IdentificationSampler implements Sampler<CrossDatasetPair> {
 	/*
 	 * 100ms is enough to drown out probe overhead.
 	 */
@@ -16,7 +16,6 @@ public class IdentificationSampler implements Sampler<FingerprintPair> {
 	private final Random random = new Random();
 	private final List<Fingerprint> fingerprints;
 	private Fingerprint probe;
-	private List<Fingerprint> candidates;
 	private int remaining;
 	public IdentificationSampler(Profile profile) {
 		fingerprints = profile.fingerprints();
@@ -25,14 +24,20 @@ public class IdentificationSampler implements Sampler<FingerprintPair> {
 		this(Profile.everything());
 	}
 	@Override
-	public FingerprintPair next() {
+	public CrossDatasetPair next() {
 		if (remaining <= 0) {
 			probe = fingerprints.get(random.nextInt(fingerprints.size()));
-			candidates = probe.dataset.fingerprints().stream().filter(c -> !probe.finger().equals(c.finger())).toList();
 			remaining = BATCH;
 		}
 		--remaining;
-		var candidate = candidates.get(random.nextInt(candidates.size()));
-		return new FingerprintPair(probe, candidate);
+		while (true) {
+			var candidate = fingerprints.get(random.nextInt(fingerprints.size()));
+			if (!probe.finger().equals(candidate.finger()))
+				return new CrossDatasetPair(probe, candidate);
+		}
+	}
+	@Override
+	public Dataset dataset(CrossDatasetPair pair) {
+		return random.nextBoolean() ? pair.probe().dataset : pair.candidate().dataset;
 	}
 }
