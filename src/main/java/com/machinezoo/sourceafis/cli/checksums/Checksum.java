@@ -31,7 +31,7 @@ public class Checksum extends Command {
 		new GlobalHasher("Scores", () -> new ScoreChecksum().global()),
 		new GlobalHasher("Extractor", () -> new ExtractorChecksum().global()),
 		new GlobalHasher("Probe", () -> new ProbeChecksum().global()),
-		new GlobalHasher("Match", () -> new MatchChecksum().global()),
+		new GlobalHasher("Comparison", () -> new ComparisonChecksum().global()),
 		TOTAL
 	};
 	@Override

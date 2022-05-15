@@ -1,7 +1,6 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 import com.machinezoo.stagean.*;
 
-@ApiIssue("Rename 'match' to 'comparison'.")
 @ApiIssue("Wrap library APIs (engine, transparency, visualization) in CLI commands. Inputs and outputs in files.")
 @CodeIssue("Stats summing inspired by Rust's utils/statistics.")
 @CodeIssue("Could use code structure hints from Rust (e.g. input package).")

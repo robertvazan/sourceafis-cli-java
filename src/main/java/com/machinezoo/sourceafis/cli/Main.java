@@ -31,10 +31,10 @@ public class Main {
 				.add(new ScoreChecksum())
 				.add(new ExtractorChecksum())
 				.add(new ProbeChecksum())
-				.add(new MatchChecksum())
+				.add(new ComparisonChecksum())
 				.add(new ExtractorLog())
 				.add(new ProbeLog())
-				.add(new MatchLog())
+				.add(new ComparisonLog())
 				.add(new GrayscaleExport())
 				.add(new Purge());
 			var command = parser.parse(args);

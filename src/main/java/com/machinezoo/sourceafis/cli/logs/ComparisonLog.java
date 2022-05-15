@@ -7,10 +7,10 @@ import com.machinezoo.sourceafis.cli.datasets.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 
-public class MatchLog extends TransparencyLog<FingerprintPair> {
+public class ComparisonLog extends TransparencyLog<FingerprintPair> {
 	@Override
 	public String name() {
-		return "match";
+		return "comparison";
 	}
 	@Override
 	public String description() {
@@ -18,7 +18,7 @@ public class MatchLog extends TransparencyLog<FingerprintPair> {
 	}
 	@Override
 	protected TransparencyChecksum<FingerprintPair> checksum() {
-		return new MatchChecksum();
+		return new ComparisonChecksum();
 	}
 	@Override
 	protected byte[] log(String key, FingerprintPair pair, int index, int count, String mime) {
@@ -30,7 +30,7 @@ public class MatchLog extends TransparencyLog<FingerprintPair> {
 				var matcher = new FingerprintMatcher(templates.get(probe.id));
 				for (var candidate : fingerprints) {
 					var wpair = new FingerprintPair(probe, candidate);
-					int wcount = new MatchChecksum().count(wpair, key);
+					int wcount = new ComparisonChecksum().count(wpair, key);
 					var template = templates.get(candidate.id);
 					log(key, wpair, wcount, mime, () -> matcher.match(template), batch);
 				}
