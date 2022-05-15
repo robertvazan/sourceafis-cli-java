@@ -19,7 +19,6 @@ public class SpeedOverview extends Command {
 			new ExtractionSpeed(),
 			new IdentificationSpeed(),
 			new VerificationSpeed(),
-			new SerializationSpeed(),
 			new DeserializationSpeed());
 		var table = new SpeedTable("Operation");
 		for (var benchmark : benchmarks)

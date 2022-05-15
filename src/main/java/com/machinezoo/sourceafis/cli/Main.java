@@ -24,7 +24,6 @@ public class Main {
 				.add(new ExtractionSpeed())
 				.add(new IdentificationSpeed())
 				.add(new VerificationSpeed())
-				.add(new SerializationSpeed())
 				.add(new DeserializationSpeed())
 				.add(new FootprintBenchmark())
 				.add(new Checksum())
