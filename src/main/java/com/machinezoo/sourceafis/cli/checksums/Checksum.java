@@ -36,9 +36,13 @@ public class Checksum extends Command {
 	};
 	@Override
 	public void run() {
-		var table = new PrettyTable("Data", "Hash");
-		for (var hasher : GLOBAL_HASHERS)
-			MissingBaselineException.silence().run(() -> table.add(hasher.name, Pretty.hash(hasher.runner.get(), hasher.name)));
-		Pretty.print(table.format());
+		var table = new PrettyTable();
+		for (var hasher : GLOBAL_HASHERS) {
+			MissingBaselineException.silence().run(() -> {
+				table.add("Data", hasher.name);
+				table.add("Hash", Pretty.hash(hasher.runner.get(), hasher.name));
+			});
+		}
+		table.print();
 	}
 }

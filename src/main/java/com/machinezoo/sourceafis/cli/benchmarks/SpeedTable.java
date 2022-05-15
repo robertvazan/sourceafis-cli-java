@@ -6,9 +6,11 @@ import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
 public class SpeedTable {
+	private final String key;
 	private final PrettyTable table;
 	public SpeedTable(String key) {
-		table = new PrettyTable(key, "Iterations", "Parallel", "Thread", "Mean", "Min", "Max", "Sample", "Median", "SD", "Geom.mean", "GSD");
+		this.key = key;
+		table = new PrettyTable();
 	}
 	public void add(String name, TimingStats stats) {
 		var total = TimingSummary.sum(StreamEx.of(stats.segments.values()).flatArray(a -> a).toList());
@@ -22,21 +24,20 @@ public class SpeedTable {
 		var positive = Arrays.stream(sample).filter(v -> v > 0).toArray();
 		var gm = Math.exp(Arrays.stream(positive).map(v -> Math.log(v)).sum() / positive.length);
 		var gsd = Math.exp(Math.sqrt(Arrays.stream(positive).map(v -> Math.pow(Math.log(v / gm), 2)).sum() / positive.length));
-		table.add(
-			name,
-			Pretty.length(total.count),
-			Pretty.speed(speed * stats.threads),
-			Pretty.speed(speed, name, "thread"),
-			Pretty.time(mean),
-			Pretty.time(total.min),
-			Pretty.time(total.max),
-			Pretty.length(sample.length),
-			Pretty.time(median),
-			Pretty.time(sd),
-			Pretty.time(gm),
-			Pretty.factor(gsd));
+		table.add(key, name);
+		table.add("Iterations", Pretty.length(total.count));
+		table.add("Parallel", Pretty.speed(speed * stats.threads));
+		table.add("Thread", Pretty.speed(speed, name, "thread"));
+		table.add("Mean", Pretty.time(mean));
+		table.add("Min", Pretty.time(total.min));
+		table.add("Max", Pretty.time(total.max));
+		table.add("Sample", Pretty.length(sample.length));
+		table.add("Median", Pretty.time(median));
+		table.add("SD", Pretty.time(sd));
+		table.add("Geom.mean", Pretty.time(gm));
+		table.add("GSD", Pretty.factor(gsd));
 	}
 	public void print() {
-		Pretty.print(table.format());
+		table.print();
 	}
 }

@@ -49,18 +49,17 @@ public class FootprintBenchmark extends Command {
 		return sum(Profile.everything());
 	}
 	public void print(List<Profile> profiles) {
-		var table = new PrettyTable("Dataset", "Serialized", "Memory", "Minutiae");
+		var table = new PrettyTable();
 		for (var profile : profiles) {
 			MissingBaselineException.silence().run(() -> {
 				var stats = sum(profile);
-				table.add(
-					profile.name(),
-					Pretty.bytes(stats.serialized / stats.count, profile.name(), "serialized"),
-					Pretty.bytes(stats.memory / stats.count, profile.name(), "memory"),
-					Pretty.minutiae(stats.minutiae / stats.count, profile.name(), "minutiae"));
+				table.add("Dataset", profile.name());
+				table.add("Serialized", Pretty.bytes(stats.serialized / stats.count, profile.name(), "serialized"));
+				table.add("Memory", Pretty.bytes(stats.memory / stats.count, profile.name(), "memory"));
+				table.add("Minutiae", Pretty.minutiae(stats.minutiae / stats.count, profile.name(), "minutiae"));
 			});
 		}
-		Pretty.print(table.format());
+		table.print();
 	}
 	@Override
 	public void run() {

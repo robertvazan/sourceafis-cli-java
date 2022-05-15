@@ -3,21 +3,23 @@ package com.machinezoo.sourceafis.cli.utils;
 
 import java.util.*;
 import java.util.stream.*;
-import com.machinezoo.stagean.*;
 
-@DraftApi
-@ApiIssue("Support variable number of columns.")
 public class PrettyTable {
-	private final List<String> columns;
-	private final List<List<String>> rows = new ArrayList<>();
-	public PrettyTable(String... columns) {
-		this.columns = List.of(columns);
-		rows.add(this.columns);
-	}
-	public void add(String... cells) {
-		rows.add(List.of(cells));
+	private final List<String> columns = new ArrayList<>();
+	private final List<String> cells = new ArrayList<>();
+	public void add(String column, String cell) {
+		if (!columns.contains(column))
+			columns.add(column);
+		cells.add(cell);
 	}
 	public String format() {
+		var rows = new ArrayList<List<String>>();
+		rows.add(columns);
+		int rank = columns.size();
+		if (rank == 0)
+			return "";
+		for (int i = 0; i < cells.size() / rank; ++i)
+			rows.add(cells.subList(i * rank, (i + 1) * rank));
 		int[] widths = IntStream.range(0, columns.size()).map(cn -> rows.stream().mapToInt(r -> r.get(cn).length()).max().getAsInt()).toArray();
 		var lines = new ArrayList<String>();
 		for (var row : rows) {
@@ -31,5 +33,8 @@ public class PrettyTable {
 			lines.add(line);
 		}
 		return String.join("\n", lines);
+	}
+	public void print() {
+		Pretty.print(format());
 	}
 }
