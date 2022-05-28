@@ -1,10 +1,8 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 package com.machinezoo.sourceafis.cli.outputs;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.dataformat.cbor.*;
-import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.datasets.*;
+import com.machinezoo.sourceafis.cli.utils.*;
 
 public record ParsedTemplate(
 	String version,
@@ -14,8 +12,7 @@ public record ParsedTemplate(
 	int[] positionsY,
 	double[] directions,
 	String types) {
-	private static final ObjectMapper mapper = new ObjectMapper(new CBORFactory());
 	public static ParsedTemplate parse(Fingerprint fp) {
-		return Exceptions.sneak().get(() -> mapper.readValue(TemplateCache.load(fp), ParsedTemplate.class));
+		return Serializer.deserialize(TemplateCache.load(fp), ParsedTemplate.class);
 	}
 }

@@ -4,16 +4,13 @@ package com.machinezoo.sourceafis.cli.utils;
 import java.io.*;
 import java.nio.*;
 import java.nio.charset.*;
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.cbor.*;
 import com.machinezoo.noexception.*;
 import one.util.streamex.*;
 
 public class Serializer {
-	private static final ObjectMapper mapper = new ObjectMapper(new CBORFactory())
-		.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+	private static final ObjectMapper mapper = new ObjectMapper(new CBORFactory());
 	public static byte[] serialize(Object value) {
 		return Exceptions.sneak().get(() -> mapper.writeValueAsBytes(value));
 	}
