@@ -20,14 +20,11 @@ public class Pretty {
 		print(MessageFormat.format(pattern, args));
 	}
 	public static String extension(String mime) {
-		switch (mime) {
-			case "application/cbor" :
-				return ".cbor";
-			case "text/plain" :
-				return ".txt";
-			default :
-				return ".dat";
-		}
+		return switch (mime) {
+			case "application/cbor" -> ".cbor";
+			case "text/plain" -> ".txt";
+			default -> ".dat";
+		};
 	}
 	public static String dump(Path category) {
 		return Configuration.output().resolve(category).toString();

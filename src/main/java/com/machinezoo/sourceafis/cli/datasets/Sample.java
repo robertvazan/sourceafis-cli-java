@@ -19,13 +19,10 @@ public enum Sample {
 		this.name = name;
 	}
 	public double dpi() {
-		switch (this) {
-		case FVC2002_2B:
-			return 569;
-		case FVC2004_3B:
-			return 512;
-		default:
-			return 500;
-		}
+		return switch (this) {
+			case FVC2002_2B -> 569;
+			case FVC2004_3B -> 512;
+			default -> 500;
+		};
 	}
 }
