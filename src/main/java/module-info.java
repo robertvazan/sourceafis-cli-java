@@ -14,7 +14,14 @@ open module com.machinezoo.sourceafis.cli {
 	 * JOL needs sun.misc.Unsafe.
 	 */
 	requires jdk.unsupported;
+	/*
+	 * Needed for ImageIO used during grayscale export.
+	 */
 	requires java.desktop;
+	/*
+	 * Needed for image dataset download.
+	 */
+	requires java.net.http;
 	requires com.machinezoo.stagean;
 	requires com.machinezoo.noexception;
 	requires com.machinezoo.sourceafis;

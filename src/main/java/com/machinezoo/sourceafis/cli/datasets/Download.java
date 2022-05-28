@@ -3,6 +3,8 @@ package com.machinezoo.sourceafis.cli.datasets;
 
 import java.io.*;
 import java.net.*;
+import java.net.http.*;
+import java.net.http.HttpClient.*;
 import java.nio.file.*;
 import java.util.concurrent.atomic.*;
 import java.util.zip.*;
@@ -51,6 +53,9 @@ public class Download {
 		};
 		return Configuration.home.resolve("samples").resolve(subdirectory).resolve(dataset.name());
 	}
+	private static final HttpClient client = HttpClient.newBuilder()
+		.followRedirects(Redirect.NORMAL)
+		.build();
 	private static final AtomicBoolean reported = new AtomicBoolean();
 	public static synchronized Path unpack(Dataset dataset) {
 		var directory = directory(dataset);
@@ -63,7 +68,7 @@ public class Download {
 				Files.createDirectories(temporary);
 				if (!reported.getAndSet(true))
 					Pretty.print("Downloading sample fingerprints...");
-				try (	InputStream stream = new URL(url).openStream();
+				try (	InputStream stream = client.send(HttpRequest.newBuilder(URI.create(url)).build(), HttpResponse.BodyHandlers.ofInputStream()).body();
 						ZipInputStream zip = new ZipInputStream(stream)) {
 					while (true) {
 						ZipEntry entry = zip.getNextEntry();
