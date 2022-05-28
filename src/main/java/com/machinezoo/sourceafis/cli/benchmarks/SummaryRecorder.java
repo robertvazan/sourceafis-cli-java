@@ -28,7 +28,7 @@ public class SummaryRecorder {
 		int interval = (int)((end - epoch) / 1_000_000_000);
 		long duration = end - start;
 		if (interval >= 0 && interval < capacity && duration >= 0) {
-			int datasetId = dataset.sample.ordinal();
+			int datasetId = dataset.sample().ordinal();
 			datasets[datasetId] = true;
 			int segment = datasetId * capacity + interval;
 			sums[segment] += duration;
@@ -45,13 +45,12 @@ public class SummaryRecorder {
 			int datasetId = sample.ordinal();
 			if (datasets[datasetId]) {
 				map.put(sample.name, IntStreamEx.range(capacity).mapToObj(interval -> {
-					var summary = new TimingSummary();
 					int segment = datasetId * capacity + interval;
-					summary.count = counts[segment];
-					summary.sum = 0.000_000_001 * sums[segment];
-					summary.max = 0.000_000_001 * maxima[segment];
-					summary.min = summary.count > 0 ? 0.000_000_001 * minima[segment] : 0;
-					return summary;
+					return new TimingSummary(
+						counts[segment],
+						0.000_000_001 * sums[segment],
+						counts[segment] > 0 ? 0.000_000_001 * minima[segment] : 0,
+						0.000_000_001 * maxima[segment]);
 				}).toArray(TimingSummary[]::new));
 			}
 		}

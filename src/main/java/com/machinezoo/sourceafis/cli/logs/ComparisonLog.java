@@ -22,16 +22,16 @@ public class ComparisonLog extends TransparencyLog<FingerprintPair> {
 	}
 	@Override
 	protected byte[] log(String key, FingerprintPair pair, int index, int count, String mime) {
-		return Cache.get(byte[].class, category(key), pair.dataset.path(), identity(pair, index, count, mime), batch -> {
-			var dataset = pair.dataset;
+		return Cache.get(byte[].class, category(key), pair.dataset().path(), identity(pair, index, count, mime), batch -> {
+			var dataset = pair.dataset();
 			var fingerprints = dataset.fingerprints();
 			var templates = fingerprints.parallelStream().map(fp -> TemplateCache.deserialize(fp)).toList();
 			fingerprints.parallelStream().forEach(probe -> {
-				var matcher = new FingerprintMatcher(templates.get(probe.id));
+				var matcher = new FingerprintMatcher(templates.get(probe.id()));
 				for (var candidate : fingerprints) {
 					var wpair = new FingerprintPair(probe, candidate);
 					int wcount = new ComparisonChecksum().count(wpair, key);
-					var template = templates.get(candidate.id);
+					var template = templates.get(candidate.id());
 					log(key, wpair, wcount, mime, () -> matcher.match(template), batch);
 				}
 			});

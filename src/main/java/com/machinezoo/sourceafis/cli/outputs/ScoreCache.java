@@ -13,10 +13,10 @@ public class ScoreCache {
 			var templates = fingerprints.parallelStream().map(fp -> TemplateCache.deserialize(fp)).toList();
 			var scores = new double[fingerprints.size()][];
 			fingerprints.parallelStream().forEach(probe -> {
-				var matcher = new FingerprintMatcher(templates.get(probe.id));
-				scores[probe.id] = new double[fingerprints.size()];
+				var matcher = new FingerprintMatcher(templates.get(probe.id()));
+				scores[probe.id()] = new double[fingerprints.size()];
 				for (var candidate : fingerprints)
-					scores[probe.id][candidate.id] = matcher.match(templates.get(candidate.id));
+					scores[probe.id()][candidate.id()] = matcher.match(templates.get(candidate.id()));
 			});
 			return scores;
 		});

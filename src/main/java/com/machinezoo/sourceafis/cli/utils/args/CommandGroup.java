@@ -4,7 +4,7 @@ package com.machinezoo.sourceafis.cli.utils.args;
 import java.util.*;
 import it.unimi.dsi.fastutil.ints.*;
 
-public class CommandGroup {
+class CommandGroup {
 	final Map<String, CommandGroup> subcommands = new HashMap<>();
 	final Int2ObjectMap<Command> overloads = new Int2ObjectOpenHashMap<>();
 	void add(int depth, Command command) {

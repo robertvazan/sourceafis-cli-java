@@ -18,10 +18,10 @@ public class TimingRecorder {
 			return false;
 	}
 	public TimingStats complete(byte[] hash) {
-		var stats = new TimingStats();
-		stats.segments = summaries.complete();
-		stats.sample = sample.complete();
-		stats.hash = hash;
-		return stats;
+		return new TimingStats(
+			1,
+			summaries.complete(),
+			sample.complete(),
+			hash);
 	}
 }

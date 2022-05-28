@@ -21,12 +21,11 @@ public class AccuracyBenchmark extends Command {
 	private AccuracyStats measure(Dataset dataset) {
 		return Cache.get(AccuracyStats.class, Paths.get("benchmarks", "accuracy"), dataset.path(), () -> {
 			var trio = new QuantileTrio(dataset);
-			var stats = new AccuracyStats();
-			stats.fmr100 = trio.fnmrAtFmr(1.0 / 100);
-			stats.fmr1K = trio.fnmrAtFmr(1.0 / 1_000);
-			stats.fmr10K = trio.fnmrAtFmr(1.0 / 10_000);
-			stats.eer = trio.eer();
-			return stats;
+			return new AccuracyStats(
+				trio.eer(),
+				trio.fnmrAtFmr(1.0 / 100),
+				trio.fnmrAtFmr(1.0 / 1_000),
+				trio.fnmrAtFmr(1.0 / 10_000));
 		});
 	}
 	private AccuracyStats sum(Profile profile) {
@@ -38,10 +37,10 @@ public class AccuracyBenchmark extends Command {
 			MissingBaselineException.silence().run(() -> {
 				var stats = sum(profile);
 				table.add("Dataset", profile.name());
-				table.add("EER", Pretty.accuracy(stats.eer, profile.name(), "EER"));
-				table.add("FMR100", Pretty.accuracy(stats.fmr100, profile.name(), "FMR100"));
-				table.add("FMR1K", Pretty.accuracy(stats.fmr1K, profile.name(), "FMR1K"));
-				table.add("FMR10K", Pretty.accuracy(stats.fmr10K, profile.name(), "FMR10K"));
+				table.add("EER", Pretty.accuracy(stats.eer(), profile.name(), "EER"));
+				table.add("FMR100", Pretty.accuracy(stats.fmr100(), profile.name(), "FMR100"));
+				table.add("FMR1K", Pretty.accuracy(stats.fmr1K(), profile.name(), "FMR1K"));
+				table.add("FMR10K", Pretty.accuracy(stats.fmr10K(), profile.name(), "FMR10K"));
 			});
 		}
 		table.print();

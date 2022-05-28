@@ -17,7 +17,7 @@ public class QuantileTrio {
 		var selfmatching = new DoubleArrayList();
 		for (var probe : fingerprints) {
 			for (var candidate : fingerprints) {
-				var score = scores[probe.id][candidate.id];
+				var score = scores[probe.id()][candidate.id()];
 				if (probe.equals(candidate))
 					selfmatching.add(score);
 				else if (probe.finger().equals(candidate.finger()))

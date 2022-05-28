@@ -4,29 +4,27 @@ package com.machinezoo.sourceafis.cli.checksums;
 import java.util.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
-public class TransparencyStats {
-	public String mime;
-	public int count;
-	public long length;
-	public long normalized;
-	public byte[] hash;
+public record TransparencyStats(
+	String mime,
+	int count,
+	long length,
+	long normalized,
+	byte[] hash) {
 	public static TransparencyStats of(String mime, byte[] data) {
-		var stats = new TransparencyStats();
-		stats.mime = mime;
-		stats.count = 1;
-		stats.length = data.length;
 		var normalized = Serializer.normalize(mime, data);
-		stats.normalized = normalized.length;
-		stats.hash = Hasher.hash(normalized);
-		return stats;
+		return new TransparencyStats(
+			mime,
+			1,
+			data.length,
+			normalized.length,
+			Hasher.hash(normalized));
 	}
 	public static TransparencyStats sum(List<TransparencyStats> list) {
-		var sum = new TransparencyStats();
-		sum.mime = list.get(0).mime;
-		sum.count = Stats.sumAsInt(list, s -> s.count);
-		sum.length = Stats.sumAsLong(list, s -> s.length);
-		sum.normalized = Stats.sumAsLong(list, s -> s.normalized);
-		sum.hash = Stats.sumHash(list, s -> s.hash);
-		return sum;
+		return new TransparencyStats(
+			list.get(0).mime,
+			Stats.sumAsInt(list, s -> s.count),
+			Stats.sumAsLong(list, s -> s.length),
+			Stats.sumAsLong(list, s -> s.normalized),
+			Stats.sumHash(list, s -> s.hash));
 	}
 }

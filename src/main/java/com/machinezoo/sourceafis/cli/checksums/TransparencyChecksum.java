@@ -35,24 +35,24 @@ public abstract class TransparencyChecksum<K> extends Command {
 	}
 	public byte[] global() {
 		var hash = new Hasher();
-		for (var row : checksum().rows)
-			if (!row.key.equals("version"))
-				hash.add(row.stats.hash);
+		for (var row : checksum().rows())
+			if (!row.key().equals("version"))
+				hash.add(row.stats().hash());
 		return hash.compute();
 	}
 	@Override
 	public void run() {
 		MissingBaselineException.silence().run(() -> {
 			var table = new PrettyTable();
-			for (var row : checksum().rows) {
-				var stats = row.stats;
-				table.add("Key", row.key);
-				table.add("MIME", stats.mime);
-				table.add("Count", Pretty.length(stats.count));
-				table.add("Length", Pretty.length(stats.length / stats.count, row.key, "length"));
-				table.add("Normalized", Pretty.length(stats.normalized / stats.count, row.key, "normalized"));
-				table.add("Total", Pretty.length(stats.normalized, row.key, "total"));
-				table.add("Hash", Pretty.hash(stats.hash, row.key, "hash"));
+			for (var row : checksum().rows()) {
+				var stats = row.stats();
+				table.add("Key", row.key());
+				table.add("MIME", stats.mime());
+				table.add("Count", Pretty.length(stats.count()));
+				table.add("Length", Pretty.length(stats.length() / stats.count(), row.key(), "length"));
+				table.add("Normalized", Pretty.length(stats.normalized() / stats.count(), row.key(), "normalized"));
+				table.add("Total", Pretty.length(stats.normalized(), row.key(), "total"));
+				table.add("Hash", Pretty.hash(stats.hash(), row.key(), "hash"));
 			}
 			table.print();
 		});

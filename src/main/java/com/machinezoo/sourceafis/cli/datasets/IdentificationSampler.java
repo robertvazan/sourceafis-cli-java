@@ -38,6 +38,6 @@ public class IdentificationSampler implements Sampler<CrossDatasetPair> {
 	}
 	@Override
 	public Dataset dataset(CrossDatasetPair pair) {
-		return random.nextBoolean() ? pair.probe().dataset : pair.candidate().dataset;
+		return random.nextBoolean() ? pair.probe().dataset() : pair.candidate().dataset();
 	}
 }

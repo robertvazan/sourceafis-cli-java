@@ -18,6 +18,6 @@ public class FingerprintSampler implements Sampler<Fingerprint> {
 	}
 	@Override
 	public Dataset dataset(Fingerprint fp) {
-		return fp.dataset;
+		return fp.dataset();
 	}
 }

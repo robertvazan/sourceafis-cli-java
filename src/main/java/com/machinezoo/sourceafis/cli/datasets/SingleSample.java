@@ -3,11 +3,7 @@ package com.machinezoo.sourceafis.cli.datasets;
 
 import java.util.*;
 
-public class SingleSample extends SampleProfile {
-	public final Sample sample;
-	public SingleSample(Sample sample) {
-		this.sample = sample;
-	}
+public record SingleSample(Sample sample) implements SampleProfile {
 	@Override
 	public String name() {
 		return sample.name;
@@ -15,13 +11,5 @@ public class SingleSample extends SampleProfile {
 	@Override
 	public List<Sample> samples() {
 		return List.of(sample);
-	}
-	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof SingleSample && sample == ((SingleSample)obj).sample;
-	}
-	@Override
-	public int hashCode() {
-		return sample.hashCode();
 	}
 }

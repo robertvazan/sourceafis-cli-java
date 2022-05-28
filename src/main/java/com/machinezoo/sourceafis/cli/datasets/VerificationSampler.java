@@ -21,6 +21,6 @@ public class VerificationSampler implements Sampler<FingerprintPair> {
 	}
 	@Override
 	public Dataset dataset(FingerprintPair pair) {
-		return pair.dataset;
+		return pair.dataset();
 	}
 }

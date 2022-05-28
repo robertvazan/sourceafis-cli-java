@@ -25,22 +25,18 @@ public class FootprintBenchmark extends Command {
 		 * This can be only fixed by fiddling with command-line options for the CLI app.
 		 */
 		var graph = GraphLayout.parseInstance(TemplateCache.deserialize(fp));
-		var siblings = new ArrayList<>(fp.dataset.fingerprints());
+		var siblings = new ArrayList<>(fp.dataset().fingerprints());
 		Collections.shuffle(siblings, new Random(0));
 		for (var other : siblings.subList(0, 2))
 			graph = graph.subtract(GraphLayout.parseInstance(TemplateCache.deserialize(other)));
 		return (int)graph.totalSize();
 	}
 	private FootprintStats measure(Fingerprint fp) {
-		return Cache.get(FootprintStats.class, Paths.get("benchmarks", "footprint"), fp.path(), () -> {
-			var footprint = new FootprintStats();
-			var serialized = TemplateCache.load(fp);
-			footprint.count = 1;
-			footprint.serialized = serialized.length;
-			footprint.memory = memory(fp);
-			footprint.minutiae = ParsedTemplate.parse(fp).types.length();
-			return footprint;
-		});
+		return Cache.get(FootprintStats.class, Paths.get("benchmarks", "footprint"), fp.path(), () -> new FootprintStats(
+			1,
+			TemplateCache.load(fp).length,
+			memory(fp),
+			ParsedTemplate.parse(fp).types().length()));
 	}
 	private FootprintStats sum(Profile profile) {
 		return FootprintStats.sum(profile.fingerprints().parallelStream().map(this::measure).toList());
@@ -54,9 +50,9 @@ public class FootprintBenchmark extends Command {
 			MissingBaselineException.silence().run(() -> {
 				var stats = sum(profile);
 				table.add("Dataset", profile.name());
-				table.add("Serialized", Pretty.bytes(stats.serialized / stats.count, profile.name(), "serialized"));
-				table.add("Memory", Pretty.bytes(stats.memory / stats.count, profile.name(), "memory"));
-				table.add("Minutiae", Pretty.minutiae(stats.minutiae / stats.count, profile.name(), "minutiae"));
+				table.add("Serialized", Pretty.bytes(stats.serialized() / stats.count(), profile.name(), "serialized"));
+				table.add("Memory", Pretty.bytes(stats.memory() / stats.count(), profile.name(), "memory"));
+				table.add("Minutiae", Pretty.minutiae(stats.minutiae() / stats.count(), profile.name(), "minutiae"));
 			});
 		}
 		table.print();

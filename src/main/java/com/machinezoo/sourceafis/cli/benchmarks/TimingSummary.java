@@ -5,18 +5,13 @@ import java.util.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
-public class TimingSummary {
-	public long count;
-	public double sum;
-	public double max;
-	public double min;
+public record TimingSummary(long count, double sum, double min, double max) {
 	public static TimingSummary sum(List<TimingSummary> list) {
-		var sum = new TimingSummary();
-		sum.count = Stats.sumAsLong(list, s -> s.count);
-		sum.sum = Stats.sumAsDouble(list, s -> s.sum);
-		sum.max = list.stream().mapToDouble(s -> s.max).max().orElse(0);
-		sum.min = list.stream().filter(s -> s.count > 0).mapToDouble(s -> s.min).min().orElse(0);
-		return sum;
+		return new TimingSummary(
+			Stats.sumAsLong(list, s -> s.count),
+			Stats.sumAsDouble(list, s -> s.sum),
+			list.stream().filter(s -> s.count > 0).mapToDouble(s -> s.min).min().orElse(0),
+			list.stream().mapToDouble(s -> s.max).max().orElse(0));
 	}
 	public static Map<String, TimingSummary[]> aggregate(List<Map<String, TimingSummary[]>> list) {
 		var datasets = StreamEx.of(list)

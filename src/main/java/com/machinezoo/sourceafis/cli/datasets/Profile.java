@@ -4,13 +4,7 @@ package com.machinezoo.sourceafis.cli.datasets;
 import java.util.*;
 import one.util.streamex.*;
 
-public class Profile {
-	public final SampleProfile kind;
-	public final ImageFormat format;
-	public Profile(SampleProfile kind, ImageFormat format) {
-		this.kind = kind;
-		this.format = format;
-	}
+public record Profile(SampleProfile kind, ImageFormat format) {
 	public String name() {
 		return kind.name();
 	}

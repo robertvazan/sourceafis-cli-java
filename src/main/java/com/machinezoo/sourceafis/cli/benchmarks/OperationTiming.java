@@ -5,16 +5,13 @@ import java.util.*;
 import org.apache.commons.lang3.tuple.*;
 import one.util.streamex.*;
 
-public class OperationTiming {
-	public String dataset;
-	public double start;
-	public double end;
+public record OperationTiming(String dataset, double start, double end) {
 	public static OperationTiming[] sample(int size, List<Pair<TimingSummary, OperationTiming[]>> strata) {
 		if (strata.stream().mapToInt(s -> s.getRight().length).sum() <= size)
 			return strata.stream().flatMap(s -> Arrays.stream(s.getRight())).toArray(OperationTiming[]::new);
 		if (strata.stream().anyMatch(s -> s.getRight().length == 0))
 			throw new IllegalArgumentException("Empty sample.");
-		var weights = strata.stream().mapToDouble(s -> s.getLeft().count / (double)s.getRight().length).toArray();
+		var weights = strata.stream().mapToDouble(s -> s.getLeft().count() / (double)s.getRight().length).toArray();
 		double total = Arrays.stream(weights).sum();
 		for (int i = 0; i < weights.length; ++i)
 			weights[i] /= total;

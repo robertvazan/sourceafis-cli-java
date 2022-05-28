@@ -2,12 +2,11 @@
 import com.machinezoo.stagean.*;
 
 @ApiIssue("Wrap library APIs (engine, transparency, visualization) in CLI commands. Inputs and outputs in files.")
-@CodeIssue("Use records to implement equality. Plus other Java 17 features.")
 @DocIssue("Wrap description lines, so that descriptions can be longer.")
 @DocIssue("Dedicated homepage for Java port of the CLI.")
 /*
- * Open the module for unfettered serialization of persistent caches.
- * It's simpler to do it this way than to list all the packages with individual opens statements.
+ * Jackson still requires the module to be open to serialize records.
+ * https://github.com/FasterXML/jackson-databind/issues/3352
  */
 open module com.machinezoo.sourceafis.cli {
 	exports com.machinezoo.sourceafis.cli;

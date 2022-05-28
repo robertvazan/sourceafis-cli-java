@@ -13,9 +13,9 @@ import com.machinezoo.sourceafis.cli.utils.*;
 
 public class Download {
 	private static String url(Dataset dataset) {
-		switch (dataset.format) {
+		switch (dataset.format()) {
 			case ORIGINAL :
-				switch (dataset.sample) {
+				switch (dataset.sample()) {
 					case FVC2000_1B :
 						return "https://cdn.machinezoo.com/h/O_mBtWH-PXJ4ETJJe_G-Z9EmJoJLfq4srVw23tTEMZw/fvc2000-1b.zip";
 					case FVC2000_2B :
@@ -44,7 +44,7 @@ public class Download {
 						throw new IllegalArgumentException();
 				}
 			case GRAY :
-				switch (dataset.sample) {
+				switch (dataset.sample()) {
 					case FVC2000_1B :
 						return "https://cdn.machinezoo.com/h/AkBMOzR_T_0_UmxZXaubrYmwmcR1yOnByJvl3AWieMI/fvc2000-1b-gray.zip";
 					case FVC2000_2B :
@@ -78,7 +78,7 @@ public class Download {
 	}
 	public static Path directory(Dataset dataset) {
 		String subdirectory;
-		switch (dataset.format) {
+		switch (dataset.format()) {
 			case ORIGINAL :
 				subdirectory = "original";
 				break;

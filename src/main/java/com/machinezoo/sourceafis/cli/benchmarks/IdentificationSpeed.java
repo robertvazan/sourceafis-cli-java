@@ -26,7 +26,7 @@ public class IdentificationSpeed extends SpeedBenchmark<CrossDatasetPair> {
 	public TimingStats measure() {
 		return measure(() -> {
 			var footprint = new FootprintBenchmark().sum();
-			int ballooning = Math.max(1, (int)(RAM_FOOTPRINT / (footprint.memory / footprint.count * Fingerprint.all().size())));
+			int ballooning = Math.max(1, (int)(RAM_FOOTPRINT / (footprint.memory() / footprint.count() * Fingerprint.all().size())));
 			var templates = StreamEx.of(Fingerprint.all())
 				.parallel()
 				.mapToEntry(fp -> StreamEx.generate(() -> TemplateCache.deserialize(fp))

@@ -75,8 +75,8 @@ public abstract class SpeedBenchmark<K> extends Command {
 	public void run() {
 		MissingBaselineException.silence().run(() -> {
 			var all = measure().skip(WARMUP);
-			var global = TimingSummary.sum(StreamEx.of(all.segments.values()).flatArray(a -> a).toList());
-			Pretty.print("Gross speed: " + Pretty.speed(global.count / (double)NET_DURATION, "gross"));
+			var global = TimingSummary.sum(StreamEx.of(all.segments().values()).flatArray(a -> a).toList());
+			Pretty.print("Gross speed: " + Pretty.speed(global.count() / (double)NET_DURATION, "gross"));
 			var table = new SpeedTable("Dataset");
 			for (var profile : Profile.all())
 				table.add(profile.name(), all.narrow(profile));

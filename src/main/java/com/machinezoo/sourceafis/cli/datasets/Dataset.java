@@ -3,13 +3,10 @@ package com.machinezoo.sourceafis.cli.datasets;
 
 import java.nio.file.*;
 import java.util.*;
-import org.apache.commons.lang3.builder.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
-public class Dataset implements DataIdentifier {
-	public final Sample sample;
-	public final ImageFormat format;
+public record Dataset(Sample sample, ImageFormat format) implements DataIdentifier {
 	public String name() {
 		return sample.name;
 	}
@@ -29,19 +26,5 @@ public class Dataset implements DataIdentifier {
 	@Override
 	public Path path() {
 		return Paths.get(name());
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Dataset))
-			return false;
-		var other = (Dataset)obj;
-		return new EqualsBuilder()
-			.append(sample, other.sample)
-			.append(format, other.format)
-			.isEquals();
-	}
-	@Override
-	public int hashCode() {
-		return Objects.hash(sample, format);
 	}
 }
