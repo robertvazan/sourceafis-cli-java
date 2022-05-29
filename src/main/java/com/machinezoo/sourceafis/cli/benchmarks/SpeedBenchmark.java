@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.*;
 import com.machinezoo.noexception.*;
-import com.machinezoo.sourceafis.cli.datasets.*;
+import com.machinezoo.sourceafis.cli.inputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;

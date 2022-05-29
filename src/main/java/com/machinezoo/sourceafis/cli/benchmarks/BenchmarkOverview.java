@@ -2,7 +2,7 @@
 package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
-import com.machinezoo.sourceafis.cli.datasets.*;
+import com.machinezoo.sourceafis.cli.inputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 

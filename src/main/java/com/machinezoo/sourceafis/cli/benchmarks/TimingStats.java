@@ -3,7 +3,7 @@ package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
 import org.apache.commons.lang3.tuple.*;
-import com.machinezoo.sourceafis.cli.datasets.*;
+import com.machinezoo.sourceafis.cli.inputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import one.util.streamex.*;
 
@@ -37,7 +37,7 @@ public record TimingStats(
 			hash);
 	}
 	public TimingStats narrow(Profile profile) {
-		var names = StreamEx.of(profile.datasets()).map(ds -> ds.name()).toSet();
+		var names = StreamEx.of(profile.datasets()).map(ds -> ds.codename()).toSet();
 		return new TimingStats(
 			threads,
 			EntryStream.of(segments).filterKeys(names::contains).toMap(),

@@ -2,7 +2,7 @@
 package com.machinezoo.sourceafis.cli.benchmarks;
 
 import com.machinezoo.sourceafis.*;
-import com.machinezoo.sourceafis.cli.datasets.*;
+import com.machinezoo.sourceafis.cli.inputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
 public class ExtractionSpeed extends SpeedBenchmark<Fingerprint> {

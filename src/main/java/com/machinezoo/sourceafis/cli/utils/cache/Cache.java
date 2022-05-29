@@ -3,7 +3,6 @@ package com.machinezoo.sourceafis.cli.utils.cache;
 
 import java.nio.file.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.*;
 import java.util.function.*;
 import com.machinezoo.noexception.*;
 import com.machinezoo.sourceafis.cli.config.*;
@@ -13,7 +12,7 @@ public class Cache<T> {
 	public static Path withExtension(Path path, String extension) {
 		return path.resolveSibling(path.getFileName() + extension);
 	}
-	private static final ConcurrentMap<Path, AtomicBoolean> reported = new ConcurrentHashMap<>();
+	private static final Once<Path> reported = new Once<>();
 	private static final ConcurrentMap<Path, Object> locks = new ConcurrentHashMap<>();
 	public static <T> T get(Class<T> clazz, Path category, Path group, Path identity, Consumer<CacheBatch> generator) {
 		return Exceptions.sneak().get(() -> {
@@ -29,7 +28,7 @@ public class Cache<T> {
 					var cacheId = category;
 					if (Configuration.baselineMode)
 						throw new MissingBaselineException(cacheId);
-					if (!reported.computeIfAbsent(cacheId, c -> new AtomicBoolean()).getAndSet(true))
+					if (reported.first(cacheId))
 						Pretty.format("Computing {0}...", cacheId);
 					generator.accept(new CacheBatch(category));
 				}

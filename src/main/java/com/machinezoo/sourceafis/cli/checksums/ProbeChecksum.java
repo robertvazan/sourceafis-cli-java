@@ -3,7 +3,7 @@ package com.machinezoo.sourceafis.cli.checksums;
 
 import java.util.stream.*;
 import com.machinezoo.sourceafis.*;
-import com.machinezoo.sourceafis.cli.datasets.*;
+import com.machinezoo.sourceafis.cli.inputs.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 

@@ -2,7 +2,7 @@
 package com.machinezoo.sourceafis.cli.benchmarks;
 
 import java.util.*;
-import com.machinezoo.sourceafis.cli.datasets.*;
+import com.machinezoo.sourceafis.cli.inputs.*;
 import one.util.streamex.*;
 
 public class SummaryRecorder {
@@ -15,7 +15,7 @@ public class SummaryRecorder {
 	private final long[] minima;
 	public SummaryRecorder(long epoch, int capacity) {
 		this.epoch = epoch;
-		datasets = new boolean[Sample.values().length];
+		datasets = new boolean[Dataset.values().length];
 		this.capacity = capacity;
 		int segments = datasets.length * capacity;
 		counts = new long[segments];
@@ -28,7 +28,7 @@ public class SummaryRecorder {
 		int interval = (int)((end - epoch) / 1_000_000_000);
 		long duration = end - start;
 		if (interval >= 0 && interval < capacity && duration >= 0) {
-			int datasetId = dataset.sample().ordinal();
+			int datasetId = dataset.ordinal();
 			datasets[datasetId] = true;
 			int segment = datasetId * capacity + interval;
 			sums[segment] += duration;
@@ -41,10 +41,10 @@ public class SummaryRecorder {
 	}
 	public Map<String, TimingSummary[]> complete() {
 		var map = new HashMap<String, TimingSummary[]>();
-		for (var sample : Sample.values()) {
-			int datasetId = sample.ordinal();
+		for (var dataset : Dataset.values()) {
+			int datasetId = dataset.ordinal();
 			if (datasets[datasetId]) {
-				map.put(sample.name, IntStreamEx.range(capacity).mapToObj(interval -> {
+				map.put(dataset.codename(), IntStreamEx.range(capacity).mapToObj(interval -> {
 					int segment = datasetId * capacity + interval;
 					return new TimingSummary(
 						counts[segment],

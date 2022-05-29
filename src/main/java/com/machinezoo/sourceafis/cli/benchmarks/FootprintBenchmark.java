@@ -4,7 +4,7 @@ package com.machinezoo.sourceafis.cli.benchmarks;
 import java.nio.file.*;
 import java.util.*;
 import org.openjdk.jol.info.*;
-import com.machinezoo.sourceafis.cli.datasets.*;
+import com.machinezoo.sourceafis.cli.inputs.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
