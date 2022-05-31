@@ -46,10 +46,10 @@ public class DatasetLayout {
 	public String prefix(int finger) {
 		return prefixes[finger];
 	}
-	private static final Pattern PATTERN = Pattern.compile("(.+)_[0-9]+\\.(?:tif|tiff|png|bmp|jpg|jpeg|wsq|gray)");
+	private static final Pattern PATTERN = Pattern.compile("(.+)_[0-9]+\\.gray");
 	@SuppressWarnings("resource")
-	public DatasetLayout(Path directory) {
-		this.directory = directory;
+	public DatasetLayout(GrayscaleImageCache cache) {
+		this.directory = cache.load().directory();
 		var groups = new HashMap<String, List<String>>();
 		for (var path : Exceptions.sneak().get(() -> Files.list(directory).collect(toList()))) {
 			var filename = path.getFileName().toString();
@@ -84,6 +84,6 @@ public class DatasetLayout {
 	}
 	private static final ConcurrentMap<Dataset, DatasetLayout> all = new ConcurrentHashMap<>();
 	public static DatasetLayout get(Dataset dataset) {
-		return all.computeIfAbsent(dataset, ds -> new DatasetLayout(new GrayscaleDownload(dataset).unpack()));
+		return all.computeIfAbsent(dataset, ds -> new DatasetLayout(new GrayscaleImageCache(dataset)));
 	}
 }

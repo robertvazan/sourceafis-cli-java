@@ -1,14 +1,12 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 package com.machinezoo.sourceafis.cli.utils.cache;
 
-import java.nio.file.*;
-
 interface CacheCompression {
-	Path rename(Path path);
+	String extension();
 	byte[] compress(byte[] data);
 	byte[] decompress(byte[] compressed);
-	static CacheCompression select(Path path) {
-		if (path.getFileName().toString().endsWith(".cbor"))
+	static CacheCompression select(String extension) {
+		if (extension.equals(".cbor"))
 			return new GzipCompression();
 		return new TrivialCompression();
 	}

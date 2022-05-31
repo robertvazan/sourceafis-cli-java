@@ -11,7 +11,7 @@ public class QuantileTrio {
 	public final QuantileFunction selfmatching;
 	public QuantileTrio(Dataset dataset) {
 		var fingerprints = dataset.fingerprints();
-		var scores = ScoreCache.load(dataset);
+		var scores = new ScoreCache(dataset).get();
 		var matching = new DoubleArrayList();
 		var nonmatching = new DoubleArrayList();
 		var selfmatching = new DoubleArrayList();

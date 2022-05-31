@@ -3,10 +3,9 @@ package com.machinezoo.sourceafis.cli.inputs;
 
 import java.nio.file.*;
 import java.util.*;
-import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
-public enum Dataset implements DataIdentifier {
+public enum Dataset {
 	FVC2000_1B("fvc2000-1b"),
 	FVC2000_2B("fvc2000-2b"),
 	FVC2000_3B("fvc2000-3b"),
@@ -42,7 +41,6 @@ public enum Dataset implements DataIdentifier {
 	public List<Fingerprint> fingerprints() {
 		return IntStreamEx.range(layout().fingerprints()).mapToObj(n -> new Fingerprint(this, n)).toList();
 	}
-	@Override
 	public Path path() {
 		return Paths.get(codename());
 	}

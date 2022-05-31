@@ -1,7 +1,6 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 package com.machinezoo.sourceafis.cli.utils;
 
-import java.nio.file.*;
 import java.text.*;
 import java.util.*;
 import com.machinezoo.sourceafis.cli.config.*;
@@ -25,9 +24,6 @@ public class Pretty {
 			case "text/plain" -> ".txt";
 			default -> ".dat";
 		};
-	}
-	public static String dump(Path category) {
-		return Configuration.output().resolve(category).toString();
 	}
 	private static String tag(String... tag) {
 		if (tag.length == 0)

@@ -5,15 +5,15 @@ import java.util.*;
 import com.machinezoo.sourceafis.*;
 
 public class ChecksumCollector extends FingerprintTransparency {
-	public final List<TransparencyTable> records = new ArrayList<>();
+	public final List<ChecksumTable> records = new ArrayList<>();
 	@Override
 	public void take(String key, String mime, byte[] data) {
-		records.add(TransparencyTable.solo(key, mime, data));
+		records.add(ChecksumTable.solo(key, mime, data));
 	}
-	public static TransparencyTable collect(Runnable action) {
+	public static ChecksumTable collect(Runnable action) {
 		try (var transparency = new ChecksumCollector()) {
 			action.run();
-			return TransparencyTable.sum(transparency.records);
+			return ChecksumTable.sum(transparency.records);
 		}
 	}
 }

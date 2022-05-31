@@ -1,12 +1,10 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 package com.machinezoo.sourceafis.cli.utils.cache;
 
-import java.nio.file.*;
-
 class TrivialCompression implements CacheCompression {
 	@Override
-	public Path rename(Path path) {
-		return path;
+	public String extension() {
+		return "";
 	}
 	@Override
 	public byte[] compress(byte[] data) {

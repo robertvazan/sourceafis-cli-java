@@ -2,15 +2,14 @@
 package com.machinezoo.sourceafis.cli.utils.cache;
 
 import java.io.*;
-import java.nio.file.*;
 import java.util.zip.*;
 import org.apache.commons.io.*;
 import com.machinezoo.noexception.*;
 
 class GzipCompression implements CacheCompression {
 	@Override
-	public Path rename(Path path) {
-		return Cache.withExtension(path, ".gz");
+	public String extension() {
+		return ".gz";
 	}
 	@Override
 	public byte[] compress(byte[] data) {
