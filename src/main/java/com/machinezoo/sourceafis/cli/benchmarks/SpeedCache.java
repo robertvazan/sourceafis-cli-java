@@ -11,11 +11,7 @@ import com.machinezoo.sourceafis.cli.utils.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 import one.util.streamex.*;
 
-public interface SpeedCache<K> extends SoloCache<TimingStats> {
-	int DURATION = 60;
-	int WARMUP = 20;
-	int NET_DURATION = DURATION - WARMUP;
-	int SAMPLE_SIZE = 10_000;
+public interface SpeedCache<K> extends SoloCache<TimingData> {
 	String name();
 	String description();
 	Sampler<K> sampler();
@@ -25,14 +21,14 @@ public interface SpeedCache<K> extends SoloCache<TimingStats> {
 		return Paths.get("benchmarks", "speed", name());
 	}
 	@Override
-	default Class<TimingStats> type() {
-		return TimingStats.class;
+	default Class<TimingData> type() {
+		return TimingData.class;
 	}
-	private static List<TimingStats> parallelize(Supplier<Supplier<TimingStats>> setup) {
+	private static List<TimingData> parallelize(Supplier<Supplier<TimingData>> setup) {
 		var threads = new ArrayList<Thread>();
-		var futures = new ArrayList<CompletableFuture<TimingStats>>();
+		var futures = new ArrayList<CompletableFuture<TimingData>>();
 		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); ++i) {
-			var future = new CompletableFuture<TimingStats>();
+			var future = new CompletableFuture<TimingData>();
 			futures.add(future);
 			var benchmark = setup.get();
 			var thread = new Thread(() -> {
@@ -51,12 +47,12 @@ public interface SpeedCache<K> extends SoloCache<TimingStats> {
 		return StreamEx.of(futures).map(CompletableFuture::join).toList();
 	}
 	@Override
-	default TimingStats compute() {
+	default TimingData compute() {
 		var epoch = System.nanoTime();
 		var allocator = allocator();
 		var strata = parallelize(() -> {
 			var sampler = sampler();
-			var recorder = new TimingRecorder(epoch, DURATION, SAMPLE_SIZE);
+			var builder = new TimingDataBuilder(epoch);
 			var operation = allocator.get();
 			var hasher = new Hasher();
 			return () -> {
@@ -67,11 +63,11 @@ public interface SpeedCache<K> extends SoloCache<TimingStats> {
 					operation.execute();
 					long end = System.nanoTime();
 					operation.blackhole(hasher);
-					if (!recorder.record(sampler.dataset(id), start, end))
-						return recorder.complete(hasher.compute());
+					if (!builder.add(sampler.dataset(id), start, end))
+						return builder.build(hasher.compute());
 				}
 			};
 		});
-		return TimingStats.sum(SAMPLE_SIZE, strata);
+		return TimingData.sum(strata);
 	}
 }

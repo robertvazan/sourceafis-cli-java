@@ -5,7 +5,7 @@ import java.util.*;
 import com.machinezoo.sourceafis.cli.utils.args.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 
-public class SpeedOverviewCommand implements SimpleCommand {
+public class SpeedSummaryCommand implements SimpleCommand {
 	@Override
 	public List<String> subcommand() {
 		return List.of("benchmark", "speed");
@@ -23,7 +23,7 @@ public class SpeedOverviewCommand implements SimpleCommand {
 			new DeserializationSpeedCache());
 		var table = new SpeedTable("Operation");
 		for (var benchmark : benchmarks)
-			MissingBaselineException.silence().run(() -> table.add(benchmark.name(), benchmark.get().skip(SpeedCache.WARMUP)));
+			MissingBaselineException.silence().run(() -> table.add(benchmark.name(), benchmark.get().warmup(), benchmark.get()));
 		table.print();
 	}
 }

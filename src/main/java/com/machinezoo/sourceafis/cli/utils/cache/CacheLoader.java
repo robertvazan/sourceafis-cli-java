@@ -29,6 +29,7 @@ class CacheLoader {
 			var flag = new Object();
 			if (flag == reported.computeIfAbsent(category, c -> flag))
 				Pretty.format("{0} {1}...", cache.action(), category);
+			Exceptions.sneak().run(() -> Files.createDirectories(directory));
 			cache.populate(new CacheWriter<K, V>() {
 				@Override
 				public void put(K key, V value) {
@@ -39,6 +40,7 @@ class CacheLoader {
 					});
 				}
 			});
+			Exceptions.sneak().run(() -> Files.createFile(marker));
 		}
 		return new LoadedCache<K, V>() {
 			@Override

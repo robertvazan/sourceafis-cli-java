@@ -14,6 +14,6 @@ public record ScoreStats(
 			Stats.average(list, s -> s.matching),
 			Stats.average(list, s -> s.nonmatching),
 			Stats.average(list, s -> s.selfmatching),
-			Stats.sumHash(list, s -> s.hash));
+			Stats.hash(list, s -> s.hash));
 	}
 }

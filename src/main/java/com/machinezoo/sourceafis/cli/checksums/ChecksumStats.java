@@ -6,7 +6,7 @@ import com.machinezoo.sourceafis.cli.utils.*;
 
 public record ChecksumStats(
 	String mime,
-	int count,
+	long count,
 	long length,
 	long normalized,
 	byte[] hash) {
@@ -22,9 +22,9 @@ public record ChecksumStats(
 	public static ChecksumStats sum(List<ChecksumStats> list) {
 		return new ChecksumStats(
 			list.get(0).mime,
-			Stats.sumAsInt(list, s -> s.count),
-			Stats.sumAsLong(list, s -> s.length),
-			Stats.sumAsLong(list, s -> s.normalized),
-			Stats.sumHash(list, s -> s.hash));
+			Stats.sum(list, s -> s.count),
+			Stats.sum(list, s -> s.length),
+			Stats.sum(list, s -> s.normalized),
+			Stats.hash(list, s -> s.hash));
 	}
 }

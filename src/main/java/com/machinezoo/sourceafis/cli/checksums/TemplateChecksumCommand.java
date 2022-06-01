@@ -24,9 +24,8 @@ public class TemplateChecksumCommand implements SimpleCommand {
 				var stats = TemplateChecksumCache.sum(profile);
 				table.add("Dataset", profile.name());
 				table.add("Count", Pretty.length(stats.count()));
-				table.add("Length", Pretty.length(stats.length() / stats.count(), profile.name(), "length"));
-				table.add("Normalized", Pretty.length(stats.normalized() / stats.count(), profile.name(), "normalized"));
-				table.add("Total", Pretty.length(stats.normalized(), profile.name(), "total"));
+				table.add("Length", Pretty.length(stats.length(), profile.name(), "length"));
+				table.add("Normalized", Pretty.length(stats.normalized(), profile.name(), "normalized"));
 				table.add("Hash", Pretty.hash(stats.hash(), profile.name(), "hash"));
 			});
 		}

@@ -39,7 +39,6 @@ public record FootprintCache(Dataset dataset) implements PerDatasetCache<Footpri
 				for (var other : others)
 					graph.subtract(other);
 				return new FootprintStats(
-					1,
 					bytes.length,
 					(int)graph.totalSize(),
 					ParsedTemplate.parse(bytes).types().length());

@@ -26,7 +26,7 @@ public record IdentificationSpeedCache() implements SpeedCache<CrossDatasetPair>
 	@Override
 	public Supplier<TimedOperation<CrossDatasetPair>> allocator() {
 		var footprint = FootprintCache.sum();
-		int ballooning = Math.max(1, (int)(RAM_FOOTPRINT / (footprint.memory() / footprint.count() * Fingerprint.all().size())));
+		int ballooning = Math.max(1, (int)(RAM_FOOTPRINT / (footprint.memory() * Fingerprint.all().size())));
 		var serialized = TemplateCache.toMap(Profile.everything());
 		var templates = StreamEx.of(Fingerprint.all())
 			.parallel()

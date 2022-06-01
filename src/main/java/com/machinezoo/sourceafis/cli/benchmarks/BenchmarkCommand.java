@@ -21,6 +21,6 @@ public record BenchmarkCommand() implements SimpleCommand {
 		Pretty.print("");
 		new FootprintCommand().print(Profile.aggregate());
 		Pretty.print("");
-		new SpeedOverviewCommand().run();
+		new SpeedSummaryCommand().run();
 	}
 }

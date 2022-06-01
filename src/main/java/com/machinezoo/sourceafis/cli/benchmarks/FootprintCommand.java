@@ -22,9 +22,9 @@ public record FootprintCommand() implements SimpleCommand {
 			MissingBaselineException.silence().run(() -> {
 				var stats = FootprintCache.sum(profile);
 				table.add("Dataset", profile.name());
-				table.add("Serialized", Pretty.bytes(stats.serialized() / stats.count(), profile.name(), "serialized"));
-				table.add("Memory", Pretty.bytes(stats.memory() / stats.count(), profile.name(), "memory"));
-				table.add("Minutiae", Pretty.minutiae(stats.minutiae() / stats.count(), profile.name(), "minutiae"));
+				table.add("Serialized", Pretty.bytes(stats.serialized(), profile.name(), "serialized"));
+				table.add("Memory", Pretty.bytes(stats.memory(), profile.name(), "memory"));
+				table.add("Minutiae", Pretty.minutiae(stats.minutiae(), profile.name(), "minutiae"));
 			});
 		}
 		table.print();

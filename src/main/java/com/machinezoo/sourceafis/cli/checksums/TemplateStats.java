@@ -5,15 +5,15 @@ import java.util.*;
 import com.machinezoo.sourceafis.cli.utils.*;
 
 public record TemplateStats(
-	int count,
+	long count,
 	long length,
 	long normalized,
 	byte[] hash) {
 	public static TemplateStats sum(List<TemplateStats> list) {
 		return new TemplateStats(
-			Stats.sumAsInt(list, s -> s.count),
-			Stats.sumAsLong(list, s -> s.length),
-			Stats.sumAsLong(list, s -> s.normalized),
-			Stats.sumHash(list, s -> s.hash));
+			Stats.sum(list, s -> s.count),
+			Stats.sum(list, s -> s.length),
+			Stats.sum(list, s -> s.normalized),
+			Stats.hash(list, s -> s.hash));
 	}
 }
