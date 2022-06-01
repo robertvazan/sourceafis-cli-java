@@ -16,12 +16,10 @@ class CacheLoader {
 		var directory = cache.root().resolve(cache.category()).resolve(cache.sector());
 		var marker = directory.resolve("done");
 		var serialization = CacheSerialization.select(cache.type());
-		var compression = CacheCompression.select(cache.extension() + serialization.extension());
-		var extension = cache.extension() + serialization.extension() + compression.extension();
 		Function<K, Path> resolver = key -> {
 			var identity = cache.identity(key);
 			var path = directory.resolve(identity.startsWith(sector) ? sector.relativize(identity) : identity);
-			return path.resolveSibling(path.getFileName() + extension);
+			return path.resolveSibling(path.getFileName() + serialization.extension());
 		};
 		if (!Files.exists(marker)) {
 			if (Configuration.baselineMode)
@@ -36,7 +34,7 @@ class CacheLoader {
 					var path = resolver.apply(key);
 					Exceptions.sneak().run(() -> {
 						Files.createDirectories(path.getParent());
-						Files.write(path, compression.compress(serialization.serialize(value)));
+						Files.write(path, serialization.serialize(value));
 					});
 				}
 			});
@@ -50,7 +48,7 @@ class CacheLoader {
 			@Override
 			public V get(K key) {
 				var path = resolver.apply(key);
-				return Exceptions.sneak().get(() -> serialization.deserialize(compression.decompress(Files.readAllBytes(path)), cache.type()));
+				return Exceptions.sneak().get(() -> serialization.deserialize(Files.readAllBytes(path), cache.type()));
 			}
 		};
 	}

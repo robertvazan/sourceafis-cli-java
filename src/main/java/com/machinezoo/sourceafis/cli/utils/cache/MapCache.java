@@ -13,9 +13,6 @@ public interface MapCache<K, V> {
 		return Paths.get("");
 	}
 	Path identity(K key);
-	default String extension() {
-		return "";
-	}
 	Class<V> type();
 	default String action() {
 		return "Computing";

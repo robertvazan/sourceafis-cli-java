@@ -19,15 +19,12 @@ public record TemplateCache(Dataset dataset) implements MapCache<Fingerprint, by
 	}
 	@Override
 	public Path identity(Fingerprint fp) {
-		return fp.path();
+		var path = fp.path();
+		return path.resolveSibling(path.getFileName() + ".cbor");
 	}
 	@Override
 	public Class<byte[]> type() {
 		return byte[].class;
-	}
-	@Override
-	public String extension() {
-		return ".cbor";
 	}
 	@Override
 	public void populate(CacheWriter<Fingerprint, byte[]> writer) {
