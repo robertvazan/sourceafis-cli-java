@@ -5,15 +5,9 @@ import java.util.*;
 
 public abstract class Option {
 	public abstract String name();
-	public List<String> parameters() {
-		return Collections.emptyList();
-	}
+	public abstract List<String> parameters();
 	public abstract String description();
-	public void run() {
-	}
-	public void run(List<String> parameters) {
-		run();
-	}
+	public abstract void run(List<String> parameters);
 	public String fallback() {
 		return null;
 	}
