@@ -32,7 +32,7 @@ public record ChecksumSummaryCommand() implements SimpleCommand {
 	private static final GlobalHasher[] GLOBAL_HASHERS = new GlobalHasher[] {
 		new GlobalHasher("Templates", TemplateChecksumCache::global),
 		new GlobalHasher("Scores", ScoreChecksumCache::global),
-		new GlobalHasher("Extractor", new ExtractionChecksum()),
+		new GlobalHasher("Extraction", new ExtractionChecksum()),
 		new GlobalHasher("Probe", new ProbeChecksum()),
 		new GlobalHasher("Comparison", new ComparisonChecksum()),
 		TOTAL

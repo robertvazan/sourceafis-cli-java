@@ -10,7 +10,7 @@ import com.machinezoo.sourceafis.cli.utils.cache.*;
 public record ChecksumCommand(ChecksumOperation operation) implements SimpleCommand {
 	@Override
 	public List<String> subcommand() {
-		return List.of("checksum", "transparency", operation.name());
+		return List.of("checksum", operation.name());
 	}
 	@Override
 	public String description() {

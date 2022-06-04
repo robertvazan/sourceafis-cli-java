@@ -8,7 +8,7 @@ import com.machinezoo.sourceafis.cli.utils.cache.*;
 public record ChecksumCache(ChecksumOperation operation, Dataset dataset) implements PerDatasetCache<ChecksumTable> {
 	@Override
 	public Path category() {
-		return Paths.get("checksums", "transparency", operation.name());
+		return Paths.get("checksums", operation.name());
 	}
 	@Override
 	public Class<ChecksumTable> type() {
