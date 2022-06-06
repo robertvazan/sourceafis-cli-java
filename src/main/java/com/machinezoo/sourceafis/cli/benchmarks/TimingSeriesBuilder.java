@@ -44,6 +44,8 @@ public class TimingSeriesBuilder {
 			if (datasets[datasetId]) {
 				map.put(dataset.codename(), IntStreamEx.range(TimingSeries.DURATION).mapToObj(interval -> {
 					int segment = datasetId * TimingSeries.DURATION + interval;
+					if (counts[segment] == 0)
+						return new TimingSummary(0, Double.NaN, Double.NaN, Double.NaN);
 					return new TimingSummary(
 						counts[segment],
 						0.000_000_001 * sums[segment] / counts[segment],
