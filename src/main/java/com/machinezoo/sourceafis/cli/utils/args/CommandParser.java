@@ -3,6 +3,7 @@ package com.machinezoo.sourceafis.cli.utils.args;
 
 import java.util.*;
 import com.machinezoo.sourceafis.cli.utils.*;
+import com.machinezoo.stagean.*;
 import one.util.streamex.*;
 
 public class CommandParser {
@@ -20,6 +21,7 @@ public class CommandParser {
 		options.add(option);
 		return this;
 	}
+	@CodeIssue("Wrap description lines, so that descriptions can be longer.")
 	public Runnable parse(String[] args) {
 		if (args.length == 0) {
 			Pretty.print("SourceAFIS CLI for Java");

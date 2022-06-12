@@ -8,6 +8,7 @@ import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.inputs.*;
 import com.machinezoo.sourceafis.cli.outputs.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
+import com.machinezoo.stagean.*;
 
 public record FootprintCache(Dataset dataset) implements PerDatasetCache<FootprintStats> {
 	@Override
@@ -19,6 +20,7 @@ public record FootprintCache(Dataset dataset) implements PerDatasetCache<Footpri
 		return FootprintStats.class;
 	}
 	@Override
+	@CodeIssue("Replace JOL with something that does not require special permissions/setup and does not produce warnings.")
 	public FootprintStats compute() {
 		var templates = new TemplateCache(dataset).load();
 		var fingerprints = dataset.fingerprints();

@@ -1,6 +1,7 @@
 // Part of SourceAFIS CLI for Java: https://sourceafis.machinezoo.com/cli
 package com.machinezoo.sourceafis.cli.benchmarks;
 
+import java.util.*;
 import java.util.function.*;
 import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.inputs.*;
@@ -24,6 +25,7 @@ public record DeserializationSpeedCache() implements SpeedCache<Fingerprint> {
 	public Supplier<TimedOperation<Fingerprint>> allocator() {
 		var serialized = TemplateCache.toMap(Profile.everything());
 		return () -> new TimedOperation<Fingerprint>() {
+			final Random random = new Random();
 			byte[] input;
 			FingerprintTemplate deserialized;
 			@Override
@@ -36,7 +38,13 @@ public record DeserializationSpeedCache() implements SpeedCache<Fingerprint> {
 			}
 			@Override
 			public void blackhole(Hasher hasher) {
-				hasher.add(deserialized.toByteArray());
+				/*
+				 * We cannot just blackhole serialized template, because dead code elimination could skip populating transient fields.
+				 * So we blackhole self-match score instead. That is however very expensive, so we do it only very rarely.
+				 * Dead code elimination is nevertheless disabled in all cases, because compiler cannot predict the RNG.
+				 */
+				if (random.nextInt(100_000) == 1)
+					hasher.add(new FingerprintMatcher(deserialized).match(deserialized));
 			}
 		};
 	}

@@ -2,7 +2,6 @@
 import com.machinezoo.stagean.*;
 
 @ApiIssue("Wrap library APIs (engine, transparency, visualization) in CLI commands. Inputs and outputs in files.")
-@DocIssue("Wrap description lines, so that descriptions can be longer.")
 @DocIssue("Dedicated homepage for Java port of the CLI.")
 /*
  * Jackson still requires the module to be open to serialize records.

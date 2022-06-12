@@ -13,7 +13,7 @@ class CacheLoader {
 	static <K, V> LoadedCache<K, V> load(MapCache<K, V> cache) {
 		var category = cache.category();
 		var sector = cache.sector();
-		var directory = cache.root().resolve(cache.category()).resolve(cache.sector());
+		var directory = cache.root().resolve(category).resolve(sector);
 		var marker = directory.resolve("done");
 		var serialization = CacheSerialization.select(cache.type());
 		Function<K, Path> resolver = key -> {

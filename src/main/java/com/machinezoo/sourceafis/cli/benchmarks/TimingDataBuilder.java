@@ -4,20 +4,20 @@ package com.machinezoo.sourceafis.cli.benchmarks;
 import com.machinezoo.sourceafis.cli.inputs.*;
 
 public class TimingDataBuilder {
-	private final TimingSeriesBuilder summaries;
+	private final TimingSeriesBuilder series;
 	private final TimingSampleBuilder sample;
 	public TimingDataBuilder(long epoch) {
-		summaries = new TimingSeriesBuilder(epoch);
+		series = new TimingSeriesBuilder(epoch);
 		sample = new TimingSampleBuilder(epoch);
 	}
 	public boolean add(Dataset dataset, long start, long end) {
-		if (summaries.add(dataset, start, end)) {
+		if (series.add(dataset, start, end)) {
 			sample.add(dataset, start, end);
 			return true;
 		} else
 			return false;
 	}
 	public TimingData build(byte[] hash) {
-		return new TimingData(1, summaries.build(), sample.build(), hash);
+		return new TimingData(1, series.build(), sample.build(), hash);
 	}
 }
