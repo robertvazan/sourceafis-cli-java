@@ -10,7 +10,7 @@ import com.machinezoo.sourceafis.cli.utils.*;
 
 class CacheLoader {
 	private static final ConcurrentMap<Path, Object> reported = new ConcurrentHashMap<>();
-	static <K, V> LoadedCache<K, V> load(MapCache<K, V> cache) {
+	static <K, V> CacheReader<K, V> load(MapCache<K, V> cache) {
 		var category = cache.category();
 		var sector = cache.sector();
 		var directory = cache.root().resolve(category).resolve(sector);
@@ -19,7 +19,7 @@ class CacheLoader {
 		Function<K, Path> resolver = key -> {
 			var identity = cache.identity(key);
 			var path = directory.resolve(identity.startsWith(sector) ? sector.relativize(identity) : identity);
-			return path.resolveSibling(path.getFileName() + serialization.extension());
+			return Pretty.path(path, serialization.extension());
 		};
 		if (!Files.exists(marker)) {
 			if (Configuration.baselineMode)
@@ -40,7 +40,7 @@ class CacheLoader {
 			});
 			Exceptions.sneak().run(() -> Files.createFile(marker));
 		}
-		return new LoadedCache<K, V>() {
+		return new CacheReader<K, V>() {
 			@Override
 			public Path directory() {
 				return directory;

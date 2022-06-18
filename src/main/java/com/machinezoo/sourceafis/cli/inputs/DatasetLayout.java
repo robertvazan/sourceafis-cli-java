@@ -11,7 +11,6 @@ import com.machinezoo.noexception.*;
 import one.util.streamex.*;
 
 public class DatasetLayout {
-	public final Path directory;
 	private final int[] offsets;
 	private final int[] fingers;
 	private final String[] names;
@@ -49,7 +48,7 @@ public class DatasetLayout {
 	private static final Pattern PATTERN = Pattern.compile("(.+)_[0-9]+\\.gray");
 	@SuppressWarnings("resource")
 	public DatasetLayout(GrayscaleImageCache cache) {
-		this.directory = cache.load().directory();
+		var directory = cache.load().directory();
 		var groups = new HashMap<String, List<String>>();
 		for (var path : Exceptions.sneak().get(() -> Files.list(directory).collect(toList()))) {
 			var filename = path.getFileName().toString();

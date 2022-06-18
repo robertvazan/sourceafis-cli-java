@@ -18,7 +18,7 @@ public interface MapCache<K, V> {
 		return "Computing";
 	}
 	void populate(CacheWriter<K, V> writer);
-	default LoadedCache<K, V> load() {
+	default CacheReader<K, V> load() {
 		return CacheLoader.load(this);
 	}
 }

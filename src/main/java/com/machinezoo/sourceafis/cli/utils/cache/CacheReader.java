@@ -3,7 +3,7 @@ package com.machinezoo.sourceafis.cli.utils.cache;
 
 import java.nio.file.*;
 
-public interface LoadedCache<K, V> {
+public interface CacheReader<K, V> {
 	Path directory();
 	V get(K key);
 }

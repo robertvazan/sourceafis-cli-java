@@ -23,15 +23,12 @@ public record LogCache(LogOperation operation, Dataset dataset, String key, bool
 		operation.log(dataset, new LogWriter() {
 			@Override
 			public void put(Path path, Runnable action) {
-				try (var logger = new LogCollector(key)) {
+				try (var collector = new LogCollector(key)) {
 					action.run();
-					if (logger.mime != null) {
-						if (logger.files.size() == 1)
-							writer.put(path.resolveSibling(path.getFileName().toString() + Pretty.extension(logger.mime)), logger.files.get(0));
-						else {
-							for (int i = 0; i < logger.files.size(); ++i)
-								writer.put(path.resolve(i + Pretty.extension(logger.mime)), logger.files.get(i));
-						}
+					for (int i = 0; i < collector.files.size(); ++i) {
+						var numbered = collector.files.size() == 1 ? path : path.resolve(Integer.toString(i));
+						var data = normalized ? Serializer.normalize(collector.mime, collector.files.get(i)) : collector.files.get(i);
+						writer.put(Pretty.path(numbered, Pretty.extension(collector.mime)), data);
 					}
 				}
 			}

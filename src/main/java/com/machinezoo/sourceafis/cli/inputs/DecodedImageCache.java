@@ -7,10 +7,10 @@ import com.machinezoo.sourceafis.*;
 import com.machinezoo.sourceafis.cli.utils.cache.*;
 
 public record DecodedImageCache(Dataset dataset) {
-	public LoadedCache<Fingerprint, FingerprintImage> load() {
+	public CacheReader<Fingerprint, FingerprintImage> load() {
 		var grays = new GrayscaleImageCache(dataset).load();
 		var layout = dataset.layout();
-		return new LoadedCache<>() {
+		return new CacheReader<>() {
 			@Override
 			public Path directory() {
 				return grays.directory();
