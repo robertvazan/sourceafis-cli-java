@@ -27,7 +27,7 @@ md_description = lambda: '''\
 '''
 
 def dependencies():
-    use('com.machinezoo.sourceafis:sourceafis:3.16.1')
+    use('com.machinezoo.sourceafis:sourceafis:3.17.1')
     use_commons_lang()
     use_streamex()
     use('org.slf4j:slf4j-simple:1.7.36')
