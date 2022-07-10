@@ -9,6 +9,7 @@
 
 	<name>SourceAFIS CLI</name>
 	<description>Command-line interface for SourceAFIS.</description>
+
 	<url>https://sourceafis.machinezoo.com/cli</url>
 	<inceptionYear>2021</inceptionYear>
 
