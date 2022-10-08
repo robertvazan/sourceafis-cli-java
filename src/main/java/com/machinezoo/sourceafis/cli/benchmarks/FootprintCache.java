@@ -20,7 +20,7 @@ public record FootprintCache(Dataset dataset) implements PerDatasetCache<Footpri
 		return FootprintStats.class;
 	}
 	@Override
-	@CodeIssue("Replace JOL with something that does not require special permissions/setup and does not produce warnings.")
+	@CodeIssue("Replace JOL with something that does not require special permissions/setup and does not produce warnings, perhaps JAMM using unsafe or spec driver.")
 	public FootprintStats compute() {
 		var templates = new TemplateCache(dataset).load();
 		var fingerprints = dataset.fingerprints();
