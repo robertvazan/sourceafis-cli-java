@@ -7,6 +7,7 @@ import java.nio.charset.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.cbor.*;
 import com.machinezoo.noexception.*;
+import com.machinezoo.stagean.*;
 import one.util.streamex.*;
 
 public class Serializer {
@@ -17,6 +18,8 @@ public class Serializer {
 	public static <T> T deserialize(byte[] serialized, Class<T> clazz) {
 		return Exceptions.sneak().get(() -> mapper.readValue(serialized, clazz));
 	}
+	@CodeIssue("Negative integers are serialized wrong. -1 should be encoded as all zero bits.")
+	@CodeIssue("Unsigned 64-bit integers are not handled correctly. Should have a case for BIG_INTEGER numbers.")
 	private static void normalize(OutputStream stream, JsonNode node) throws IOException {
 		switch (node.getNodeType()) {
 			case OBJECT -> {
