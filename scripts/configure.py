@@ -24,10 +24,10 @@ class Project(scaffold.Java):
     
     def dependencies(self):
         yield from super().dependencies()
-        yield self.use('com.machinezoo.sourceafis:sourceafis:3.17.1')
+        yield self.use('com.machinezoo.sourceafis:sourceafis:3.18.1')
         yield self.use_commons_lang()
+        yield self.use_commons_io()
         yield self.use_streamex()
-        yield self.use('org.slf4j:slf4j-simple:1.7.36')
         # Used to measure memory footprint of SourceAFIS templates.
         # Causes warnings. Needs replacement.
         yield self.use('org.openjdk.jol:jol-core:0.16')
